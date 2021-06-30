@@ -15,6 +15,10 @@ class CreateZonasTable extends Migration
     {
         Schema::create('zonas', function (Blueprint $table) {
             $table->id();
+            $table->string('zona');
+            $table->unsignedBigInteger('id_partido');
+
+            $table->foreign('id_partido')->references('id')->on('partidos')->onDelete('cascade')
             $table->timestamps();
         });
     }

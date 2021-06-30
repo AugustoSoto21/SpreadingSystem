@@ -15,6 +15,11 @@ class CreateTarifasTable extends Migration
     {
         Schema::create('tarifas', function (Blueprint $table) {
             $table->id();
+            $table->string('tipo');
+            $table->float('monto');
+            $table->unsignedBigInteger('id_zona');
+
+            $table->foreign('id_zona')->references('id')->on('zonas')->onDelete('cascade');
             $table->timestamps();
         });
     }

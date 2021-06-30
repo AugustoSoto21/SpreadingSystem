@@ -15,6 +15,11 @@ class CreateImagenesTable extends Migration
     {
         Schema::create('imagenes', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('id_producto');
+            $table->string('nombre');
+            $table->string('url');
+
+            $table->foreign('id_producto')->references('id')->on('productos')->onDelete('cascade');
             $table->timestamps();
         });
     }

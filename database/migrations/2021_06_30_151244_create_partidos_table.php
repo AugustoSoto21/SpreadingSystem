@@ -15,6 +15,7 @@ class CreatePartidosTable extends Migration
     {
         Schema::create('partidos', function (Blueprint $table) {
             $table->id();
+            $table->string('partido');
             $table->timestamps();
         });
     }

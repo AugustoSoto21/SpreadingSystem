@@ -15,6 +15,8 @@ class CreateRecepcionistasTable extends Migration
     {
         Schema::create('recepcionistas', function (Blueprint $table) {
             $table->id();
+            $table->string('nombres');
+            $table->string('apellidos');
             $table->timestamps();
         });
     }
