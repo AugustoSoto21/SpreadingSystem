@@ -15,6 +15,13 @@ class CreateHorariosTable extends Migration
     {
         Schema::create('horarios', function (Blueprint $table) {
             $table->id();
+            $table->time('hora_inicio');
+            $table->time('hora_fin');
+            $table->unsignedBigInteger('id_zona');
+            $table->unsignedBigInteger('id_pedido');
+
+            $table->foreign('id_zona')->references('id')->on('zonas')->onDelete('cascade');
+            $table->foreign('id_pedido')->references('id')->on('pedidos')->onDelete('cascade');
             $table->timestamps();
         });
     }

@@ -18,7 +18,7 @@ class CreateZonasTable extends Migration
             $table->string('zona');
             $table->unsignedBigInteger('id_partido');
 
-            $table->foreign('id_partido')->references('id')->on('partidos')->onDelete('cascade')
+            $table->foreign('id_partido')->references('id')->on('partidos')->onDelete('cascade');
             $table->timestamps();
         });
     }

@@ -15,6 +15,14 @@ class CreateDevolucionesTable extends Migration
     {
         Schema::create('devoluciones', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('id_pedido');
+            $table->unsignedBigInteger('id_producto');
+            $table->enum('devuelto',['Si','No']);
+            $table->integer('cantidad');
+            $table->timestamp('fecha');
+
+            $table->foreign('id_pedido')->references('id')->on('pedidos')->onDelete('cascade');
+            $table->foreign('id_producto')->references('id')->on('productos')->onDelete('cascade');
             $table->timestamps();
         });
     }
