@@ -25,7 +25,7 @@ class CreatePedidosTable extends Migration
             $table->unsignedBigInteger('id_recepcionista');
             $table->unsignedBigInteger('id_estado');
             $table->text('observacion')->nullable();
-            $table->unsignedBigInteger('id_agencia');
+            $table->unsignedBigInteger('id_delivery');
             $table->enum('status_deposito',['Depositado','Por Depositar'])->default('Depositado');
 
             $table->foreign('id_cliente')->references('id')->on('clientes');
@@ -33,7 +33,7 @@ class CreatePedidosTable extends Migration
             $table->foreign('id_fuente')->references('id')->on('fuentes');
             $table->foreign('id_recepcionista')->references('id')->on('recepcionistas');
             $table->foreign('id_estado')->references('id')->on('estados');
-            $table->foreign('id_agencia')->references('id')->on('agencias');
+            $table->foreign('id_delivery')->references('id')->on('deliverys');
 
 
 

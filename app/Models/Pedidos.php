@@ -9,7 +9,7 @@ use App\Models\Tarifas;
 use App\Models\Fuentes;
 use App\Models\Recepcionistas;
 use App\Models\Estados;
-use App\Models\Agencias;
+use App\Models\Deliverys;
 use App\Models\Productos;
 class Pedidos extends Model
 {
@@ -39,9 +39,9 @@ class Pedidos extends Model
 
     	return $this->belongsTo(Estado::class,'id_estado');
     }
-    public function agencias(){
+    public function deliverys(){
 
-    	return $this->belongsTo(Agencias::class,'id_agencia');
+    	return $this->belongsTo(Deliverys::class,'id_delivery');
     }
 
     public function productos(){

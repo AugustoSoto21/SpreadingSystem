@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Pedidos;
+use App\Models\Deliverys;
 
 class Agencias extends Model
 {
@@ -14,8 +14,8 @@ class Agencias extends Model
 
     protected $fillable=['nombre'];
 
-    public function pedidos(){
+    public function deliverys(){
 
-    	return $this->hasMany(Pedidos::class);
+    	return $this->hasMany(Deliverys::class);
     }
 }
