@@ -28,7 +28,7 @@ class PartidosZonasTablesSeeder extends Seeder
         	['partido' => 'Ituzaingó'],//12
         	['partido' => 'Moreno'],//13
         	['partido' => 'Merlo'],//14
-            ['partido' => 'La Matanza']// 15
+            ['partido' => 'La Matanza'],// 15
         	['partido' => 'Avellaneda'],//16
         	['partido' => 'Lanús'],//1
         	['partido' => 'Lomas d Zamora'],//18
