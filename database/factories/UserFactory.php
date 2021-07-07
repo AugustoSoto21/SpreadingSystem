@@ -23,13 +23,15 @@ class UserFactory extends Factory
     public function definition()
     {
         return [
-            'name' => 'Admin',//$this->faker->name(),
-            'email' => 'admin@spreading.com', //$this->faker->unique()->safeEmail(),
+            //'name' => 'Admin',
+            'name' => $this->faker->name(),
+            //'email' => 'admin@spreading.com',
+            'email' => $this->faker->unique()->safeEmail(),
             //'user_type' => 'Recepcionista',
-            //'user_type' => 'Agencia',
+            'user_type' => 'Agencia',
             //'user_type' => 'Delivery',
             //'user_type' => 'Cliente',
-            'user_type' => 'Admin',
+            //'user_type' => 'Admin',
             'email_verified_at' => now(),
             'password' => bcrypt('spreading9$'), // password
             'remember_token' => Str::random(10),

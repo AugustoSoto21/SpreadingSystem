@@ -39,6 +39,12 @@
               <p>Home <span class="right badge badge-danger">New</span></p>
             </a>
           </li>
+          <li class="nav-item">
+            <a href="{!!route('estados.index')!!}" class="nav-link">
+              <i class="nav-icon fas fa-tachometer-alt"></i>
+              <p>Estados</p>
+            </a>
+          </li>
         </ul>
       </nav>
       <!-- /.sidebar-menu -->

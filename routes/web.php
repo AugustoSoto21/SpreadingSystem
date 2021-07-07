@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\EstadosController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -12,6 +12,9 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+
+
 Route::middleware('guest')->group(function () {
     Route::get('/', [App\Http\Controllers\HomeController::class, 'index']);
 });
@@ -19,3 +22,4 @@ Route::middleware('guest')->group(function () {
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::resource('/estados',EstadosController::class);
