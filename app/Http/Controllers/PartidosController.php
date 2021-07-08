@@ -4,7 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Partidos;
 use Illuminate\Http\Request;
-
+use Alert;
+use App\Models\Zonas;
 class PartidosController extends Controller
 {
     /**
@@ -14,7 +15,9 @@ class PartidosController extends Controller
      */
     public function index()
     {
-        //
+        $partidos= Partidos::all();
+
+        return view('partidos.index');
     }
 
     /**

@@ -45,6 +45,12 @@
               <p>Estados</p>
             </a>
           </li>
+          <li class="nav-item">
+            <a href="{!!route('partidos.index')!!}" class="nav-link">
+              <i class="nav-icon fas fa-tachometer-alt"></i>
+              <p>Partidos</p>
+            </a>
+          </li>
         </ul>
       </nav>
       <!-- /.sidebar-menu -->

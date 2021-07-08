@@ -27,20 +27,20 @@
           <div class="card-header">
             <h3 class="card-title"><i class="nav-icon fa fa-shopping-basket"></i> Estados registrados</h3>
             <div class="card-tools">
-              @if(search_permits('Products','Imprimir PDF')=="Si" || search_permits('Products','Imprimir Excel')=="Si")
+              @if(search_permits('Estados','Imprimir PDF')=="Si" || search_permits('Estados','Imprimir Excel')=="Si")
               <div class="btn-group">
                 <a class="btn btn-danger dropdown-toggle btn-sm dropdown-icon text-white" data-toggle="dropdown" data-tooltip="tooltip" data-placement="top" title="Generar reportes">Imprimir </a>
                 <div class="dropdown-menu dropdown-menu-right">
-                  @if(search_permits('Products','Imprimir PDF')=="Si")
+                  @if(search_permits('Estados','Imprimir PDF')=="Si")
                   {{-- <a class="dropdown-item" href="{!!route('estados.pdf')!!}" target="_blank" data-tooltip="tooltip" data-placement="top" title="Reportes en PDF"><i class="fa fa-file-pdf"></i> Exportar a PDF</a> --}}
                   @endif
-                  {{-- @if(search_permits('Products','Imprimir Excel')=="Si")
+                  {{-- @if(search_permits('Estados','Imprimir Excel')=="Si")
                   <a class="dropdown-item" href="{!! route('estados.excel') !!}" target="_blank" data-tooltip="tooltip" data-placement="top" title="Reportes en Excel"><i class="fa fa-file-excel"></i> Exportar a Excel</a>
                   @endif --}}
                 </div>
               </div>
               @endif
-              @if(search_permits('Products','Registrar')=="Si")
+              @if(search_permits('Estados','Registrar')=="Si")
               {{-- <a href="{!! route('estados.create') !!}" class="btn bg-gradient-primary btn-sm pull-right" data-tooltip="tooltip" data-placement="top" title="Registrar estado"><i class="fas fa-edit"></i> Registrar estados</a> --}}
 
               <a class="btn btn-info btn-xs text-white" data-toggle="modal" data-target="#create_estados" onclick="create_estados()" data-tooltip="tooltip" data-placement="top" title="Crear Estados">
@@ -49,7 +49,7 @@
               @endif
             </div>
           </div>
-          {{-- @if(search_permits('Products','Ver mismo usuario')=="Si" || search_permits('Products','Ver todos los usuarios')=="Si" || search_permits('Products','Editar mismo usuario')=="Si" || search_permits('Products','Editar todos los usuarios')=="Si" || search_permits('Products','Eliminar mismo usuario')=="Si" || search_permits('Products','Eliminar todos los usuarios')=="Si") --}}
+          @if(search_permits('Estados','Ver mismo usuario')=="Si" || search_permits('Estados','Ver todos los usuarios')=="Si" || search_permits('Estados','Editar mismo usuario')=="Si" || search_permits('Estados','Editar todos los usuarios')=="Si" || search_permits('Estados','Eliminar mismo usuario')=="Si" || search_permits('Estados','Eliminar todos los usuarios')=="Si")
           <div class="card-body">
             <table id="estados" class="table table-bordered table-striped table-sm" style="font-size: 12px;">
               <thead>
@@ -68,9 +68,9 @@
                     
                     <td>
                       <!--ACCIÓN DE VER PRODUCTOS -->
-                      {{-- @if(search_permits('Products','Ver todos los usuarios')=="Si")
+                      {{-- @if(search_permits('Estados','Ver todos los usuarios')=="Si")
                         <a href="{!! route('estados.show', $k->id) !!}" class="btn btn-info btn-xs" data-tooltip="tooltip" data-placement="top" title="Ver estado"><i class="fa fa-search"></i></a>
-                      @elseif(search_permits('Products','Ver mismo usuario')=="Si")
+                      @elseif(search_permits('Estados','Ver mismo usuario')=="Si")
                         @if($k->id_user == \Auth::User()->id)
                           <a href="{!! route('estados.show', $k->id) !!}" class="btn btn-info btn-xs" data-tooltip="tooltip" data-placement="top" title="Ver estado"><i class="fa fa-search"></i></a>
                         @endif
@@ -105,7 +105,7 @@
               </tbody>
             </table>
           </div>
-          {{-- @else
+          @else
           <div class="row">
             <div class="col-12">                          
               <div class="alert alert-danger alert-dismissible text-center">
@@ -114,7 +114,7 @@
               </div>
             </div>
           </div>
-          @endif --}}
+          @endif
         </div>
       </div>
     </div>
