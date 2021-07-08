@@ -4,7 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Zonas;
 use Illuminate\Http\Request;
-
+use App\Models\Pedidos;
+use App\Models\Partidos;
 class ZonasController extends Controller
 {
     /**
@@ -14,7 +15,9 @@ class ZonasController extends Controller
      */
     public function index()
     {
-        //
+        $zonas=Zonas::all();
+        $partidos=Partidos::all();
+        return view('zonas.index',compact('zonas','partidos'));
     }
 
     /**
