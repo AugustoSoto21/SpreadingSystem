@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Estados;
 use Illuminate\Http\Request;
+use Alert;
 class EstadosController extends Controller
 {
     /**
@@ -25,7 +26,7 @@ class EstadosController extends Controller
      */
     public function create()
     {
-        //
+        
     }
 
     /**
@@ -36,7 +37,20 @@ class EstadosController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        //dd($request->all());
+        $buscar=Estados::where('estado',$request->estado)->orWhere('color',$request->color)->count();
+        if($buscar > 0){
+            Alert::error('Error', 'El nombre del estado o color ya ha sido registrado')->persistent(true);
+        return redirect()->back();
+        }else{
+            $estado= new Estados();
+            $estado->estado=$request->estado;
+            $estado->color=$request->color;
+            $estado->save();
+
+            Alert::success('Muy bien', 'Estado registrado con éxito')->persistent(true);
+            return redirect()->back();
+        }
     }
 
     /**
