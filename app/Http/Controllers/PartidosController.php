@@ -17,7 +17,7 @@ class PartidosController extends Controller
     {
         $partidos= Partidos::all();
 
-        return view('partidos.index');
+        return view('partidos.index',compact('partidos'));
     }
 
     /**
@@ -38,7 +38,20 @@ class PartidosController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $buscar=Partidos::where('partido',$request->partido)->count();
+        if($buscar > 0){
+            Alert::error('Error', 'El nombre del partido ya ha sido registrado')->persistent(true);
+        return redirect()->back();
+        }else{
+           
+            $partido= new Partidos();
+            $partido->partido=$request->partido;
+            $partido->save();
+
+            Alert::success('Muy bien', 'Partido registrado con éxito')->persistent(true);
+            return redirect()->back();
+           
+        }
     }
 
     /**
@@ -70,9 +83,24 @@ class PartidosController extends Controller
      * @param  \App\Models\Partidos  $partidos
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Partidos $partidos)
+    public function update(Request $request, $id_partido)
     {
-        //
+        //dd($request->all());
+        $buscar=Partidos::where('partido',$request->partido)->where('id','<>',$request->id_partido)->count();
+
+        if($buscar > 0){
+            Alert::error('Error', 'El nombre del partido ya ha sido registrado')->persistent(true);
+        return redirect()->back();
+        }else{
+            
+            $partido=  Partidos::find($request->id_partido);
+            $partido->partido=$request->partido;
+            $partido->save();
+
+            Alert::success('Muy bien', 'Partido actualizado con éxito')->persistent(true);
+            return redirect()->back();
+            
+        }
     }
 
     /**
@@ -81,8 +109,19 @@ class PartidosController extends Controller
      * @param  \App\Models\Partidos  $partidos
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Partidos $partidos)
+    public function destroy(Request $request)
     {
-        //
+        $buscar=Zonas::where('id_partido',$request->id_partido)->count();
+        if($buscar > 0){
+            Alert::warning('Alerta', 'El partido que intenta eliminar se encuentra asignado a una zona')->persistent(true);
+        }else{
+            $partido=Partidos::find($request->id_partido);
+            if($partido->delete()){
+              Alert::warning('Alerta', 'El partido no pudo ser eliminado')->persistent(true);  
+            }else{
+                Alert::warning('Alerta', 'El partido fue eliminado con éxito')->persistent(true);
+            }
+        }
+        return redirect()->back();
     }
 }

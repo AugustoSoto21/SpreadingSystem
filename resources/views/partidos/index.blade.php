@@ -63,8 +63,6 @@
                   
                   <tr >
                     <td>{!!$k->partido!!}</td>
-                    <td bgcolor="{!!$k->color!!}">{!!$k->color!!}</td>
-                    
                     <td>
                       <!--ACCIÓN DE VER PRODUCTOS -->
                       {{-- @if(search_permits('Partidos','Ver todos los usuarios')=="Si")
