@@ -20,3 +20,4 @@
 <script src="{!! asset('js/demo.js') !!}"></script>
 <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
 <script src="{!! asset('js/pages/dashboard.js') !!}"></script>
+@yield('scripts')

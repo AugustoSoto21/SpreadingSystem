@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Estados;
 use Illuminate\Http\Request;
 use Alert;
+use App\Models\Pedidos;
 class EstadosController extends Controller
 {
     /**
@@ -38,18 +39,24 @@ class EstadosController extends Controller
     public function store(Request $request)
     {
         //dd($request->all());
-        $buscar=Estados::where('estado',$request->estado)->orWhere('color',$request->color)->count();
+        $buscar=Estados::where('estado',$request->estado)->count();
         if($buscar > 0){
-            Alert::error('Error', 'El nombre del estado o color ya ha sido registrado')->persistent(true);
+            Alert::error('Error', 'El nombre del estado ya ha sido registrado')->persistent(true);
         return redirect()->back();
         }else{
-            $estado= new Estados();
-            $estado->estado=$request->estado;
-            $estado->color=$request->color;
-            $estado->save();
+            $buscar=Estados::where('color',$request->color)->count();
+            if($buscar > 0 ){
+                Alert::error('Error', 'El color del estado ya ha sido registrado')->persistent(true);
+                return redirect()->back();
+            }else{
+                $estado= new Estados();
+                $estado->estado=$request->estado;
+                $estado->color=$request->color;
+                $estado->save();
 
-            Alert::success('Muy bien', 'Estado registrado con éxito')->persistent(true);
-            return redirect()->back();
+                Alert::success('Muy bien', 'Estado registrado con éxito')->persistent(true);
+                return redirect()->back();
+            }
         }
     }
 
@@ -61,7 +68,7 @@ class EstadosController extends Controller
      */
     public function show(Estados $estados)
     {
-        //
+        
     }
 
     /**
@@ -82,9 +89,29 @@ class EstadosController extends Controller
      * @param  \App\Models\Estados  $estados
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Estados $estados)
+    public function update(Request $request, $id)
     {
-        //
+        //dd($request->all());
+        $buscar=Estados::where('estado',$request->estado)->where('id','<>',$request->id_estado)->count();
+
+        if($buscar > 0){
+            Alert::error('Error', 'El nombre del estado ya ha sido registrado')->persistent(true);
+        return redirect()->back();
+        }else{
+            $buscar=Estados::where('color',$request->color)->where('id','<>',$request->id_estado)->count();
+            if($buscar > 0 ){
+                Alert::error('Error', 'El color del estado ya ha sido registrado')->persistent(true);
+                return redirect()->back();
+            }else{
+                $estado=  Estados::find($request->id_estado);
+                $estado->estado=$request->estado;
+                $estado->color=$request->color;
+                $estado->save();
+
+                Alert::success('Muy bien', 'Estado actualizado con éxito')->persistent(true);
+                return redirect()->back();
+            }
+        }
     }
 
     /**
@@ -93,8 +120,19 @@ class EstadosController extends Controller
      * @param  \App\Models\Estados  $estados
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Estados $estados)
+    public function destroy(Request $request)
     {
-        //
+        $buscar=Pedidos::where('id_estado',$request->id_estado)->count();
+        if($buscar > 0){
+            Alert::warning('Alerta', 'El estado que intenta eliminar se encuentra asignado a un pedido')->persistent(true);
+        }else{
+            $estado=Estados::find($request->id_estado);
+            if($estado->delete()){
+              Alert::warning('Alerta', 'El estado no pudo ser eliminado')->persistent(true);  
+            }else{
+                Alert::warning('Alerta', 'El estado fue eliminado con éxito')->persistent(true);
+            }
+        }
+        return redirect()->back();
     }
 }

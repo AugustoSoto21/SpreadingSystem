@@ -19,6 +19,8 @@
 <section class="content">
   <div class="container-fluid">
     @include('estados.partials.create')
+    @include('estados.partials.edit')
+    @include('estados.partials.delete')
     <div class="row">
       <div class="col-12">
         <div class="card card-primary card-outline card-tabs">
@@ -75,27 +77,27 @@
                       @endif
  --}}
                       <!--ACCIÓN DE EDITAR PRODUCTOS -->
-                      {{-- @if(search_permits('Products','Editar todos los usuarios')=="Si")
-                        <a href="{!! route('estados.edit', $k->id) !!}" class="btn btn-warning btn-xs" data-tooltip="tooltip" data-placement="top" title="Editar estado"><i class="fa fa-pencil-alt"></i></a>
-                      @elseif(search_permits('Products','Editar mismo usuario')=="Si")
+                      @if(search_permits('Estados','Editar todos los usuarios')=="Si")
+                        <a href="{!! route('estados.edit', $k->id) !!}" class="btn btn-warning btn-xs" data-toggle="modal" data-target="#edit_estados" onclick="edit_estados('{!! $k->id !!}','{!! $k->estado !!}','{!! $k->color !!}')" data-tooltip="tooltip" data-placement="top" title="Editar estado"><i class="fa fa-pencil-alt"></i></a>
+                      @elseif(search_permits('Estados','Editar mismo usuario')=="Si")
                         @if($k->id_user == \Auth::User()->id)
-                          <a href="{!! route('estados.edit', $k->id) !!}" class="btn btn-warning btn-xs" data-tooltip="tooltip" data-placement="top" title="Editar estado"><i class="fa fa-pencil-alt"></i></a>
+                          <a href="{!! route('estados.edit', $k->id) !!}" class="btn btn-warning btn-xs" data-toggle="modal" data-target="#edit_estados" onclick="edit_estados('{!! $k->id !!}','{!! $k->estado !!}','{!! $k->color !!}')" data-tooltip="tooltip"  data-placement="top" title="Editar estado"><i class="fa fa-pencil-alt"></i></a>
                         @endif
                       @endif
- --}}
+
                       <!--ACCIÓN DE ELIMINAR PRODUCTO -->
-                      {{-- @if(search_permits('Products','Eliminar todos los usuarios')=="Si")
+                      @if(search_permits('Estados','Eliminar todos los usuarios')=="Si")
                         <a class="btn btn-danger btn-xs text-white" data-toggle="modal" data-target="#delete_estados" onclick="delete_estados('{{$k->id}}')" data-tooltip="tooltip" data-placement="top" title="Eliminar estado">
                           <i class="fa fa-trash"></i>
                         </a>
-                      @elseif(search_permits('Products','Eliminar mismo usuario')=="Si")
+                      @elseif(search_permits('Estados','Eliminar mismo usuario')=="Si")
                         @if($k->id_user == \Auth::User()->id)
                           <a class="btn btn-danger btn-xs text-white" data-toggle="modal" data-target="#delete_estados" onclick="delete_estados('{{$k->id}}')" data-tooltip="tooltip" data-placement="top" title="Eliminar estado">
                           <i class="fa fa-trash"></i>
                         </a>
                         @endif
-                      @endif --}}
-                      @include('estados.partials.delete')
+                      @endif
+                      
                     </td>
                   </tr>
                   
@@ -129,6 +131,14 @@
   });
   function delete_estados(id) {
     $('#delete_id').val(id);
+  }
+  
+</script>
+<script type="text/javascript">
+  function edit_estados(id,estado, color) {
+    $('#id_estado').val(id);
+    $('#estado_edit').val(estado);
+    $('#color_edit').val(color);
   }
 </script>
 @endsection
