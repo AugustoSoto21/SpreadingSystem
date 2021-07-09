@@ -4,7 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Fuentes;
 use Illuminate\Http\Request;
-
+use App\Models\Pedidos;
+use Alert;
 class FuentesController extends Controller
 {
     /**
@@ -14,7 +15,9 @@ class FuentesController extends Controller
      */
     public function index()
     {
-        //
+        $fuentes= Fuentes::all();
+
+        return view('fuentes.index',compact('fuentes'));
     }
 
     /**
@@ -35,7 +38,20 @@ class FuentesController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $buscar=Fuentes::where('fuente',$request->fuente)->count();
+        if($buscar > 0){
+            Alert::error('Error', 'El fuente ya ha sido registrada')->persistent(true);
+        return redirect()->back();
+        }else{
+           
+            $fuente= new Fuentes();
+            $fuente->fuente=$request->fuente;
+            $fuente->save();
+
+            Alert::success('Muy bien', 'Fuente registrada con éxito')->persistent(true);
+            return redirect()->back();
+           
+        }
     }
 
     /**
@@ -69,7 +85,21 @@ class FuentesController extends Controller
      */
     public function update(Request $request, Fuentes $fuentes)
     {
-        //
+        $buscar=Fuentes::where('fuente',$request->fuente)->where('id','<>',$request->id_fuente)->count();
+
+        if($buscar > 0){
+            Alert::error('Error', 'La fuente ya ha sido registrada')->persistent(true);
+            return redirect()->back();
+        }else{
+            
+            $fuente=  Fuentes::find($request->id_fuente);
+            $fuente->fuente=$request->fuente;
+            $fuente->save();
+
+            Alert::success('Muy bien', 'Fuente actualizada con éxito')->persistent(true);
+            return redirect()->back();
+            
+        }
     }
 
     /**
@@ -78,8 +108,19 @@ class FuentesController extends Controller
      * @param  \App\Models\Fuentes  $fuentes
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Fuentes $fuentes)
+    public function destroy(Request $request)
     {
-        //
+        $buscar=Pedidos::where('id_fuente',$request->id_fuente)->count();
+        if($buscar > 0){
+            Alert::warning('Alerta', 'La Fuente que intenta eliminar se encuentra asignado a un pedido')->persistent(true);
+        }else{
+            $fuente=Fuentes::find($request->id_fuente);
+            if($fuente->delete()){
+              Alert::warning('Alerta', 'La fuente no pudo ser eliminada')->persistent(true);  
+            }else{
+                Alert::warning('Alerta', 'La fuente fue eliminada con éxito')->persistent(true);
+            }
+        }
+        return redirect()->back();
     }
 }

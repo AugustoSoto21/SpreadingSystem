@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Agencias;
 use Illuminate\Http\Request;
 use App\Models\Tarifas;
+use Alert;
 class AgenciasController extends Controller
 {
     /**

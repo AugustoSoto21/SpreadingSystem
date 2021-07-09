@@ -63,6 +63,12 @@
               <p>Agencias</p>
             </a>
           </li>
+          <li class="nav-item">
+            <a href="{!!route('fuentes.index')!!}" class="nav-link">
+              <i class="nav-icon fas fa-tachometer-alt"></i>
+              <p>Fuentes</p>
+            </a>
+          </li>
         </ul>
       </nav>
       <!-- /.sidebar-menu -->

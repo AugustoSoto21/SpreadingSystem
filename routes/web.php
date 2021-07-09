@@ -5,7 +5,7 @@ use App\Http\Controllers\EstadosController;
 use App\Http\Controllers\PartidosController;
 use App\Http\Controllers\ZonasController;
 use App\Http\Controllers\AgenciasController;
-
+use App\Http\Controllers\FuentesController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -30,3 +30,4 @@ Route::resource('/estados',EstadosController::class);
 Route::resource('/partidos',PartidosController::class);
 Route::resource('/zonas',ZonasController::class);
 Route::resource('/agencias',AgenciasController::class);
+Route::resource('/fuentes',FuentesController::class);
