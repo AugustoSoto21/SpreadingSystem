@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Agencias;
 use Illuminate\Http\Request;
-
+use App\Models\Tarifas;
 class AgenciasController extends Controller
 {
     /**
@@ -14,7 +14,9 @@ class AgenciasController extends Controller
      */
     public function index()
     {
-        //
+        $agencias=Agencias::all();
+
+        return view('agencias.index', compact('agencias'));
     }
 
     /**
@@ -35,7 +37,20 @@ class AgenciasController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $buscar=Agencias::where('nombre',$request->agencia)->count();
+        if($buscar > 0){
+            Alert::error('Error', 'El nombre de la agencia ya ha sido registrada')->persistent(true);
+        return redirect()->back();
+        }else{
+           
+            $agencia= new Agencias();
+            $agencia->nombre=$request->agencia;
+            $agencia->save();
+
+            Alert::success('Muy bien', 'Agencia registrada con éxito')->persistent(true);
+            return redirect()->back();
+           
+        }
     }
 
     /**
@@ -69,7 +84,21 @@ class AgenciasController extends Controller
      */
     public function update(Request $request, Agencias $agencias)
     {
-        //
+        $buscar=Agencias::where('nombre',$request->agencia)->where('id','<>',$request->id_agencia)->count();
+
+        if($buscar > 0){
+            Alert::error('Error', 'El nombre de la agencia ya ha sido registrada')->persistent(true);
+            return redirect()->back();
+        }else{
+            
+            $agencia=  Agencias::find($request->id_agencia);
+            $agencia->nombre=$request->agencia;
+            $agencia->save();
+
+            Alert::success('Muy bien', 'Agencia actualizada con éxito')->persistent(true);
+            return redirect()->back();
+            
+        }
     }
 
     /**
@@ -80,6 +109,17 @@ class AgenciasController extends Controller
      */
     public function destroy(Agencias $agencias)
     {
-        //
+        $buscar=Tarifas::where('id_agencia',$request->id_agencia)->count();
+        if($buscar > 0){
+            Alert::warning('Alerta', 'La Agencia que intenta eliminar se encuentra asignado a una Tarifa')->persistent(true);
+        }else{
+            $agencia=Agencias::find($request->id_agencia);
+            if($agencia->delete()){
+              Alert::warning('Alerta', 'La agencia no pudo ser eliminada')->persistent(true);  
+            }else{
+                Alert::warning('Alerta', 'La agencia fue eliminada con éxito')->persistent(true);
+            }
+        }
+        return redirect()->back();
     }
 }

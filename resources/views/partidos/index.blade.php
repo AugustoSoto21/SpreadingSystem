@@ -75,10 +75,10 @@
  --}}
                       <!--ACCIÓN DE EDITAR PRODUCTOS -->
                       @if(search_permits('Partidos','Editar todos los usuarios')=="Si")
-                        <a href="{!! route('partidos.edit', $k->id) !!}" class="btn btn-warning btn-xs" data-toggle="modal" data-target="#edit_partidos" onclick="edit_partidos('{!! $k->id !!}','{!! $k->partido !!}','{!! $k->color !!}')" data-tooltip="tooltip" data-placement="top" title="Editar partido"><i class="fa fa-pencil-alt"></i></a>
+                        <a href="{!! route('partidos.edit', $k->id) !!}" class="btn btn-warning btn-xs" data-toggle="modal" data-target="#edit_partidos" onclick="edit_partidos('{!! $k->id !!}','{!! $k->partido !!}')" data-tooltip="tooltip" data-placement="top" title="Editar partido"><i class="fa fa-pencil-alt"></i></a>
                       @elseif(search_permits('Partidos','Editar mismo usuario')=="Si")
                         @if($k->id_user == \Auth::User()->id)
-                          <a href="{!! route('partidos.edit', $k->id) !!}" class="btn btn-warning btn-xs" data-toggle="modal" data-target="#edit_partidos" onclick="edit_partidos('{!! $k->id !!}','{!! $k->partido !!}','{!! $k->color !!}')" data-tooltip="tooltip"  data-placement="top" title="Editar partido"><i class="fa fa-pencil-alt"></i></a>
+                          <a href="{!! route('partidos.edit', $k->id) !!}" class="btn btn-warning btn-xs" data-toggle="modal" data-target="#edit_partidos" onclick="edit_partidos('{!! $k->id !!}','{!! $k->partido !!}')" data-tooltip="tooltip"  data-placement="top" title="Editar partido"><i class="fa fa-pencil-alt"></i></a>
                         @endif
                       @endif
 
@@ -132,7 +132,7 @@
   
 </script>
 <script type="text/javascript">
-  function edit_partidos(id,partido, color) {
+  function edit_partidos(id,partido) {
     $('#id_partido').val(id);
     $('#partido_edit').val(partido);
   }

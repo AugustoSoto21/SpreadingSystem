@@ -6,13 +6,14 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Zonas;
 use App\Models\Pedidos;
+use App\Models\Agencias;
 class Tarifas extends Model
 {
     use HasFactory;
 
     protected $table='tarifas';
 
-    protected $fillable=['tipo','monto','id_zona'];
+    protected $fillable=['id_agencia','monto','id_zona'];
 
     public function zonas(){
 
@@ -22,5 +23,10 @@ class Tarifas extends Model
     public function pedidos(){
 
     	return $this->hasMany(Pedidos::class);
+    }
+
+    public function agencias(){
+
+    	return $this->belongsTo(Agencias::class,'id_agencia');	
     }
 }

@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\EstadosController;
 use App\Http\Controllers\PartidosController;
 use App\Http\Controllers\ZonasController;
+use App\Http\Controllers\AgenciasController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -27,3 +29,4 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 Route::resource('/estados',EstadosController::class);
 Route::resource('/partidos',PartidosController::class);
 Route::resource('/zonas',ZonasController::class);
+Route::resource('/agencias',AgenciasController::class);

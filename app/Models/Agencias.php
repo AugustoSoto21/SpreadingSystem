@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Deliverys;
+use App\Models\Tarifas;
 
 class Agencias extends Model
 {
@@ -17,5 +18,10 @@ class Agencias extends Model
     public function deliverys(){
 
     	return $this->hasMany(Deliverys::class);
+    }
+
+    public function tarifas(){
+
+    	return $this->hasMany(Tarifas::class);
     }
 }
