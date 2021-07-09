@@ -23,7 +23,7 @@
             </div>
             <div class="col-sm-5">
               <div class="form-group">
-                <input type="hidden" name="id_partido_edit" id="id_partido_edit" value="">
+                
                 <label for="id_partido">Partido <b style="color: red;">*</b></label>
                 <select name="id_partido" id="id_partido" class="form-control select2">
                   @foreach($partidos as $p)

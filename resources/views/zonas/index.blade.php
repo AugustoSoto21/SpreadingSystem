@@ -25,7 +25,7 @@
       <div class="col-12">
         <div class="card card-primary card-outline card-tabs">
           <div class="card-header">
-            <h3 class="card-title"><i class="nav-icon fa fa-shopping-basket"></i> Zonas registrados</h3>
+            <h3 class="card-title"><i class="nav-icon fa fa-shopping-basket"></i> Zonas registradas</h3>
             <div class="card-tools">
               @if(search_permits('Zonas','Imprimir PDF')=="Si" || search_permits('Zonas','Imprimir Excel')=="Si")
               <div class="btn-group">
@@ -130,14 +130,15 @@
     });
   });
   function delete_zonas(id) {
-    $('#delete_id').val(id);
+    $('#delete_id_zona').val(id);
   }
   
 </script>
 <script type="text/javascript">
-  function edit_zonas(id,zona, color) {
-    $('#id_zona').val(id);
-    $('#zona_edit').val(zona);
+  function edit_zonas(id,zona, id_partido) {
+    $('#id_zona_x').val(id);
+    $('#mi_zona_edit').val(zona);
+    $("#id_partido_edit option[value='"+ id_partido +"']").attr("selected",true);
   }
 </script>
 @endsection
