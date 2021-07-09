@@ -19,7 +19,7 @@
 <section class="content">
   <div class="container-fluid">
     @include('zonas.partials.create')
-    {{-- @include('zonas.partials.edit') --}}
+    @include('zonas.partials.edit')
     @include('zonas.partials.delete')
     <div class="row">
       <div class="col-12">
@@ -135,10 +135,9 @@
   
 </script>
 <script type="text/javascript">
-  function edit_zonas(id,zona, id_partido) {
+  function edit_zonas(id,zona, color) {
     $('#id_zona').val(id);
     $('#zona_edit').val(zona);
-    $('#id_partido_edit').val(id_partido);
   }
 </script>
 @endsection
