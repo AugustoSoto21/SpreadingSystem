@@ -21,7 +21,7 @@
                 <div class="alert alert-danger">{{ $message }}</div>
               @enderror
             </div>
-            <div class="col-sm-4">
+            <div class="col-sm-5">
               <div class="form-group">
                 <input type="hidden" name="id_partido_edit" id="id_partido_edit" value="">
                 <label for="id_partido">Partido <b style="color: red;">*</b></label>
