@@ -6,6 +6,8 @@ use App\Models\Agencias;
 use Illuminate\Http\Request;
 use App\Models\Tarifas;
 use Alert;
+use Datatables;
+
 class AgenciasController extends Controller
 {
     /**
@@ -15,9 +17,19 @@ class AgenciasController extends Controller
      */
     public function index()
     {
-        $agencias=Agencias::all();
+        if(request()->ajax()) {
+            $agencias=Agencias::all();
+            return datatables()->of($agencias)
+                ->addColumn('action', function ($row) {
+                    $edit = '<a href="javascript:void(0);" data-id="'.$row->id.'" class="btn btn-warning btn-xs" id="editAngencia"><i class="fa fa-pencil-alt"></i></a>';
+                    $delete = ' <a href="javascript:void(0);" id="delete-estado" onClick="deleteAngencia('.$row->id.')" class="delete btn btn-danger btn-xs"><i class="fa fa-trash"></i></a>';
+                    return $edit . $delete;
+                })->rawColumns(['action'])
+                ->addIndexColumn()
+                ->make(true);
+        }
 
-        return view('agencias.index', compact('agencias'));
+        return view('agencias.index');
     }
 
     /**
@@ -38,18 +50,27 @@ class AgenciasController extends Controller
      */
     public function store(Request $request)
     {
+        $message =[
+            'agencia.required' => 'El campo agencia es obligatorio',
+        ];
+        $validator = \Validator::make($request->all(), [
+            'agencia' => 'required',
+        ],$message);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()->all()]);
+        }
+
         $buscar=Agencias::where('nombre',$request->agencia)->count();
         if($buscar > 0){
-            Alert::error('Error', 'El nombre de la agencia ya ha sido registrada')->persistent(true);
-        return redirect()->back();
+            return response()->json(['message'=>"El nombre de la Agencia ya ha sido registrado.",'icono'=>'warning','titulo'=>'Alerta']);
         }else{
            
             $agencia= new Agencias();
             $agencia->nombre=$request->agencia;
             $agencia->save();
 
-            Alert::success('Muy bien', 'Agencia registrada con éxito')->persistent(true);
-            return redirect()->back();
+             return response()->json(['message'=>"Agencia ".$request->nombre." registrada con éxito",'icono'=>'success','titulo'=>'Éxito']); 
            
         }
     }
@@ -73,7 +94,8 @@ class AgenciasController extends Controller
      */
     public function edit(Agencias $agencias)
     {
-        //
+        $agencias = Agencias::where('id',$id)->first();
+        return Response()->json($agencias);
     }
 
     /**
@@ -85,19 +107,28 @@ class AgenciasController extends Controller
      */
     public function update(Request $request, Agencias $agencias)
     {
+        $message =[
+            'nombre.required' => 'El campo nombre es obligatorio',
+        ];
+        $validator = \Validator::make($request->all(), [
+            'nombre' => 'required',
+        ],$message);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()->all()]);
+        }
+
         $buscar=Agencias::where('nombre',$request->agencia)->where('id','<>',$request->id_agencia)->count();
 
         if($buscar > 0){
-            Alert::error('Error', 'El nombre de la agencia ya ha sido registrada')->persistent(true);
-            return redirect()->back();
+           return response()->json(['message'=>"El nombre de la ya ha sido registrado.",'icono'=>'warning','titulo'=>'Alerta']);
         }else{
             
             $agencia=  Agencias::find($request->id_agencia);
             $agencia->nombre=$request->agencia;
             $agencia->save();
 
-            Alert::success('Muy bien', 'Agencia actualizada con éxito')->persistent(true);
-            return redirect()->back();
+            return response()->json(['message'=>"Agencia ".$request->nombre." modificada con éxito",'icono'=>'success','titulo'=>'Éxito']); 
             
         }
     }
@@ -112,15 +143,15 @@ class AgenciasController extends Controller
     {
         $buscar=Tarifas::where('id_agencia',$request->id_agencia)->count();
         if($buscar > 0){
-            Alert::warning('Alerta', 'La Agencia que intenta eliminar se encuentra asignado a una Tarifa')->persistent(true);
+            return response()->json(['message'=>"La Agencia que intenta eliminar se encuentra asignada a una tarifa.",'icono'=>'warning','titulo'=>'Alerta']);
         }else{
             $agencia=Agencias::find($request->id_agencia);
             if($agencia->delete()){
-              Alert::warning('Alerta', 'La agencia no pudo ser eliminada')->persistent(true);  
+              return response()->json(['message'=>"La Agencia fue eliminada con éxito.",'icono'=>'success','titulo'=>'Éxito']);  
             }else{
-                Alert::warning('Alerta', 'La agencia fue eliminada con éxito')->persistent(true);
+                return response()->json(['message'=>"El estado no pudo ser eliminado.",'icono'=>'warning','titulo'=>'Alerta']);
             }
         }
-        return redirect()->back();
+        
     }
 }

@@ -20,7 +20,6 @@
   <div class="container-fluid">
     @include('agencias.partials.create')
     @include('agencias.partials.edit')
-    @include('agencias.partials.delete')
     <div class="row">
       <div class="col-12">
         <div class="card card-primary card-outline card-tabs">
@@ -42,16 +41,16 @@
               @endif
               @if(search_permits('Agencias','Registrar')=="Si")
               {{-- <a href="{!! route('agencias.create') !!}" class="btn bg-gradient-primary btn-sm pull-right" data-tooltip="tooltip" data-placement="top" title="Registrar agencia"><i class="fas fa-edit"></i> Registrar agencias</a> --}}
-
-              <a class="btn btn-info btn-xs text-white" data-toggle="modal" data-target="#create_agencias" onclick="create_agencias()" data-tooltip="tooltip" data-placement="top" title="Crear Agencias">
+              
+              <a class="btn btn-info btn-sm text-white" data-toggle="modal" data-target="#create_agencias" onclick="create_agencias()" data-tooltip="tooltip" data-placement="top" title="Crear Agencias">
                 <i class="fa fa-save"> &nbsp;Registrar</i>
               </a>
               @endif
             </div>
           </div>
-          {{-- @if(search_permits('Agencias','Ver mismo usuario')=="Si" || search_permits('Agencias','Ver todos los usuarios')=="Si" || search_permits('Agencias','Editar mismo usuario')=="Si" || search_permits('Agencias','Editar todos los usuarios')=="Si" || search_permits('Agencias','Eliminar mismo usuario')=="Si" || search_permits('Agencias','Eliminar todos los usuarios')=="Si") --}}
+          @if(search_permits('Agencias','Ver mismo usuario')=="Si" || search_permits('Agencias','Ver todos los usuarios')=="Si" || search_permits('Agencias','Editar mismo usuario')=="Si" || search_permits('Agencias','Editar todos los usuarios')=="Si" || search_permits('Agencias','Eliminar mismo usuario')=="Si" || search_permits('Agencias','Eliminar todos los usuarios')=="Si")
           <div class="card-body">
-            <table id="agencias" class="table table-bordered table-striped table-sm" style="font-size: 12px;">
+            <table id="agencias_table" class="table table-bordered table-striped table-sm" style="font-size: 12px;">
               <thead>
                 <tr>
                   <th>Agencia</th>
@@ -59,50 +58,11 @@
                 </tr>
               </thead>
               <tbody>
-                @foreach($agencias as $k)
-                  
-                  <tr >
-                    <td>{!!$k->nombre!!}</td>
-                    <td>
-                      <!--ACCIÓN DE VER PRODUCTOS -->
-                      {{-- @if(search_permits('Agencias','Ver todos los usuarios')=="Si")
-                        <a href="{!! route('agencias.show', $k->id) !!}" class="btn btn-info btn-xs" data-tooltip="tooltip" data-placement="top" title="Ver agencia"><i class="fa fa-search"></i></a>
-                      @elseif(search_permits('Agencias','Ver mismo usuario')=="Si")
-                        @if($k->id_user == \Auth::User()->id)
-                          <a href="{!! route('agencias.show', $k->id) !!}" class="btn btn-info btn-xs" data-tooltip="tooltip" data-placement="top" title="Ver agencia"><i class="fa fa-search"></i></a>
-                        @endif
-                      @endif
- --}}
-                      <!--ACCIÓN DE EDITAR PRODUCTOS -->
-                      @if(search_permits('Agencias','Editar todos los usuarios')=="Si")
-                        <a href="{!! route('agencias.edit', $k->id) !!}" class="btn btn-warning btn-xs" data-toggle="modal" data-target="#edit_agencias" onclick="edit_agencias('{!! $k->id !!}','{!! $k->nombre !!}')" data-tooltip="tooltip" data-placement="top" title="Editar agencia"><i class="fa fa-pencil-alt"></i></a>
-                      @elseif(search_permits('Agencias','Editar mismo usuario')=="Si")
-                        @if($k->id_user == \Auth::User()->id)
-                          <a href="{!! route('agencias.edit', $k->id) !!}" class="btn btn-warning btn-xs" data-toggle="modal" data-target="#edit_agencias" onclick="edit_agencias('{!! $k->id !!}','{!! $k->nombre !!}')" data-tooltip="tooltip"  data-placement="top" title="Editar agencia"><i class="fa fa-pencil-alt"></i></a>
-                        @endif
-                      @endif
-
-                      <!--ACCIÓN DE ELIMINAR PRODUCTO -->
-                      @if(search_permits('Agencias','Eliminar todos los usuarios')=="Si")
-                        <a class="btn btn-danger btn-xs text-white" data-toggle="modal" data-target="#delete_agencias" onclick="delete_agencias('{{$k->id}}')" data-tooltip="tooltip" data-placement="top" title="Eliminar agencia">
-                          <i class="fa fa-trash"></i>
-                        </a>
-                      @elseif(search_permits('Agencias','Eliminar mismo usuario')=="Si")
-                        @if($k->id_user == \Auth::User()->id)
-                          <a class="btn btn-danger btn-xs text-white" data-toggle="modal" data-target="#delete_agencias" onclick="delete_agencias('{{$k->id}}')" data-tooltip="tooltip" data-placement="top" title="Eliminar agencia">
-                          <i class="fa fa-trash"></i>
-                        </a>
-                        @endif
-                      @endif
-                      
-                    </td>
-                  </tr>
-                  
-                @endforeach
+                
               </tbody>
             </table>
           </div>
-          {{-- @else
+          @else
           <div class="row">
             <div class="col-12">                          
               <div class="alert alert-danger alert-dismissible text-center">
@@ -111,7 +71,7 @@
               </div>
             </div>
           </div>
-          @endif --}}
+          @endif
         </div>
       </div>
     </div>
@@ -120,21 +80,104 @@
 @endsection
 @section('scripts')
 <script>
-  $(function () {
-    $("#agencias").DataTable({
-      "responsive": true,
-      "autoWidth": false,
-    });
+$(document).ready( function () {
+  $.ajaxSetup({
+    headers: {
+      'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    }
   });
-  function delete_agencias(id) {
-    $('#delete_id').val(id);
-  }
-  
+  $('#agencias_table').DataTable({
+    processing: true,
+    serverSide: true,
+    ajax: {
+      url:"{{ url('agencias') }}"
+   },
+    columns: [
+      { data: 'agencia', name: 'nombre' },
+      {data: 'action', name: 'action', orderable: false},
+    ],
+    order: [[0, 'desc']]
+  });
+});
+//--CODIGO PARA EDITAR AGENCIA ---------------------//
+$('body').on('click', '#editAgencia', function () {
+  var id = $(this).data('id');
+  $.ajax({
+    method:"GET",
+    url: "agencias/"+id+"/edit",
+    dataType: 'json',
+    success: function(data){
+      $('#edit_agencias').modal({backdrop: 'static', keyboard: true, show: true});
+      $('.alert-danger').hide();
+      $('#id_agencia_edit').val(data.id);
+      $('#agencia_edit').val(data.nombre);
+    }
+  });
+});
+//--CODIGO PARA UPDATE ESTADO ---------------------//
+$('#SubmitEditAgencia').click(function(e) {
+  e.preventDefault();
+  var id = $('#id_agencia_edit').val();
+  $.ajax({
+    method:'PUT',
+    url: "agencias/"+id+"",
+    data: {
+      id_agencia: $('#id_agencia_edit').val(),
+      agencia: $('#agencia_edit').val()
+    },
+    success: (data) => {
+      if(data.errors) {
+        $('.alert-danger').html('');
+        $.each(data.errors, function(key, value) {
+          $('.alert-danger').show();
+          $('.alert-danger').append('<strong><li>'+value+'</li></strong>');
+        });
+      } else {
+        var oTable = $('#agencias_table').dataTable();
+        oTable.fnDraw(false);
+        Swal.fire ( data.titulo ,  data.message ,  data.icono );
+        if (data.icono=="success") {
+          $("#edit_agencias").modal('hide');
+        }
+      }
+    },
+    error: function(data){
+      console.log(data);
+    }
+  });
+});
+//--CODIGO PARA ELIMINAR ESTADO ---------------------//
+function deleteAgencia(id){
+  var id = id;
+  Swal.fire({
+    title: '¿Estás seguro que desea eliminar a esta agencia?',
+    text: "¡Esta opción no podrá deshacerse en el futuro!",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: '¡Si, Eliminar!',
+    cancelButtonText: 'No, Cancelar!'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      // ajax
+      $.ajax({
+        type:"DELETE",
+        url: "agencias/"+id+"",
+        data: { id: id },
+        dataType: 'json',
+        success: function(response){
+          Swal.fire ( response.titulo ,  response.message ,  response.icono );
+          var oTable = $('#agenciass_table').dataTable();
+          oTable.fnDraw(false);
+        },
+        error: function (data) {
+          Swal.fire({title: "Error del servidor", text:  "Agencia no eliminado", icon:  "error"});
+        }
+      });
+    }
+  })
+}
 </script>
-<script type="text/javascript">
-  function edit_agencias(id,agencia) {
-    $('#id_agencia').val(id);
-    $('#agencia_edit').val(agencia);
-  }
-</script>
+
 @endsection
