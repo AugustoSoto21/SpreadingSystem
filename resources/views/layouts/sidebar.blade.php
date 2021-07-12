@@ -69,6 +69,12 @@
               <p>Fuentes</p>
             </a>
           </li>
+          <li class="nav-item">
+            <a href="{!!route('deliverys.index')!!}" class="nav-link">
+              <i class="nav-icon fas fa-tachometer-alt"></i>
+              <p>Deliverys</p>
+            </a>
+          </li>
         </ul>
       </nav>
       <!-- /.sidebar-menu -->

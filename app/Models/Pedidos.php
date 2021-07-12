@@ -17,7 +17,7 @@ class Pedidos extends Model
 
     protected $table='pedidos';
 
-    protected $fillable=['fecha','id_cliente','id_tarifa','link','envio_gratis','monto_envio','id_fuente','id_recepcionista','id_estado','observacion','id_agencia','status_deposito'];
+    protected $fillable=['fecha','id_cliente','id_tarifa','link','envio_gratis','monto_envio','id_fuente','id_recepcionista','id_estado','observacion','id_delivery','status_deposito'];
 
     public function clientes(){
 

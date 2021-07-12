@@ -49,7 +49,7 @@ class ZonasController extends Controller
             
                 $zona= new Zonas();
                 $zona->zona=$request->zona;
-                $zona->id_partido_edit=$request->id_partido;
+                $zona->id_partido=$request->id_partido;
                 $zona->save();
 
                 Alert::success('Muy bien', 'Zona registrada con éxito')->persistent(true);
