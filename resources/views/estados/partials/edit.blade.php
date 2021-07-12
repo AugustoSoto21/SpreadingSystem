@@ -7,37 +7,34 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <form action="{{ route('estados.update',1) }}" method="POST" data-parsley-validate>
-        @csrf
-        @method('PUT')
+      <form action="#" method="POST" data-parsley-validate>
         <div class="modal-body">
+          <div class="alert alert-danger alert-dismissible fade show" role="alert" style="display: none;">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
           <p align="center"><small>Todos los campos <b style="color: red;">*</b> son requeridos.</small></p>
-          <input type="hidden" name="id_estado" value="" id="id_estado" placeholder="">
+          <input type="hidden" name="id_estado" id="id_estado_edit" placeholder="">
           <div class="row">
             <div class="col-sm-4">
               <div class="form-group">
-                <label for="estado">Estado <b style="color: red;">*</b></label>
+                <label for="estado_edit">Estado <b style="color: red;">*</b></label>
                 <input type="text" name="estado" id="estado_edit" class="form-control" required="required" placeholder="Ingrese el nombre del estado" onkeyup="this.value = this.value.toUpperCase();">
               </div>
-              @error('estado')
-                <div class="alert alert-danger">{{ $message }}</div>
-              @enderror
             </div>
             <div class="col-sm-4">
               <div class="form-group">
-                <label for="color">Color <b style="color: red;">*</b></label>
+                <label for="color_edit">Color <b style="color: red;">*</b></label>
                 <input type="color" name="color" id="color_edit" class="form-control" required="required" placeholder="Ingrese el color">
               </div>
-              @error('color')
-                <div class="alert alert-danger">{{ $message }}</div>
-              @enderror
             </div>
           </div>
 
         </div>
         <div class="modal-footer justify-content-between">
           <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i> Cerrar</button>
-          <button type="submit" class="btn btn-info"><i class="fa fa-save"></i> Guardar</button>
+          <button type="submit" class="btn btn-info" id="SubmitEditEstado"><i class="fa fa-save"></i> Guardar</button>
         </div>
       </form>
     </div>

@@ -20,7 +20,6 @@
   <div class="container-fluid">
     @include('estados.partials.create')
     @include('estados.partials.edit')
-    @include('estados.partials.delete')
     <div class="row">
       <div class="col-12">
         <div class="card card-primary card-outline card-tabs">
@@ -43,7 +42,7 @@
               @if(search_permits('Estados','Registrar')=="Si")
               {{-- <a href="{!! route('estados.create') !!}" class="btn bg-gradient-primary btn-sm pull-right" data-tooltip="tooltip" data-placement="top" title="Registrar estado"><i class="fas fa-edit"></i> Registrar estados</a> --}}
 
-              <a class="btn btn-info btn-xs text-white" data-toggle="modal" data-target="#create_estados" onclick="create_estados()" data-tooltip="tooltip" data-placement="top" title="Crear Estados">
+              <a class="btn btn-info btn-sm text-white" data-toggle="modal" data-target="#create_estados" onclick="create_estados()" data-tooltip="tooltip" data-placement="top" title="Crear Estados">
                 <i class="fa fa-save"> &nbsp;Registrar</i>
               </a>
               @endif
@@ -51,7 +50,7 @@
           </div>
           @if(search_permits('Estados','Ver mismo usuario')=="Si" || search_permits('Estados','Ver todos los usuarios')=="Si" || search_permits('Estados','Editar mismo usuario')=="Si" || search_permits('Estados','Editar todos los usuarios')=="Si" || search_permits('Estados','Eliminar mismo usuario')=="Si" || search_permits('Estados','Eliminar todos los usuarios')=="Si")
           <div class="card-body">
-            <table id="estados" class="table table-bordered table-striped table-sm" style="font-size: 12px;">
+            <table id="estados_table" class="table table-bordered table-striped table-sm" style="font-size: 12px;">
               <thead>
                 <tr>
                   <th>Estado</th>
@@ -59,49 +58,7 @@
                   <th>Acciones</th>
                 </tr>
               </thead>
-              <tbody>
-                @foreach($estados as $k)
-                  
-                  <tr >
-                    <td>{!!$k->estado!!}</td>
-                    <td bgcolor="{!!$k->color!!}">{!!$k->color!!}</td>
-                    
-                    <td>
-                      <!--ACCIÓN DE VER PRODUCTOS -->
-                      {{-- @if(search_permits('Estados','Ver todos los usuarios')=="Si")
-                        <a href="{!! route('estados.show', $k->id) !!}" class="btn btn-info btn-xs" data-tooltip="tooltip" data-placement="top" title="Ver estado"><i class="fa fa-search"></i></a>
-                      @elseif(search_permits('Estados','Ver mismo usuario')=="Si")
-                        @if($k->id_user == \Auth::User()->id)
-                          <a href="{!! route('estados.show', $k->id) !!}" class="btn btn-info btn-xs" data-tooltip="tooltip" data-placement="top" title="Ver estado"><i class="fa fa-search"></i></a>
-                        @endif
-                      @endif
- --}}
-                      <!--ACCIÓN DE EDITAR PRODUCTOS -->
-                      @if(search_permits('Estados','Editar todos los usuarios')=="Si")
-                        <a href="{!! route('estados.edit', $k->id) !!}" class="btn btn-warning btn-xs" data-toggle="modal" data-target="#edit_estados" onclick="edit_estados('{!! $k->id !!}','{!! $k->estado !!}','{!! $k->color !!}')" data-tooltip="tooltip" data-placement="top" title="Editar estado"><i class="fa fa-pencil-alt"></i></a>
-                      @elseif(search_permits('Estados','Editar mismo usuario')=="Si")
-                        @if($k->id_user == \Auth::User()->id)
-                          <a href="{!! route('estados.edit', $k->id) !!}" class="btn btn-warning btn-xs" data-toggle="modal" data-target="#edit_estados" onclick="edit_estados('{!! $k->id !!}','{!! $k->estado !!}','{!! $k->color !!}')" data-tooltip="tooltip"  data-placement="top" title="Editar estado"><i class="fa fa-pencil-alt"></i></a>
-                        @endif
-                      @endif
-
-                      <!--ACCIÓN DE ELIMINAR PRODUCTO -->
-                      @if(search_permits('Estados','Eliminar todos los usuarios')=="Si")
-                        <a class="btn btn-danger btn-xs text-white" data-toggle="modal" data-target="#delete_estados" onclick="delete_estados('{{$k->id}}')" data-tooltip="tooltip" data-placement="top" title="Eliminar estado">
-                          <i class="fa fa-trash"></i>
-                        </a>
-                      @elseif(search_permits('Estados','Eliminar mismo usuario')=="Si")
-                        @if($k->id_user == \Auth::User()->id)
-                          <a class="btn btn-danger btn-xs text-white" data-toggle="modal" data-target="#delete_estados" onclick="delete_estados('{{$k->id}}')" data-tooltip="tooltip" data-placement="top" title="Eliminar estado">
-                          <i class="fa fa-trash"></i>
-                        </a>
-                        @endif
-                      @endif
-                      
-                    </td>
-                  </tr>
-                  
-                @endforeach
+              <tbody>                
               </tbody>
             </table>
           </div>
@@ -123,22 +80,108 @@
 @endsection
 @section('scripts')
 <script>
-  $(function () {
-    $("#estados").DataTable({
-      "responsive": true,
-      "autoWidth": false,
-    });
+$(document).ready( function () {
+  $.ajaxSetup({
+    headers: {
+      'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    }
   });
-  function delete_estados(id) {
-    $('#delete_id').val(id);
-  }
-  
+  $('#estados_table').DataTable({
+    processing: true,
+    serverSide: true,
+    ajax: {
+      url:"{{ url('estados') }}"
+   },
+    columns: [
+      { data: 'estado', name: 'estado' },
+      { data: 'color', name: 'color' },
+      {data: 'action', name: 'action', orderable: false},
+    ],
+    order: [[0, 'desc']]
+  });
+});
+
+//--CODIGO PARA EDITAR ESTADO ---------------------//
+$('body').on('click', '#editEstado', function () {
+  var id = $(this).data('id');
+  $.ajax({
+    method:"GET",
+    url: "estados/"+id+"/edit",
+    dataType: 'json',
+    success: function(data){
+      $('#edit_estados').modal({backdrop: 'static', keyboard: true, show: true});
+      $('.alert-danger').hide();
+      $('#id_estado_edit').val(data.id);
+      $('#estado_edit').val(data.estado);
+      $('#color_edit').val(data.color);
+    }
+  });
+});
+//--CODIGO PARA UPDATE ESTADO ---------------------//
+$('#SubmitEditEstado').click(function(e) {
+  e.preventDefault();
+  var id = $('#id_estado_edit').val();
+  $.ajax({
+    method:'PUT',
+    url: "estados/"+id+"",
+    data: {
+      id_estado: $('#id_estado_edit').val(),
+      estado: $('#estado_edit').val(),
+      color: $('#color_edit').val()
+    },
+    success: (data) => {
+      if(data.errors) {
+        $('.alert-danger').html('');
+        $.each(data.errors, function(key, value) {
+          $('.alert-danger').show();
+          $('.alert-danger').append('<strong><li>'+value+'</li></strong>');
+        });
+      } else {
+        var oTable = $('#estados_table').dataTable();
+        oTable.fnDraw(false);
+        Swal.fire ( data.titulo ,  data.message ,  data.icono );
+        if (data.icono=="success") {
+          $("#edit_estados").modal('hide');
+        }
+      }
+    },
+    error: function(data){
+      console.log(data);
+    }
+  });
+});
+//--CODIGO PARA ELIMINAR ESTADO ---------------------//
+function deleteEstado(id){
+  var id = id;
+  Swal.fire({
+    title: '¿Estás seguro que desea eliminar a este estado?',
+    text: "¡Esta opción no podrá deshacerse en el futuro!",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: '¡Si, Eliminar!',
+    cancelButtonText: 'No, Cancelar!'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      // ajax
+      $.ajax({
+        type:"DELETE",
+        url: "estados/"+id+"",
+        data: { id: id },
+        dataType: 'json',
+        success: function(response){
+          Swal.fire ( response.titulo ,  response.message ,  response.icono );
+          var oTable = $('#estados_table').dataTable();
+          oTable.fnDraw(false);
+        },
+        error: function (data) {
+          Swal.fire({title: "Error del servidor", text:  "Estado no eliminado", icon:  "error"});
+        }
+      });
+    }
+  })
+}
 </script>
-<script type="text/javascript">
-  function edit_estados(id,estado, color) {
-    $('#id_estado').val(id);
-    $('#estado_edit').val(estado);
-    $('#color_edit').val(color);
-  }
-</script>
+<script src="{{ asset('js/sweetalert2.min.js') }}"></script>
 @endsection

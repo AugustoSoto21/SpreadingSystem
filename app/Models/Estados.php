@@ -12,7 +12,7 @@ class Estados extends Model
 
     protected $table='estados';
 
-    protected $fillable=['estado'];
+    protected $fillable=['estado','color'];
 
     public function pedidos(){
 

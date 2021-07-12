@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Estados;
 use Illuminate\Http\Request;
-use Alert;
 use App\Models\Pedidos;
+use Alert;
+use Datatables;
+
 class EstadosController extends Controller
 {
     /**
@@ -15,9 +17,18 @@ class EstadosController extends Controller
      */
     public function index()
     {
-        $estados=Estados::all();
-
-        return view('estados.index',compact('estados'));
+        if(request()->ajax()) {
+            $estados=Estados::all();
+            return datatables()->of($estados)
+                ->addColumn('action', function ($row) {
+                    $edit = '<a href="javascript:void(0);" data-id="'.$row->id.'" class="btn btn-warning btn-xs" id="editEstado"><i class="fa fa-pencil-alt"></i></a>';
+                    $delete = ' <a href="javascript:void(0);" id="delete-estado" onClick="deleteEstado('.$row->id.')" class="delete btn btn-danger btn-xs"><i class="fa fa-trash"></i></a>';
+                    return $edit . $delete;
+                })->rawColumns(['action'])
+                ->addIndexColumn()
+                ->make(true);
+        }
+        return view('estados.index');
     }
 
     /**
@@ -77,9 +88,10 @@ class EstadosController extends Controller
      * @param  \App\Models\Estados  $estados
      * @return \Illuminate\Http\Response
      */
-    public function edit(Estados $estados)
+    public function edit($id)
     {
-        //
+        $estados = Estados::where('id',$id)->first();
+        return Response()->json($estados);
     }
 
     /**
@@ -91,25 +103,32 @@ class EstadosController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //dd($request->all());
+        $message =[
+            'estado.required' => 'El campo estado es obligatorio',
+            'color.required' => 'El campo color es obligatorio',
+        ];
+        $validator = \Validator::make($request->all(), [
+            'estado' => 'required',
+            'color' => 'required',
+        ],$message);
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()->all()]);
+        }
         $buscar=Estados::where('estado',$request->estado)->where('id','<>',$request->id_estado)->count();
 
         if($buscar > 0){
-            Alert::error('Error', 'El nombre del estado ya ha sido registrado')->persistent(true);
-        return redirect()->back();
+            return response()->json(['message'=>"El nombre del estado ya ha sido registrado.",'icono'=>'warning','titulo'=>'Alerta']);
         }else{
             $buscar=Estados::where('color',$request->color)->where('id','<>',$request->id_estado)->count();
             if($buscar > 0 ){
-                Alert::error('Error', 'El color del estado ya ha sido registrado')->persistent(true);
-                return redirect()->back();
+                return response()->json(['message'=>"El color del estado ya ha sido registrado.",'icono'=>'warning','titulo'=>'Alerta']);
             }else{
                 $estado=  Estados::find($request->id_estado);
                 $estado->estado=$request->estado;
                 $estado->color=$request->color;
                 $estado->save();
 
-                Alert::success('Muy bien', 'Estado actualizado con éxito')->persistent(true);
-                return redirect()->back();
+                return response()->json(['message'=>"Estado ".$request->estado." modificado con éxito",'icono'=>'success','titulo'=>'Éxito']);     
             }
         }
     }
@@ -120,19 +139,18 @@ class EstadosController extends Controller
      * @param  \App\Models\Estados  $estados
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request)
+    public function destroy($id)
     {
-        $buscar=Pedidos::where('id_estado',$request->id_estado)->count();
+        $buscar=Pedidos::where('id_estado',$id)->count();
         if($buscar > 0){
-            Alert::warning('Alerta', 'El estado que intenta eliminar se encuentra asignado a un pedido')->persistent(true);
+            return response()->json(['message'=>"El estado que intenta eliminar se encuentra asignado a un pedido.",'icono'=>'warning','titulo'=>'Alerta']);
         }else{
-            $estado=Estados::find($request->id_estado);
+            $estado=Estados::find($id);
             if($estado->delete()){
-              Alert::warning('Alerta', 'El estado no pudo ser eliminado')->persistent(true);  
+                return response()->json(['message'=>"El estado fue eliminado con éxito.",'icono'=>'success','titulo'=>'Éxito']);
             }else{
-                Alert::warning('Alerta', 'El estado fue eliminado con éxito')->persistent(true);
+                return response()->json(['message'=>"El estado no pudo ser eliminado.",'icono'=>'warning','titulo'=>'Alerta']);
             }
         }
-        return redirect()->back();
     }
 }
