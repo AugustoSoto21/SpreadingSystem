@@ -100,13 +100,13 @@ $(document).ready( function () {
   });
 });
 
-//--CODIGO PARA CREAR PBX (LEVANTAR EL MODAL) ---------------------//
+//--CODIGO PARA CREAR AGENCIAS (LEVANTAR EL MODAL) ---------------------//
 $('#createNewAgencia').click(function () {
   $('#agenciaForm').trigger("reset");
   $('#create_agencias').modal({backdrop: 'static', keyboard: true, show: true});
   $('.alert-danger').hide();
 });
-//--CODIGO PARA CREAR PBX (GUARDAR REGISTRO) ---------------------//
+//--CODIGO PARA CREAR AGENCIAS (GUARDAR REGISTRO) ---------------------//
 $('#SubmitCreateAgencia').click(function(e) {
   e.preventDefault();
   $.ajaxSetup({

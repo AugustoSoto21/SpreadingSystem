@@ -42,7 +42,7 @@
               @if(search_permits('Estados','Registrar')=="Si")
               {{-- <a href="{!! route('estados.create') !!}" class="btn bg-gradient-primary btn-sm pull-right" data-tooltip="tooltip" data-placement="top" title="Registrar estado"><i class="fas fa-edit"></i> Registrar estados</a> --}}
 
-              <a class="btn btn-info btn-sm text-white" data-toggle="modal" data-target="#create_estados" onclick="create_estados()" data-tooltip="tooltip" data-placement="top" title="Crear Estados">
+              <a class="btn btn-info btn-sm text-white" data-toggle="modal" data-target="#create_estados" onclick="create_estados()" data-tooltip="tooltip" data-placement="top" title="Crear Estados" id="createNewEstado">
                 <i class="fa fa-save"> &nbsp;Registrar</i>
               </a>
               @endif
@@ -98,6 +98,46 @@ $(document).ready( function () {
       {data: 'action', name: 'action', orderable: false},
     ],
     order: [[0, 'desc']]
+  });
+});
+//--CODIGO PARA CREAR ESTADOS (LEVANTAR EL MODAL) ---------------------//
+$('#createNewEstado').click(function () {
+  $('#estadoForm').trigger("reset");
+  $('#create_estados').modal({backdrop: 'static', keyboard: true, show: true});
+  $('.alert-danger').hide();
+});
+//--CODIGO PARA CREAR ESTADOS (GUARDAR REGISTRO) ---------------------//
+$('#SubmitCreateEstado').click(function(e) {
+  e.preventDefault();
+  $.ajaxSetup({
+    headers: {
+      'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    }
+  });
+  $.ajax({
+    url: "{{ route('estados.store') }}",
+    method: 'post',
+    data: {
+      estado: $('#estado').val(),
+      color: $('#color').val(),
+    },
+    success: function(result) {
+      if(result.errors) {
+        $('.alert-danger').html('');
+        $.each(result.errors, function(key, value) {
+          $('.alert-danger').show();
+          $('.alert-danger').append('<strong><li>'+value+'</li></strong>');
+        });
+      } else {
+        $('.alert-danger').hide();
+        var oTable = $('#estados_table').dataTable();
+        oTable.fnDraw(false);
+        Swal.fire ( result.titulo ,  result.message ,  result.icono );
+        if (result.icono=="success") {
+          $("#create_estados").modal('hide');
+        }
+      }
+    }
   });
 });
 

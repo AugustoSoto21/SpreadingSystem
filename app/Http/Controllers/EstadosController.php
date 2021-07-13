@@ -50,23 +50,32 @@ class EstadosController extends Controller
     public function store(Request $request)
     {
         //dd($request->all());
+        $message =[
+            'estado.required' => 'El campo estado es obligatorio',
+            'color.required' => 'El campo color es obligatorio',
+        ];
+        $validator = \Validator::make($request->all(), [
+            'estado' => 'required',
+            'color' => 'required',
+        ],$message);
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()->all()]);
+        }
+
         $buscar=Estados::where('estado',$request->estado)->count();
         if($buscar > 0){
-            Alert::error('Error', 'El nombre del estado ya ha sido registrado')->persistent(true);
-        return redirect()->back();
+            return response()->json(['message'=>"El nombre del estado ya ha sido registrado.",'icono'=>'warning','titulo'=>'Alerta']);
         }else{
             $buscar=Estados::where('color',$request->color)->count();
             if($buscar > 0 ){
-                Alert::error('Error', 'El color del estado ya ha sido registrado')->persistent(true);
-                return redirect()->back();
+                return response()->json(['message'=>"El color del estado ya ha sido registrado.",'icono'=>'warning','titulo'=>'Alerta']);
             }else{
                 $estado= new Estados();
                 $estado->estado=$request->estado;
                 $estado->color=$request->color;
                 $estado->save();
 
-                Alert::success('Muy bien', 'Estado registrado con éxito')->persistent(true);
-                return redirect()->back();
+                 return response()->json(['message'=>"Estado ".$request->estado." registrado con éxito",'icono'=>'success','titulo'=>'Éxito']);  
             }
         }
     }

@@ -7,9 +7,8 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <form action="{{ route('clientes.update',1) }}" method="POST" data-parsley-validate>
-        @csrf
-        @method('PUT')
+      <form action="#" method="POST" data-parsley-validate>
+        
         <div class="modal-body">
            <p align="center"><small>Todos los campos <b style="color: red;">*</b> son requeridos.</small></p>
            <input type="hidden" name="id_cliente_x" value="" id="id_cliente_x" placeholder="" />
@@ -66,7 +65,7 @@
           </div>
         <div class="modal-footer justify-content-between">
           <button type="button" class="btn btn-default" data-dismiss="modal"> <i class="fa fa-times"></i>Cerrar</button>
-          <button type="submit" class="btn btn-info"><i class="fa fa-save"></i>Guardar</button>
+          <button type="submit" id="SubmitEditCliente" class="btn btn-info"><i class="fa fa-save"></i>Guardar</button>
         </div>
         </div>
       </form> 

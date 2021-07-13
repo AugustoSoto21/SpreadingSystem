@@ -20,7 +20,6 @@
   <div class="container-fluid">
     @include('clientes.partials.create')
     @include('clientes.partials.edit')
-    @include('clientes.partials.delete')
     <div class="row">
       <div class="col-12">
         <div class="card card-primary card-outline card-tabs">
@@ -51,7 +50,7 @@
           </div>
           @if(search_permits('Clientes','Ver mismo usuario')=="Si" || search_permits('Clientes','Ver todos los usuarios')=="Si" || search_permits('Clientes','Editar mismo usuario')=="Si" || search_permits('Clientes','Editar todos los usuarios')=="Si" || search_permits('Clientes','Eliminar mismo usuario')=="Si" || search_permits('Clientes','Eliminar todos los usuarios')=="Si")
           <div class="card-body">
-            <table id="clientes" class="table table-bordered table-striped table-sm" style="font-size: 12px;">
+            <table id="clientes_table" class="table table-bordered table-striped table-sm" style="font-size: 12px;">
               <thead>
                 <tr>
                   <th>Nombres</th>
@@ -63,50 +62,7 @@
                 </tr>
               </thead>
               <tbody>
-                @foreach($clientes as $k)
-                  
-                  <tr >
-                    <td>{!!$k->nombres!!}</td>
-                    <td>{!!$k->apellidos!!}</td>
-                    <td>{!!$k->celular!!}</td>
-                    <td>{!!$k->direccion!!}</td>
-                    <td>{!!$k->localidad!!}</td>
-                    <td>
-                      <!--ACCIÓN DE VER PRODUCTOS -->
-                      {{-- @if(search_permits('Clientes','Ver todos los usuarios')=="Si")
-                        <a href="{!! route('clientes.show', $k->id) !!}" class="btn btn-info btn-xs" data-tooltip="tooltip" data-placement="top" title="Ver cliente"><i class="fa fa-search"></i></a>
-                      @elseif(search_permits('Clientes','Ver mismo usuario')=="Si")
-                        @if($k->id_user == \Auth::User()->id)
-                          <a href="{!! route('clientes.show', $k->id) !!}" class="btn btn-info btn-xs" data-tooltip="tooltip" data-placement="top" title="Ver cliente"><i class="fa fa-search"></i></a>
-                        @endif
-                      @endif
- --}}
-                      <!--ACCIÓN DE EDITAR PRODUCTOS -->
-                      @if(search_permits('Clientes','Editar todos los usuarios')=="Si")
-                        <a href="{!! route('clientes.edit', $k->id) !!}" class="btn btn-warning btn-xs" data-toggle="modal" data-target="#edit_clientes" onclick="edit_clientes('{!! $k->id !!}','{!! $k->nombres !!}','{!! $k->apellidos !!}','{!! $k->celular !!}','{!! $k->direccion !!}','{!! $k->localidad !!}')" data-tooltip="tooltip" data-placement="top" title="Editar cliente"><i class="fa fa-pencil-alt"></i></a>
-                      @elseif(search_permits('Clientes','Editar mismo usuario')=="Si")
-                        @if($k->id_user == \Auth::User()->id)
-                          <a href="{!! route('clientes.edit', $k->id) !!}" class="btn btn-warning btn-xs" data-toggle="modal" data-target="#edit_clientes" onclick="edit_clientes('{!! $k->id !!}','{!! $k->nombres !!}','{!! $k->apellidos !!}','{!! $k->celular !!}','{!! $k->direccion !!}','{!! $k->localidad !!}')" data-tooltip="tooltip"  data-placement="top" title="Editar cliente"><i class="fa fa-pencil-alt"></i></a>
-                        @endif
-                      @endif
-
-                      <!--ACCIÓN DE ELIMINAR PRODUCTO -->
-                      @if(search_permits('Clientes','Eliminar todos los usuarios')=="Si")
-                        <a class="btn btn-danger btn-xs text-white" data-toggle="modal" data-target="#delete_clientes" onclick="delete_clientes('{{$k->id}}')" data-tooltip="tooltip" data-placement="top" title="Eliminar cliente">
-                          <i class="fa fa-trash"></i>
-                        </a>
-                      @elseif(search_permits('Clientes','Eliminar mismo usuario')=="Si")
-                        @if($k->id_user == \Auth::User()->id)
-                          <a class="btn btn-danger btn-xs text-white" data-toggle="modal" data-target="#delete_clientes" onclick="delete_clientes('{{$k->id}}')" data-tooltip="tooltip" data-placement="top" title="Eliminar cliente">
-                          <i class="fa fa-trash"></i>
-                        </a>
-                        @endif
-                      @endif
-                      
-                    </td>
-                  </tr>
-                  
-                @endforeach
+                
               </tbody>
             </table>
           </div>
@@ -128,25 +84,157 @@
 @endsection
 @section('scripts')
 <script>
-  $(function () {
-    $("#clientes").DataTable({
-      "responsive": true,
-      "autoWidth": false,
-    });
+$(document).ready( function () {
+  $.ajaxSetup({
+    headers: {
+      'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    }
   });
-  function delete_clientes(id) {
-    $('#delete_id').val(id);
-  }
-  
-</script>
-<script type="text/javascript">
-  function edit_clientes(id,nombres,apellidos,celular,direccion,localidad) {
-    $('#id_cliente_x').val(id);
-    $('#nombres_edit').val(nombres);
-    $('#apellidos_edit').val(apellidos);
-    $('#celular_edit').val(celular);
-    $('#direccion_edit').val(direccion);
-    $('#localidad_edit').val(localidad);
-  }
+  $('#clientes_table').DataTable({
+    processing: true,
+    serverSide: true,
+    ajax: {
+      url:"{{ url('clientes') }}"
+   },
+    columns: [
+      { data: 'nombres', name: 'nombres' },
+      { data: 'apellidos', name: 'apellidos' },
+      { data: 'celular', name: 'celular' },
+      { data: 'direccion', name: 'direccion' },
+      { data: 'localidad', name: 'localidad' },
+      {data: 'action', name: 'action', orderable: false},
+    ],
+    order: [[0, 'desc']]
+  });
+});
+
+//--CODIGO PARA CREAR PBX (LEVANTAR EL MODAL) ---------------------//
+$('#createNewCliente').click(function () {
+  $('#clienteForm').trigger("reset");
+  $('#create_clientes').modal({backdrop: 'static', keyboard: true, show: true});
+  $('.alert-danger').hide();
+});
+//--CODIGO PARA CREAR PBX (GUARDAR REGISTRO) ---------------------//
+$('#SubmitCreateCliente').click(function(e) {
+  e.preventDefault();
+  $.ajaxSetup({
+    headers: {
+      'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    }
+  });
+  $.ajax({
+    url: "{{ route('clientes.store') }}",
+    method: 'post',
+    data: {
+      nombre: $('#nombre').val(),
+    },
+    success: function(result) {
+      if(result.errors) {
+        $('.alert-danger').html('');
+        $.each(result.errors, function(key, value) {
+          $('.alert-danger').show();
+          $('.alert-danger').append('<strong><li>'+value+'</li></strong>');
+        });
+      } else {
+        $('.alert-danger').hide();
+        var oTable = $('#clientes_table').dataTable();
+        oTable.fnDraw(false);
+        Swal.fire ( result.titulo ,  result.message ,  result.icono );
+        if (result.icono=="success") {
+          $("#create_clientes").modal('hide');
+        }
+      }
+    }
+  });
+});
+
+//--CODIGO PARA EDITAR AGENCIA ---------------------//
+$('body').on('click', '#editCliente', function () {
+  var id = $(this).data('id');
+  $.ajax({
+    method:"GET",
+    url: "clientes/"+id+"/edit",
+    dataType: 'json',
+    success: function(data){
+      $('#edit_clientes').modal({backdrop: 'static', keyboard: true, show: true});
+      $('.alert-danger').hide();
+      $('#id_cliente_edit').val(data.id);
+      $('#nombres_edit').val(data.nombres);
+      $('#apellidos_edit').val(data.apellidos);
+      $('#celular_edit').val(data.celular);
+      $('#direccion_edit').val(data.direccion);
+      $('#localidad_edit').val(data.localidad);
+    }
+  });
+});
+//--CODIGO PARA UPDATE ESTADO ---------------------//
+$('#SubmitEditCliente').click(function(e) {
+  e.preventDefault();
+  var id = $('#id_cliente_edit').val();
+  $.ajax({
+    method:'PUT',
+    url: "clientes/"+id+"",
+    data: {
+      id_cliente: $('#id_cliente_edit').val(),
+      nombres: $('#nombres_edit').val(),
+      apellidos: $('#apellidos_edit').val(),
+      celular: $('#celular_edit').val(),
+      direccion: $('#direccion_edit').val(),
+      localidad: $('#localidad_edit').val()
+    },
+    success: (data) => {
+      if(data.errors) {
+        $('.alert-danger').html('');
+        $.each(data.errors, function(key, value) {
+          $('.alert-danger').show();
+          $('.alert-danger').append('<strong><li>'+value+'</li></strong>');
+        });
+      } else {
+        var oTable = $('#clientes_table').dataTable();
+        oTable.fnDraw(false);
+        Swal.fire ( data.titulo ,  data.message ,  data.icono );
+        if (data.icono=="success") {
+          $("#edit_clientes").modal('hide');
+        }
+      }
+    },
+    error: function(data){
+      console.log(data);
+    }
+  });
+});
+//--CODIGO PARA ELIMINAR ESTADO ---------------------//
+function deleteCliente(id){
+  var id = id;
+  Swal.fire({
+    title: '¿Estás seguro que desea eliminar a esta cliente?',
+    text: "¡Esta opción no podrá deshacerse en el futuro!",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: '¡Si, Eliminar!',
+    cancelButtonText: 'No, Cancelar!'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      // ajax
+      $.ajax({
+        type:"DELETE",
+        url: "clientes/"+id+"",
+        data: { id: id },
+        dataType: 'json',
+        success: function(response){
+          Swal.fire ( response.titulo ,  response.message ,  response.icono );
+          var oTable = $('#clientes_table').dataTable();
+          oTable.fnDraw(false);
+        },
+        error: function (data) {
+          Swal.fire({title: "Error del servidor", text:  "Cliente no eliminado", icon:  "error"});
+        }
+      });
+    }
+  })
+}
+ 
 </script>
 @endsection
