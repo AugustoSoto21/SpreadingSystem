@@ -42,7 +42,7 @@
               @if(search_permits('Agencias','Registrar')=="Si")
               {{-- <a href="{!! route('agencias.create') !!}" class="btn bg-gradient-primary btn-sm pull-right" data-tooltip="tooltip" data-placement="top" title="Registrar agencia"><i class="fas fa-edit"></i> Registrar agencias</a> --}}
               
-              <a class="btn btn-info btn-sm text-white" data-toggle="modal" data-target="#create_agencias" onclick="create_agencias()" data-tooltip="tooltip" data-placement="top" title="Crear Agencias">
+              <a class="btn btn-info btn-sm text-white" data-tooltip="tooltip" data-placement="top" title="Crear Agencias" id="createNewAgencia">
                 <i class="fa fa-save"> &nbsp;Registrar</i>
               </a>
               @endif
@@ -93,12 +93,53 @@ $(document).ready( function () {
       url:"{{ url('agencias') }}"
    },
     columns: [
-      { data: 'agencia', name: 'nombre' },
+      { data: 'nombre', name: 'nombre' },
       {data: 'action', name: 'action', orderable: false},
     ],
     order: [[0, 'desc']]
   });
 });
+
+//--CODIGO PARA CREAR PBX (LEVANTAR EL MODAL) ---------------------//
+$('#createNewAgencia').click(function () {
+  $('#agenciaForm').trigger("reset");
+  $('#create_agencias').modal({backdrop: 'static', keyboard: true, show: true});
+  $('.alert-danger').hide();
+});
+//--CODIGO PARA CREAR PBX (GUARDAR REGISTRO) ---------------------//
+$('#SubmitCreateAgencia').click(function(e) {
+  e.preventDefault();
+  $.ajaxSetup({
+    headers: {
+      'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    }
+  });
+  $.ajax({
+    url: "{{ route('agencias.store') }}",
+    method: 'post',
+    data: {
+      nombre: $('#nombre').val(),
+    },
+    success: function(result) {
+      if(result.errors) {
+        $('.alert-danger').html('');
+        $.each(result.errors, function(key, value) {
+          $('.alert-danger').show();
+          $('.alert-danger').append('<strong><li>'+value+'</li></strong>');
+        });
+      } else {
+        $('.alert-danger').hide();
+        var oTable = $('#agencias_table').dataTable();
+        oTable.fnDraw(false);
+        Swal.fire ( result.titulo ,  result.message ,  result.icono );
+        if (result.icono=="success") {
+          $("#create_agencias").modal('hide');
+        }
+      }
+    }
+  });
+});
+
 //--CODIGO PARA EDITAR AGENCIA ---------------------//
 $('body').on('click', '#editAgencia', function () {
   var id = $(this).data('id');

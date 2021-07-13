@@ -51,27 +51,25 @@ class AgenciasController extends Controller
     public function store(Request $request)
     {
         $message =[
-            'agencia.required' => 'El campo agencia es obligatorio',
+            'nombre.required' => 'El campo agencia es obligatorio',
+            'nombre.unique' => 'El campo agencia ya se encuentra registrado.',
         ];
         $validator = \Validator::make($request->all(), [
-            'agencia' => 'required',
+            'nombre' => 'required|unique:agencias',
         ],$message);
 
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()->all()]);
         }
 
-        $buscar=Agencias::where('nombre',$request->agencia)->count();
+        $buscar=Agencias::where('nombre',$request->nombre)->count();
         if($buscar > 0){
             return response()->json(['message'=>"El nombre de la Agencia ya ha sido registrado.",'icono'=>'warning','titulo'=>'Alerta']);
-        }else{
-           
+        }else{           
             $agencia= new Agencias();
-            $agencia->nombre=$request->agencia;
+            $agencia->nombre=$request->nombre;
             $agencia->save();
-
-             return response()->json(['message'=>"Agencia ".$request->nombre." registrada con éxito",'icono'=>'success','titulo'=>'Éxito']); 
-           
+            return response()->json(['message'=>"Agencia ".$request->nombre." registrada con éxito",'icono'=>'success','titulo'=>'Éxito']);            
         }
     }
 

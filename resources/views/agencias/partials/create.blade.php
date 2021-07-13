@@ -7,26 +7,27 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <form action="{{ route('agencias.store') }}" method="POST" data-parsley-validate>
-        @csrf
+      <form action="#" method="POST" data-parsley-validate name="agenciaForm" id="agenciaForm">
         <div class="modal-body">
+          <div class="alert alert-danger alert-dismissible fade show" role="alert" style="display: none;">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
           <p align="center"><small>Todos los campos <b style="color: red;">*</b> son requeridos.</small></p>
           <div class="row">
-            <div class="col-sm-4">
+            <div class="col-sm-12">
               <div class="form-group">
-                <label for="agencia">Agencia <b style="color: red;">*</b></label>
-                <input type="text" name="agencia" id="agencia" class="form-control" required="required" placeholder="Ingrese el nombre de la agencia" onkeyup="this.value = this.value.toUpperCase();">
+                <label for="nombre">Agencia <b style="color: red;">*</b></label>
+                <input type="text" name="nombre" id="nombre" class="form-control" required="required" placeholder="Ingrese el nombre de la agencia" onkeyup="this.value = this.value.toUpperCase();">
               </div>
-              @error('agencia')
-                <div class="alert alert-danger">{{ $message }}</div>
-              @enderror
             </div>
           </div>
 
         </div>
         <div class="modal-footer justify-content-between">
           <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i> Cerrar</button>
-          <button type="submit" class="btn btn-info"><i class="fa fa-save"></i> Registrar</button>
+          <button type="submit" class="btn btn-info" id="SubmitCreateAgencia"><i class="fa fa-save"></i> Registrar</button>
         </div>
       </form>
     </div>
