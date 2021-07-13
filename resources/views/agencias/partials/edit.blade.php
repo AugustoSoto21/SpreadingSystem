@@ -12,7 +12,7 @@
         @method('PUT')
         <div class="modal-body">
           <p align="center"><small>Todos los campos <b style="color: red;">*</b> son requeridos.</small></p>
-          <input type="hidden" name="id_agencia" value="" id="id_agencia" placeholder="">
+          <input type="hidden" name="id_agencia" value="" id="id_agencia_edit" placeholder="">
           <div class="row">
             <div class="col-sm-4">
               <div class="form-group">

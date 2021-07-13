@@ -152,6 +152,7 @@ $('body').on('click', '#editAgencia', function () {
       $('.alert-danger').hide();
       $('#id_agencia_edit').val(data.id);
       $('#agencia_edit').val(data.nombre);
+      console.log(data.nombre+'-----');
     }
   });
 });

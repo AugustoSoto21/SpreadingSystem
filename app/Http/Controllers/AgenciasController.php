@@ -21,8 +21,8 @@ class AgenciasController extends Controller
             $agencias=Agencias::all();
             return datatables()->of($agencias)
                 ->addColumn('action', function ($row) {
-                    $edit = '<a href="javascript:void(0);" data-id="'.$row->id.'" class="btn btn-warning btn-xs" id="editAngencia"><i class="fa fa-pencil-alt"></i></a>';
-                    $delete = ' <a href="javascript:void(0);" id="delete-estado" onClick="deleteAngencia('.$row->id.')" class="delete btn btn-danger btn-xs"><i class="fa fa-trash"></i></a>';
+                    $edit = '<a href="javascript:void(0);" data-id="'.$row->id.'" class="btn btn-warning btn-xs" id="editAgencia"><i class="fa fa-pencil-alt"></i></a>';
+                    $delete = ' <a href="javascript:void(0);" id="delete-estado" onClick="deleteAgencia('.$row->id.')" class="delete btn btn-danger btn-xs"><i class="fa fa-trash"></i></a>';
                     return $edit . $delete;
                 })->rawColumns(['action'])
                 ->addIndexColumn()
@@ -90,7 +90,7 @@ class AgenciasController extends Controller
      * @param  \App\Models\Agencias  $agencias
      * @return \Illuminate\Http\Response
      */
-    public function edit(Agencias $agencias)
+    public function edit($id)
     {
         $agencias = Agencias::where('id',$id)->first();
         return Response()->json($agencias);
@@ -103,13 +103,13 @@ class AgenciasController extends Controller
      * @param  \App\Models\Agencias  $agencias
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Agencias $agencias)
+    public function update(Request $request, $id_agencia)
     {
         $message =[
-            'nombre.required' => 'El campo nombre es obligatorio',
+            'agencia.required' => 'El campo agencia es obligatorio',
         ];
         $validator = \Validator::make($request->all(), [
-            'nombre' => 'required',
+            'agencia' => 'required',
         ],$message);
 
         if ($validator->fails()) {
