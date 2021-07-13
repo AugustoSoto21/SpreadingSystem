@@ -20,7 +20,6 @@
   <div class="container-fluid">
     @include('deliverys.partials.create')
     @include('deliverys.partials.edit')
-    @include('deliverys.partials.delete')
     <div class="row">
       <div class="col-12">
         <div class="card card-primary card-outline card-tabs">
@@ -43,7 +42,7 @@
               @if(search_permits('Deliverys','Registrar')=="Si")
               {{-- <a href="{!! route('deliverys.create') !!}" class="btn bg-gradient-primary btn-sm pull-right" data-tooltip="tooltip" data-placement="top" title="Registrar delivery"><i class="fas fa-edit"></i> Registrar deliverys</a> --}}
 
-              <a class="btn btn-info btn-xs text-white" data-toggle="modal" data-target="#create_deliverys" onclick="create_deliverys()" data-tooltip="tooltip" data-placement="top" title="Crear Deliverys">
+              <a class="btn btn-info btn-sm text-white" data-toggle="modal" data-target="#create_deliverys" data-tooltip="tooltip" data-placement="top" title="Crear Deliverys" id="createNewDelivery">
                 <i class="fa fa-save"> &nbsp;Registrar</i>
               </a>
               @endif
@@ -60,48 +59,7 @@
                 </tr>
               </thead>
               <tbody>
-                @foreach($deliverys as $k)
-                  
-                  <tr >
-                    <td>{!!$k->delivery!!}</td>
-                    <td>{!!$k->agencias->nombre!!}</td>
-                    
-                    <td>
-                      <!--ACCIÓN DE VER PRODUCTOS -->
-                      {{-- @if(search_permits('Deliverys','Ver todos los usuarios')=="Si")
-                        <a href="{!! route('deliverys.show', $k->id) !!}" class="btn btn-info btn-xs" data-tooltip="tooltip" data-placement="top" title="Ver delivery"><i class="fa fa-search"></i></a>
-                      @elseif(search_permits('Deliverys','Ver mismo usuario')=="Si")
-                        @if($k->id_user == \Auth::User()->id)
-                          <a href="{!! route('deliverys.show', $k->id) !!}" class="btn btn-info btn-xs" data-tooltip="tooltip" data-placement="top" title="Ver delivery"><i class="fa fa-search"></i></a>
-                        @endif
-                      @endif
- --}}
-                      <!--ACCIÓN DE EDITAR PRODUCTOS -->
-                      @if(search_permits('Deliverys','Editar todos los usuarios')=="Si")
-                        <a href="{!! route('deliverys.edit', $k->id) !!}" class="btn btn-warning btn-xs" data-toggle="modal" data-target="#edit_deliverys" onclick="edit_deliverys('{!! $k->id !!}','{!! $k->delivery !!}','{!! $k->id_agencia !!}')" data-tooltip="tooltip" data-placement="top" title="Editar delivery"><i class="fa fa-pencil-alt"></i></a>
-                      @elseif(search_permits('Deliverys','Editar mismo usuario')=="Si")
-                        @if($k->id_user == \Auth::User()->id)
-                          <a href="{!! route('deliverys.edit', $k->id) !!}" class="btn btn-warning btn-xs" data-toggle="modal" data-target="#edit_deliverys" onclick="edit_deliverys('{!! $k->id !!}','{!! $k->delivery !!}','{!! $k->id_agencia !!}')" data-tooltip="tooltip"  data-placement="top" title="Editar delivery"><i class="fa fa-pencil-alt"></i></a>
-                        @endif
-                      @endif
-
-                      <!--ACCIÓN DE ELIMINAR PRODUCTO -->
-                      @if(search_permits('Deliverys','Eliminar todos los usuarios')=="Si")
-                        <a class="btn btn-danger btn-xs text-white" data-toggle="modal" data-target="#delete_deliverys" onclick="delete_deliverys('{{$k->id}}')" data-tooltip="tooltip" data-placement="top" title="Eliminar delivery">
-                          <i class="fa fa-trash"></i>
-                        </a>
-                      @elseif(search_permits('Deliverys','Eliminar mismo usuario')=="Si")
-                        @if($k->id_user == \Auth::User()->id)
-                          <a class="btn btn-danger btn-xs text-white" data-toggle="modal" data-target="#delete_deliverys" onclick="delete_deliverys('{{$k->id}}')" data-tooltip="tooltip" data-placement="top" title="Eliminar delivery">
-                          <i class="fa fa-trash"></i>
-                        </a>
-                        @endif
-                      @endif
-                      
-                    </td>
-                  </tr>
-                  
-                @endforeach
+                
               </tbody>
             </table>
           </div>
@@ -123,22 +81,147 @@
 @endsection
 @section('scripts')
 <script>
-  $(function () {
-    $("#deliverys").DataTable({
-      "responsive": true,
-      "autoWidth": false,
-    });
+$(document).ready( function () {
+  $.ajaxSetup({
+    headers: {
+      'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    }
   });
-  function delete_deliverys(id) {
-    $('#delete_id').val(id);
-  }
-  
+  $('#deliverys_table').DataTable({
+    processing: true,
+    serverSide: true,
+    ajax: {
+      url:"{{ url('deliverys') }}"
+   },
+    columns: [
+      { data: 'delivery', name: 'delivery' },
+      {data: 'action', name: 'action', orderable: false},
+    ],
+    order: [[0, 'desc']]
+  });
+});
+//--CODIGO PARA CREAR ESTADOS (LEVANTAR EL MODAL) ---------------------//
+$('#createNewDelivery').click(function () {
+  $('#deliveryForm').trigger("reset");
+  $('#create_deliverys').modal({backdrop: 'static', keyboard: true, show: true});
+  $('.alert-danger').hide();
+});
+//--CODIGO PARA CREAR ESTADOS (GUARDAR REGISTRO) ---------------------//
+$('#SubmitCreateDelivery').click(function(e) {
+  e.preventDefault();
+  $.ajaxSetup({
+    headers: {
+      'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    }
+  });
+  $.ajax({
+    url: "{{ route('deliverys.store') }}",
+    method: 'post',
+    data: {
+      delivery: $('#delivery').val(),
+      id_agencia: $('#id_agencia').val(),
+    },
+    success: function(result) {
+      if(result.errors) {
+        $('.alert-danger').html('');
+        $.each(result.errors, function(key, value) {
+          $('.alert-danger').show();
+          $('.alert-danger').append('<strong><li>'+value+'</li></strong>');
+        });
+      } else {
+        $('.alert-danger').hide();
+        var oTable = $('#deliverys_table').dataTable();
+        oTable.fnDraw(false);
+        Swal.fire ( result.titulo ,  result.message ,  result.icono );
+        if (result.icono=="success") {
+          $("#create_deliverys").modal('hide');
+        }
+      }
+    }
+  });
+});
+
+//--CODIGO PARA EDITAR ESTADO ---------------------//
+$('body').on('click', '#editDelivery', function () {
+  var id = $(this).data('id');
+  $.ajax({
+    method:"GET",
+    url: "deliverys/"+id+"/edit",
+    dataType: 'json',
+    success: function(data){
+      $('#edit_deliverys').modal({backdrop: 'static', keyboard: true, show: true});
+      $('.alert-danger').hide();
+      $('#id_delivery_edit').val(data.id);
+      $('#delivery_edit').val(data.delivery);
+      $('#color_edit').val(data.color);
+    }
+  });
+});
+//--CODIGO PARA UPDATE ESTADO ---------------------//
+$('#SubmitEditDelivery').click(function(e) {
+  e.preventDefault();
+  var id = $('#id_delivery_edit').val();
+  $.ajax({
+    method:'PUT',
+    url: "deliverys/"+id+"",
+    data: {
+      id_delivery: $('#id_delivery_edit').val(),
+      delivery: $('#delivery_edit').val(),
+      color: $('#color_edit').val()
+    },
+    success: (data) => {
+      if(data.errors) {
+        $('.alert-danger').html('');
+        $.each(data.errors, function(key, value) {
+          $('.alert-danger').show();
+          $('.alert-danger').append('<strong><li>'+value+'</li></strong>');
+        });
+      } else {
+        var oTable = $('#deliverys_table').dataTable();
+        oTable.fnDraw(false);
+        Swal.fire ( data.titulo ,  data.message ,  data.icono );
+        if (data.icono=="success") {
+          $("#edit_deliverys").modal('hide');
+        }
+      }
+    },
+    error: function(data){
+      console.log(data);
+    }
+  });
+});
+//--CODIGO PARA ELIMINAR ESTADO ---------------------//
+function deleteDelivery(id){
+  var id = id;
+  Swal.fire({
+    title: '¿Estás seguro que desea eliminar a este delivery?',
+    text: "¡Esta opción no podrá deshacerse en el futuro!",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: '¡Si, Eliminar!',
+    cancelButtonText: 'No, Cancelar!'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      // ajax
+      $.ajax({
+        type:"DELETE",
+        url: "deliverys/"+id+"",
+        data: { id: id },
+        dataType: 'json',
+        success: function(response){
+          Swal.fire ( response.titulo ,  response.message ,  response.icono );
+          var oTable = $('#deliverys_table').dataTable();
+          oTable.fnDraw(false);
+        },
+        error: function (data) {
+          Swal.fire({title: "Error del servidor", text:  "Delivery no eliminado", icon:  "error"});
+        }
+      });
+    }
+  })
+}
 </script>
-<script type="text/javascript">
-  function edit_deliverys(id,delivery, id_agencia) {
-    $('#id_delivery_x').val(id);
-    $('#mi_delivery_edit').val(delivery);
-    $("#id_agencia_edit option[value='"+ id_agencia +"']").attr("selected",true);
-  }
-</script>
+<script src="{{ asset('js/sweetalert2.min.js') }}"></script>
 @endsection

@@ -6,6 +6,9 @@ use App\Models\Deliverys;
 use Illuminate\Http\Request;
 use App\Models\Agencias;
 use App\Models\Pedidos;
+use Alert;
+use Datatables;
+
 class DeliverysController extends Controller
 {
     /**
@@ -15,9 +18,18 @@ class DeliverysController extends Controller
      */
     public function index()
     {
-        $deliverys=Deliverys::all();
-        $agencias=Agencias::all();
-        return view('deliverys.index',compact('deliverys','agencias'));
+        if(request()->ajax()) {
+            $deliverys=Deliverys::all();
+            return datatables()->of($deliverys)
+                ->addColumn('action', function ($row) {
+                    $edit = '<a href="javascript:void(0);" data-id="'.$row->id.'" class="btn btn-warning btn-xs" id="editDelivery"><i class="fa fa-pencil-alt"></i></a>';
+                    $delete = ' <a href="javascript:void(0);" id="delete-estado" onClick="deleteDelivery('.$row->id.')" class="delete btn btn-danger btn-xs"><i class="fa fa-trash"></i></a>';
+                    return $edit . $delete;
+                })->rawColumns(['action'])
+                ->addIndexColumn()
+                ->make(true);
+        }
+        return view('deliverys.index');
     }
 
     /**
@@ -27,7 +39,8 @@ class DeliverysController extends Controller
      */
     public function create()
     {
-        //
+        $agencias=Agencias::all();
+        return Response()->json($agencias);
     }
 
     /**
@@ -38,10 +51,22 @@ class DeliverysController extends Controller
      */
     public function store(Request $request)
     {
+
+        $message =[
+            'delivery.required' => 'El campo delivery es obligatorio',
+            'id_agencia.required' => 'El campo agencia es obligatorio',
+        ];
+        $validator = \Validator::make($request->all(), [
+            'delivery' => 'required',
+            'id_agencia' => 'required',
+        ],$message);
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()->all()]);
+        }
+
         $buscar=Deliverys::where('delivery',$request->delivery)->where('id_agencia',$request->id_agencia)->count();
         if($buscar > 0){
-            Alert::error('Error', 'El nombre del delivery ya ha sido registrado al agencia seleccionada')->persistent(true);
-        return redirect()->back();
+            return response()->json(['message'=>"El delivery ya ha sido registrado en dicha agencia.",'icono'=>'warning','titulo'=>'Alerta']);
         }else{
             
                 $delivery= new Deliverys();
@@ -49,8 +74,7 @@ class DeliverysController extends Controller
                 $delivery->id_agencia=$request->id_agencia;
                 $delivery->save();
 
-                Alert::success('Muy bien', 'Delivery registrado con éxito')->persistent(true);
-                return redirect()->back();
+               return response()->json(['message' => "Delivery ".$request->delivery." registrado con éxito",'icono' => 'success', 'titulo' => 'Éxito']);
             
         }
     }
@@ -72,9 +96,11 @@ class DeliverysController extends Controller
      * @param  \App\Models\Deliverys  $deliverys
      * @return \Illuminate\Http\Response
      */
-    public function edit(Deliverys $deliverys)
+    public function edit($id)
     {
-        //
+        $deliverys=Deliverys::where('id',$id)->first();
+        $agencias=Agencias::all();
+        return Response()->json([$deliverys,$agencias]);
     }
 
     /**
@@ -86,19 +112,29 @@ class DeliverysController extends Controller
      */
     public function update(Request $request, Deliverys $deliverys)
     {
-        $buscar=Deliverys::where('delivery',$request->mi_delivery)->where('id_agencia',$request->id_agencia_edit)->where('id','<>',$request->id_delivery_x)->count();
+        $message =[
+            'delivery.required' => 'El campo delivery es obligatorio',
+            'id_agencia.required' => 'El campo agencia es obligatorio',
+        ];
+        $validator = \Validator::make($request->all(), [
+            'delivery' => 'required',
+            'id_agencia' => 'required',
+        ],$message);
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()->all()]);
+        }
+
+        $buscar=Deliverys::where('delivery',$request->mi_delivery)->where('id_agencia',$request->id_agencia_edit)->where('id','<>',$request->id_delivery)->count();
         if($buscar > 0){
-            Alert::error('Error', 'El nombre del delivery ya ha sido registrado en la agencia seleccionada')->persistent(true);
-        return redirect()->back();
+            return response()->json(['message' => 'El delivery ya ha sido registrado en la agencia seleccionada','icono' => 'warning','titulo' => 'Alerta']);
         }else{
             
-                $delivery= Deliverys::find($request->id_delivery_x);
+                $delivery= Deliverys::find($request->id_delivery);
                 $delivery->delivery=$request->mi_delivery;
                 $delivery->id_agencia_edit=$request->id_agencia_edit;
                 $delivery->save();
 
-                Alert::success('Muy bien', 'Delivery actualizado con éxito')->persistent(true);
-                return redirect()->back();
+                return response()->json(['message' => 'El delivery registrado con éxito', 'icono' => 'success', 'titulo' => 'Éxito']);
             
         }
     }
@@ -109,19 +145,19 @@ class DeliverysController extends Controller
      * @param  \App\Models\Deliverys  $deliverys
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request)
+    public function destroy($id)
     {
-        $buscar=Pedidos::where('id_delivery',$request->id_delivery)->count();
+        $buscar=Pedidos::where('id_delivery',$id)->count();
         if($buscar > 0){
-            Alert::warning('Alerta', 'El Delivery que intenta eliminar se encuentra relacionada con algún pedido')->persistent(true);
+            return response()->json(['message' => 'El delivery se encuentra registrado a algún pedido','icono' => 'warning', 'titulo' => 'Alerta']);
         }else{
-            $delivery=Deliverys::find($request->id_delivery);
+            $delivery=Deliverys::find($id);
             if($delivery->delete()){
-              Alert::warning('Alerta', 'La delivery no pudo ser eliminado')->persistent(true);  
+              return response()->json(['message' => 'El delivery fue eliminado con éxito','icono' => 'success', 'titulo' => 'Éxito']);
             }else{
-                Alert::warning('Alerta', 'La delivery fue eliminada con éxito')->persistent(true);
+                return response()->json(['message' => 'El delivery no pudo ser eliminado','icono' => 'warning', 'titulo' => 'Alerta']);
             }
         }
-        return redirect()->back();
+        
     }
 }

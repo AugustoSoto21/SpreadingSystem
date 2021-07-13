@@ -242,4 +242,5 @@ function deleteCliente(id){
 }
  
 </script>
+<script src="{{ asset('js/sweetalert2.min.js') }}"></script>
 @endsection
