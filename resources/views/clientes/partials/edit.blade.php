@@ -11,7 +11,7 @@
         
         <div class="modal-body">
            <p align="center"><small>Todos los campos <b style="color: red;">*</b> son requeridos.</small></p>
-           <input type="hidden" name="id_cliente_x" value="" id="id_cliente_x" placeholder="" />
+           <input type="hidden" name="id_cliente_x" value="" id="id_cliente_edit" placeholder="" />
         <div class="row">
             <div class="col-sm-4">
               <div class="form-group">

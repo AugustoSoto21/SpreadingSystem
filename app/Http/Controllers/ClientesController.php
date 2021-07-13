@@ -140,13 +140,13 @@ class ClientesController extends Controller
             return response()->json(['errors' => $validator->errors()->all()]);
         }
 
-        $buscar=Clientes::where('nombres',$request->nombres)->where('apellidos',$request->apellidos)->where('celular',$request->celular)->where('id','<>',$request->id_cliente_x)->count();
+        $buscar=Clientes::where('nombres',$request->nombres)->where('apellidos',$request->apellidos)->where('celular',$request->celular)->where('id','<>',$request->id_cliente)->count();
 
         if($buscar > 0){
             return response()->json(['message'=>"Los Nombres, Apellidos y Celular del cliente ya han sido registrado.",'icono'=>'warning','titulo'=>'Alerta']);
         }else{
             
-                $cliente= Clientes::find($request->id_cliente_x);
+                $cliente= Clientes::find($request->id_cliente);
                 $cliente->nombres=$request->nombres;
                 $cliente->apellidos=$request->apellidos;
                 $cliente->celular=$request->celular;

@@ -42,7 +42,7 @@
               @if(search_permits('Clientes','Registrar')=="Si")
               {{-- <a href="{!! route('clientes.create') !!}" class="btn bg-gradient-primary btn-sm pull-right" data-tooltip="tooltip" data-placement="top" title="Registrar cliente"><i class="fas fa-edit"></i> Registrar clientes</a> --}}
 
-              <a class="btn btn-info btn-xs text-white" data-toggle="modal" data-target="#create_clientes" onclick="create_clientes()" data-tooltip="tooltip" data-placement="top" title="Crear Clientes">
+              <a class="btn btn-info btn-sm text-white" data-toggle="modal" data-target="#create_clientes" data-tooltip="tooltip" data-placement="top" title="Crear Clientes">
                 <i class="fa fa-save"> &nbsp;Registrar</i>
               </a>
               @endif
@@ -121,12 +121,17 @@ $('#SubmitCreateCliente').click(function(e) {
     headers: {
       'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
     }
+
   });
   $.ajax({
     url: "{{ route('clientes.store') }}",
     method: 'post',
     data: {
-      nombre: $('#nombre').val(),
+      nombres: $('#nombres').val(),
+      apellidos: $('#apellidos').val(),
+      celular: $('#celular').val(),
+      direccion: $('#direccion').val(),
+      localidad: $('#localidad').val(),
     },
     success: function(result) {
       if(result.errors) {
