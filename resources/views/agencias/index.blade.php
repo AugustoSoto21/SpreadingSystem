@@ -210,7 +210,7 @@ function deleteAgencia(id){
         dataType: 'json',
         success: function(response){
           Swal.fire ( response.titulo ,  response.message ,  response.icono );
-          var oTable = $('#agenciass_table').dataTable();
+          var oTable = $('#agencias_table').dataTable();
           oTable.fnDraw(false);
         },
         error: function (data) {

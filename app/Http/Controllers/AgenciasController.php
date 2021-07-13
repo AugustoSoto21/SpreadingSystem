@@ -137,13 +137,13 @@ class AgenciasController extends Controller
      * @param  \App\Models\Agencias  $agencias
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Agencias $agencias)
+    public function destroy($id)
     {
-        $buscar=Tarifas::where('id_agencia',$request->id_agencia)->count();
+        $buscar=Tarifas::where('id_agencia',$id)->count();
         if($buscar > 0){
             return response()->json(['message'=>"La Agencia que intenta eliminar se encuentra asignada a una tarifa.",'icono'=>'warning','titulo'=>'Alerta']);
         }else{
-            $agencia=Agencias::find($request->id_agencia);
+            $agencia=Agencias::find($id);
             if($agencia->delete()){
               return response()->json(['message'=>"La Agencia fue eliminada con éxito.",'icono'=>'success','titulo'=>'Éxito']);  
             }else{
