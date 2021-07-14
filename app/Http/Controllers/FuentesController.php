@@ -50,11 +50,11 @@ class FuentesController extends Controller
     public function store(Request $request)
     {
         $message =[
-            'nombre.required' => 'El campo fuente es obligatorio',
-            'nombre.unique' => 'El campo fuente ya se encuentra registrado.',
+            'fuente.required' => 'El campo fuente es obligatorio',
+            'fuente.unique' => 'El campo fuente ya se encuentra registrado.',
         ];
         $validator = \Validator::make($request->all(), [
-            'nombre' => 'required|unique:fuentes',
+            'fuente' => 'required|unique:fuentes',
         ],$message);
 
         if ($validator->fails()) {
@@ -143,13 +143,13 @@ class FuentesController extends Controller
     {
         $buscar=Pedidos::where('id_fuente',$id)->count();
         if($buscar > 0){
-            return response()->json(['message'=>"La Fuente que intenta eliminar se encuentra asignado a un pedido",'icono'=>'warning','titulo'=>'Alerta']);
+            return response()->json(['message'=>"La Fuente que intenta eliminar se encuentra asignada a un pedido",'icono'=>'warning','titulo'=>'Alerta']);
         }else{
             $fuente=Fuentes::find($id);
             if($fuente->delete()){
-              return response()->json(['message'=>"La fuente se ha eliminado con éxito.",'icono'=>'success','titulo'=>'Éxito']);
+              return response()->json(['message'=>"La fuente se ha eliminada con éxito.",'icono'=>'success','titulo'=>'Éxito']);
             }else{
-                return response()->json(['message'=>"La fuente no pudo ser eliminado.",'icono'=>'warning','titulo'=>'Alerta']);
+                return response()->json(['message'=>"La fuente no pudo ser eliminada.",'icono'=>'warning','titulo'=>'Alerta']);
             }
         }
         

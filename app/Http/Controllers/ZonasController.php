@@ -70,7 +70,7 @@ class ZonasController extends Controller
 
         $buscar=Zonas::where('zona',$request->zona)->where('id_partido',$request->id_partido)->count();
         if($buscar > 0){
-            return response()->json(['message'=>"La Zona ya ha sido registrado en dicho partido.",'icono'=>'warning','titulo'=>'Alerta']);
+            return response()->json(['message'=>"La Zona ya ha sido registrada en dicho partido.",'icono'=>'warning','titulo'=>'Alerta']);
         }else{
             
                 $zona= new Zonas();
@@ -135,7 +135,7 @@ class ZonasController extends Controller
 
         $buscar=Zonas::where('zona',$request->mi_zona)->where('id_partido',$request->id_partido_edit)->where('id','<>',$request->id_zona_x)->count();
         if($buscar > 0){
-             return response()->json(['message'=>"La Zona ya ha sido registrado en dicho partido.",'icono'=>'warning','titulo'=>'Alerta']);
+             return response()->json(['message'=>"La Zona ya ha sido registrada en dicho partido.",'icono'=>'warning','titulo'=>'Alerta']);
         }else{
             
                 $zona= Zonas::find($request->id_zona_x);
