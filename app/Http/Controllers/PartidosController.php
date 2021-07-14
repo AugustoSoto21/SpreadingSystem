@@ -6,6 +6,7 @@ use App\Models\Partidos;
 use Illuminate\Http\Request;
 use Alert;
 use App\Models\Zonas;
+use Datatables;
 class PartidosController extends Controller
 {
     /**
@@ -15,9 +16,18 @@ class PartidosController extends Controller
      */
     public function index()
     {
-        $partidos= Partidos::all();
-
-        return view('partidos.index',compact('partidos'));
+        if(request()->ajax()) {
+            $partidos=Partidos::all();
+            return datatables()->of($partidos)
+                ->addColumn('action', function ($row) {
+                    $edit = '<a href="javascript:void(0);" data-id="'.$row->id.'" class="btn btn-warning btn-xs" id="editPartido"><i class="fa fa-pencil-alt"></i></a>';
+                    $delete = ' <a href="javascript:void(0);" id="delete-partido" onClick="deletePartido('.$row->id.')" class="delete btn btn-danger btn-xs"><i class="fa fa-trash"></i></a>';
+                    return $edit . $delete;
+                })->rawColumns(['action'])
+                ->addIndexColumn()
+                ->make(true);
+        }
+        return view('partidos.index');
     }
 
     /**
@@ -38,18 +48,27 @@ class PartidosController extends Controller
      */
     public function store(Request $request)
     {
+        $message =[
+            'partido.required' => 'El campo partido es obligatorio',
+        ];
+        $validator = \Validator::make($request->all(), [
+            'partido' => 'required',
+        ],$message);
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()->all()]);
+        }
+
         $buscar=Partidos::where('partido',$request->partido)->count();
         if($buscar > 0){
-            Alert::error('Error', 'El nombre del partido ya ha sido registrado')->persistent(true);
-        return redirect()->back();
+            return response()->json(['message'=>"El nombre del partido ya ha sido registrado.",'icono'=>'warning','titulo'=>'Alerta']);
+
         }else{
            
             $partido= new Partidos();
             $partido->partido=$request->partido;
             $partido->save();
 
-            Alert::success('Muy bien', 'Partido registrado con éxito')->persistent(true);
-            return redirect()->back();
+            return response()->json(['message'=>"El partido ha sido registrado con éxito.",'icono'=>'success','titulo'=>'Éxito']);
            
         }
     }
@@ -71,9 +90,10 @@ class PartidosController extends Controller
      * @param  \App\Models\Partidos  $partidos
      * @return \Illuminate\Http\Response
      */
-    public function edit(Partidos $partidos)
+    public function edit($id)
     {
-        //
+        $partidos=Partidos::where('id',$id)->first();
+        return response()->json($partidos);
     }
 
     /**
@@ -86,19 +106,27 @@ class PartidosController extends Controller
     public function update(Request $request, $id_partido)
     {
         //dd($request->all());
+        $message =[
+            'partido.required' => 'El campo partido es obligatorio',
+        ];
+        $validator = \Validator::make($request->all(), [
+            'partido' => 'required',
+        ],$message);
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()->all()]);
+        }
+
         $buscar=Partidos::where('partido',$request->partido)->where('id','<>',$request->id_partido)->count();
 
         if($buscar > 0){
-            Alert::error('Error', 'El nombre del partido ya ha sido registrado')->persistent(true);
-        return redirect()->back();
+             return response()->json(['message'=>"El nombre del partido ya ha sido registrado.",'icono'=>'warning','titulo'=>'Alerta']);
         }else{
             
             $partido=  Partidos::find($request->id_partido);
             $partido->partido=$request->partido;
             $partido->save();
 
-            Alert::success('Muy bien', 'Partido actualizado con éxito')->persistent(true);
-            return redirect()->back();
+            return response()->json(['message'=>"El partido ha sido registrado con éxito.",'icono'=>'success','titulo'=>'Éxito']);
             
         }
     }
@@ -109,19 +137,19 @@ class PartidosController extends Controller
      * @param  \App\Models\Partidos  $partidos
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request)
+    public function destroy($id)
     {
-        $buscar=Zonas::where('id_partido',$request->id_partido)->count();
+        $buscar=Zonas::where('id_partido',$id)->count();
         if($buscar > 0){
-            Alert::warning('Alerta', 'El partido que intenta eliminar se encuentra asignado a una zona')->persistent(true);
+            return response()->json(['message'=>"El partido que intenta eliminar se encuentra asignado a una zona.",'icono'=>'warning','titulo'=>'Alerta']);
         }else{
-            $partido=Partidos::find($request->id_partido);
+            $partido=Partidos::find($id);
             if($partido->delete()){
-              Alert::warning('Alerta', 'El partido no pudo ser eliminado')->persistent(true);  
+              return response()->json(['message'=>"El partido ha sido eliminado con éxito.",'icono'=>'success','titulo'=>'Éxito']);
             }else{
-                Alert::warning('Alerta', 'El partido fue eliminado con éxito')->persistent(true);
+                return response()->json(['message'=>"El partido no pudo ser eliminado.",'icono'=>'warning','titulo'=>'Alerta']);
             }
         }
-        return redirect()->back();
+        
     }
 }

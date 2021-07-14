@@ -27,6 +27,8 @@ class FuentesController extends Controller
                 })->rawColumns(['action'])
                 ->addIndexColumn()
                 ->make(true);
+            }
+            return view('fuentes.index');
     }
 
     /**

@@ -20,7 +20,6 @@
   <div class="container-fluid">
     @include('partidos.partials.create')
     @include('partidos.partials.edit')
-    @include('partidos.partials.delete')
     <div class="row">
       <div class="col-12">
         <div class="card card-primary card-outline card-tabs">
@@ -43,13 +42,13 @@
               @if(search_permits('Partidos','Registrar')=="Si")
               {{-- <a href="{!! route('partidos.create') !!}" class="btn bg-gradient-primary btn-sm pull-right" data-tooltip="tooltip" data-placement="top" title="Registrar partido"><i class="fas fa-edit"></i> Registrar partidos</a> --}}
 
-              <a class="btn btn-info btn-xs text-white" data-toggle="modal" data-target="#create_partidos" onclick="create_partidos()" data-tooltip="tooltip" data-placement="top" title="Crear Partidos">
+              <a class="btn btn-info btn-xs text-white" data-toggle="modal" data-target="#create_partidos" data-tooltip="tooltip" data-placement="top" title="Crear Partidos" id="createNewPartido">
                 <i class="fa fa-save"> &nbsp;Registrar</i>
               </a>
               @endif
             </div>
           </div>
-          {{-- @if(search_permits('Partidos','Ver mismo usuario')=="Si" || search_permits('Partidos','Ver todos los usuarios')=="Si" || search_permits('Partidos','Editar mismo usuario')=="Si" || search_permits('Partidos','Editar todos los usuarios')=="Si" || search_permits('Partidos','Eliminar mismo usuario')=="Si" || search_permits('Partidos','Eliminar todos los usuarios')=="Si") --}}
+          @if(search_permits('Partidos','Ver mismo usuario')=="Si" || search_permits('Partidos','Ver todos los usuarios')=="Si" || search_permits('Partidos','Editar mismo usuario')=="Si" || search_permits('Partidos','Editar todos los usuarios')=="Si" || search_permits('Partidos','Eliminar mismo usuario')=="Si" || search_permits('Partidos','Eliminar todos los usuarios')=="Si") 
           <div class="card-body">
             <table id="partidos" class="table table-bordered table-striped table-sm" style="font-size: 12px;">
               <thead>
@@ -59,50 +58,11 @@
                 </tr>
               </thead>
               <tbody>
-                @foreach($partidos as $k)
-                  
-                  <tr >
-                    <td>{!!$k->partido!!}</td>
-                    <td>
-                      <!--ACCIÓN DE VER PRODUCTOS -->
-                      {{-- @if(search_permits('Partidos','Ver todos los usuarios')=="Si")
-                        <a href="{!! route('partidos.show', $k->id) !!}" class="btn btn-info btn-xs" data-tooltip="tooltip" data-placement="top" title="Ver partido"><i class="fa fa-search"></i></a>
-                      @elseif(search_permits('Partidos','Ver mismo usuario')=="Si")
-                        @if($k->id_user == \Auth::User()->id)
-                          <a href="{!! route('partidos.show', $k->id) !!}" class="btn btn-info btn-xs" data-tooltip="tooltip" data-placement="top" title="Ver partido"><i class="fa fa-search"></i></a>
-                        @endif
-                      @endif
- --}}
-                      <!--ACCIÓN DE EDITAR PRODUCTOS -->
-                      @if(search_permits('Partidos','Editar todos los usuarios')=="Si")
-                        <a href="{!! route('partidos.edit', $k->id) !!}" class="btn btn-warning btn-xs" data-toggle="modal" data-target="#edit_partidos" onclick="edit_partidos('{!! $k->id !!}','{!! $k->partido !!}')" data-tooltip="tooltip" data-placement="top" title="Editar partido"><i class="fa fa-pencil-alt"></i></a>
-                      @elseif(search_permits('Partidos','Editar mismo usuario')=="Si")
-                        @if($k->id_user == \Auth::User()->id)
-                          <a href="{!! route('partidos.edit', $k->id) !!}" class="btn btn-warning btn-xs" data-toggle="modal" data-target="#edit_partidos" onclick="edit_partidos('{!! $k->id !!}','{!! $k->partido !!}')" data-tooltip="tooltip"  data-placement="top" title="Editar partido"><i class="fa fa-pencil-alt"></i></a>
-                        @endif
-                      @endif
-
-                      <!--ACCIÓN DE ELIMINAR PRODUCTO -->
-                      @if(search_permits('Partidos','Eliminar todos los usuarios')=="Si")
-                        <a class="btn btn-danger btn-xs text-white" data-toggle="modal" data-target="#delete_partidos" onclick="delete_partidos('{{$k->id}}')" data-tooltip="tooltip" data-placement="top" title="Eliminar partido">
-                          <i class="fa fa-trash"></i>
-                        </a>
-                      @elseif(search_permits('Partidos','Eliminar mismo usuario')=="Si")
-                        @if($k->id_user == \Auth::User()->id)
-                          <a class="btn btn-danger btn-xs text-white" data-toggle="modal" data-target="#delete_partidos" onclick="delete_partidos('{{$k->id}}')" data-tooltip="tooltip" data-placement="top" title="Eliminar partido">
-                          <i class="fa fa-trash"></i>
-                        </a>
-                        @endif
-                      @endif
-                      
-                    </td>
-                  </tr>
-                  
-                @endforeach
+                
               </tbody>
             </table>
           </div>
-          {{-- @else
+          
           <div class="row">
             <div class="col-12">                          
               <div class="alert alert-danger alert-dismissible text-center">
@@ -111,7 +71,7 @@
               </div>
             </div>
           </div>
-          @endif --}}
+          
         </div>
       </div>
     </div>
@@ -119,22 +79,144 @@
 </section>
 @endsection
 @section('scripts')
-<script>
-  $(function () {
-    $("#partidos").DataTable({
-      "responsive": true,
-      "autoWidth": false,
-    });
+<script>$(document).ready( function () {
+  $.ajaxSetup({
+    headers: {
+      'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    }
   });
-  function delete_partidos(id) {
-    $('#delete_id').val(id);
-  }
-  
+  $('#partidos_table').DataTable({
+    processing: true,
+    serverSide: true,
+    ajax: {
+      url:"{{ url('partidos') }}"
+   },
+    columns: [
+      { data: 'partido', name: 'partido' },
+      {data: 'action', name: 'action', orderable: false},
+    ],
+    order: [[0, 'desc']]
+  });
+});
+//--CODIGO PARA CREAR ESTADOS (LEVANTAR EL MODAL) ---------------------//
+$('#createNewPartido').click(function () {
+  $('#partidoForm').trigger("reset");
+  $('#create_partidos').modal({backdrop: 'static', keyboard: true, show: true});
+  $('.alert-danger').hide();
+});
+//--CODIGO PARA CREAR ESTADOS (GUARDAR REGISTRO) ---------------------//
+$('#SubmitCreatePartido').click(function(e) {
+  e.preventDefault();
+  $.ajaxSetup({
+    headers: {
+      'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    }
+  });
+  $.ajax({
+    url: "{{ route('partidos.store') }}",
+    method: 'post',
+    data: {
+      partido: $('#partido').val()
+    },
+    success: function(result) {
+      if(result.errors) {
+        $('.alert-danger').html('');
+        $.each(result.errors, function(key, value) {
+          $('.alert-danger').show();
+          $('.alert-danger').append('<strong><li>'+value+'</li></strong>');
+        });
+      } else {
+        $('.alert-danger').hide();
+        var oTable = $('#partidos_table').dataTable();
+        oTable.fnDraw(false);
+        Swal.fire ( result.titulo ,  result.message ,  result.icono );
+        if (result.icono=="success") {
+          $("#create_partidos").modal('hide');
+        }
+      }
+    }
+  });
+});
+
+//--CODIGO PARA EDITAR ESTADO ---------------------//
+$('body').on('click', '#editPartido', function () {
+  var id = $(this).data('id');
+  $.ajax({
+    method:"GET",
+    url: "partidos/"+id+"/edit",
+    dataType: 'json',
+    success: function(data){
+      $('#edit_partidos').modal({backdrop: 'static', keyboard: true, show: true});
+      $('.alert-danger').hide();
+      $('#id_partido_edit').val(data.id);
+      $('#partido_edit').val(data.partido);
+    }
+  });
+});
+//--CODIGO PARA UPDATE ESTADO ---------------------//
+$('#SubmitEditPartido').click(function(e) {
+  e.preventDefault();
+  var id = $('#id_partido_edit').val();
+  $.ajax({
+    method:'PUT',
+    url: "partidos/"+id+"",
+    data: {
+      id_partido: $('#id_partido_edit').val(),
+      partido: $('#partido_edit').val()
+    },
+    success: (data) => {
+      if(data.errors) {
+        $('.alert-danger').html('');
+        $.each(data.errors, function(key, value) {
+          $('.alert-danger').show();
+          $('.alert-danger').append('<strong><li>'+value+'</li></strong>');
+        });
+      } else {
+        var oTable = $('#partidos_table').dataTable();
+        oTable.fnDraw(false);
+        Swal.fire ( data.titulo ,  data.message ,  data.icono );
+        if (data.icono=="success") {
+          $("#edit_partidos").modal('hide');
+        }
+      }
+    },
+    error: function(data){
+      console.log(data);
+    }
+  });
+});
+//--CODIGO PARA ELIMINAR ESTADO ---------------------//
+function deletePartido(id){
+  var id = id;
+  Swal.fire({
+    title: '¿Estás seguro que desea eliminar a este partido?',
+    text: "¡Esta opción no podrá deshacerse en el futuro!",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: '¡Si, Eliminar!',
+    cancelButtonText: 'No, Cancelar!'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      // ajax
+      $.ajax({
+        type:"DELETE",
+        url: "partidos/"+id+"",
+        data: { id: id },
+        dataType: 'json',
+        success: function(response){
+          Swal.fire ( response.titulo ,  response.message ,  response.icono );
+          var oTable = $('#partidos_table').dataTable();
+          oTable.fnDraw(false);
+        },
+        error: function (data) {
+          Swal.fire({title: "Error del servidor", text:  "Partido no eliminado", icon:  "error"});
+        }
+      });
+    }
+  })
+}
 </script>
-<script type="text/javascript">
-  function edit_partidos(id,partido) {
-    $('#id_partido').val(id);
-    $('#partido_edit').val(partido);
-  }
-</script>
+<script src="{{ asset('js/sweetalert2.min.js') }}"></script>
 @endsection
