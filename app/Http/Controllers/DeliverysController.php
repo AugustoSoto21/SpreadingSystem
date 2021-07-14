@@ -19,7 +19,7 @@ class DeliverysController extends Controller
     public function index()
     {
         if(request()->ajax()) {
-            $deliverys=Deliverys::all();
+            $deliverys=\DB::table('deliverys')->join('agencias','agencias.id','=','deliverys.id_agencia')->select('deliverys.*','agencias.agencia')->get();
             return datatables()->of($deliverys)
                 ->addColumn('action', function ($row) {
                     $edit = '<a href="javascript:void(0);" data-id="'.$row->id.'" class="btn btn-warning btn-xs" id="editDelivery"><i class="fa fa-pencil-alt"></i></a>';
@@ -98,7 +98,11 @@ class DeliverysController extends Controller
      */
     public function edit($id)
     {
-        $deliverys=Deliverys::where('id',$id)->first();
+        //$deliverys=Deliverys::where('id',$id)->first();
+        $deliverys=\DB::table('deliverys')
+        ->join('agencias','agencias.id','=','deliverys.id_agencia')
+        ->select('deliverys.*','agencias.agencia')
+        ->where('deliverys.id',$id)->get();
         $agencias=Agencias::all();
         return Response()->json([$deliverys,$agencias]);
     }

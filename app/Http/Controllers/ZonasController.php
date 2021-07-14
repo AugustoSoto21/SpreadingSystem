@@ -20,7 +20,10 @@ class ZonasController extends Controller
     public function index()
     {
         if(request()->ajax()) {
-            $zonas=Zonas::all();
+            //$zonas=Zonas::all();
+            $zonas=\DB::table('zonas')
+            ->join('partidos','partidos.id','=','zonas.id_partido')
+            ->select('zonas.*','partidos.partido')->get();
             return datatables()->of($zonas)
                 ->addColumn('action', function ($row) {
                     $edit = '<a href="javascript:void(0);" data-id="'.$row->id.'" class="btn btn-warning btn-xs" id="editZona"><i class="fa fa-pencil-alt"></i></a>';
@@ -99,7 +102,11 @@ class ZonasController extends Controller
      */
     public function edit($id)
     {
-        $zonas=Zonas::where('id',$id)->first();
+        //$zonas=Zonas::where('id',$id)->first();
+        $zonas=\DB::table('zonas')
+            ->join('partidos','partidos.id','=','zonas.id_partido')
+            ->where('zonas.id',$id)
+            ->select('zonas.*','partidos.partido')->get();
         $partidos=Partidos::all();
         return response()->json($zonas,$partidos);
 
