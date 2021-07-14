@@ -7,9 +7,8 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <form action="{{ route('deliverys.update',1) }}" method="POST" data-parsley-validate>
-        @csrf
-        @method('PUT')
+      <form action="#" method="POST" data-parsley-validate >
+        
         <div class="modal-body">
            <p align="center"><small>Todos los campos <b style="color: red;">*</b> son requeridos.</small></p>
            <input type="hidden" name="id_delivery_x" value="" id="id_delivery_x" placeholder="" />

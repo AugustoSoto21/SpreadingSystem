@@ -95,6 +95,7 @@ $(document).ready( function () {
    },
     columns: [
       { data: 'delivery', name: 'delivery' },
+      { data: 'agencia', name: 'agencia' },
       {data: 'action', name: 'action', orderable: false},
     ],
     order: [[0, 'desc']]
@@ -153,7 +154,7 @@ $('body').on('click', '#editDelivery', function () {
       $('.alert-danger').hide();
       $('#id_delivery_edit').val(data.id);
       $('#delivery_edit').val(data.delivery);
-      $('#color_edit').val(data.color);
+      $('#id_agencia_edit').val(data.id_agencia);
     }
   });
 });
@@ -167,7 +168,7 @@ $('#SubmitEditDelivery').click(function(e) {
     data: {
       id_delivery: $('#id_delivery_edit').val(),
       delivery: $('#delivery_edit').val(),
-      color: $('#color_edit').val()
+      id_agencia: $('#id_agencia_edit').val()
     },
     success: (data) => {
       if(data.errors) {
