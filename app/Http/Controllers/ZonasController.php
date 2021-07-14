@@ -8,6 +8,8 @@ use App\Models\Pedidos;
 use App\Models\Partidos;
 use App\Models\Tarifas;
 use Alert;
+use Datatables;
+
 class ZonasController extends Controller
 {
     /**
@@ -17,9 +19,18 @@ class ZonasController extends Controller
      */
     public function index()
     {
-        $zonas=Zonas::all();
-        $partidos=Partidos::all();
-        return view('zonas.index',compact('zonas','partidos'));
+        if(request()->ajax()) {
+            $zonas=Zonas::all();
+            return datatables()->of($zonas)
+                ->addColumn('action', function ($row) {
+                    $edit = '<a href="javascript:void(0);" data-id="'.$row->id.'" class="btn btn-warning btn-xs" id="editZona"><i class="fa fa-pencil-alt"></i></a>';
+                    $delete = ' <a href="javascript:void(0);" id="delete-estado" onClick="deleteZona('.$row->id.')" class="delete btn btn-danger btn-xs"><i class="fa fa-trash"></i></a>';
+                    return $edit . $delete;
+                })->rawColumns(['action'])
+                ->addIndexColumn()
+                ->make(true);
+        }
+        return view('zonas.index');
     }
 
     /**
@@ -29,7 +40,8 @@ class ZonasController extends Controller
      */
     public function create()
     {
-        //
+        $partidos=Partidos::all();
+        return response()->json($partidos);
     }
 
     /**
@@ -41,10 +53,21 @@ class ZonasController extends Controller
     public function store(Request $request)
     {
         //dd($request->all());
+        $message =[
+            'zona.required' => 'El campo zona es obligatorio',
+            'id_partido.required' => 'El campo partido es obligatorio',
+        ];
+        $validator = \Validator::make($request->all(), [
+            'zona' => 'required',
+            'id_partido' => 'required',
+        ],$message);
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()->all()]);
+        }
+
         $buscar=Zonas::where('zona',$request->zona)->where('id_partido',$request->id_partido)->count();
         if($buscar > 0){
-            Alert::error('Error', 'El nombre del zona ya ha sido registrado al partido seleccionado')->persistent(true);
-        return redirect()->back();
+            return response()->json(['message'=>"La Zona ya ha sido registrado en dicho partido.",'icono'=>'warning','titulo'=>'Alerta']);
         }else{
             
                 $zona= new Zonas();
@@ -52,8 +75,7 @@ class ZonasController extends Controller
                 $zona->id_partido=$request->id_partido;
                 $zona->save();
 
-                Alert::success('Muy bien', 'Zona registrada con éxito')->persistent(true);
-                return redirect()->back();
+                return response()->json(['message'=>"La zona ha sido registrada con éxito",'icono'=>'success','titulo'=>'Éxito']);
             
         }
     }
@@ -75,9 +97,12 @@ class ZonasController extends Controller
      * @param  \App\Models\Zonas  $zonas
      * @return \Illuminate\Http\Response
      */
-    public function edit(Zonas $zonas)
+    public function edit($id)
     {
-        //
+        $zonas=Zonas::where('id',$id)->first();
+        $partidos=Partidos::all();
+        return response()->json($zonas,$partidos);
+
     }
 
     /**
@@ -89,10 +114,21 @@ class ZonasController extends Controller
      */
     public function update(Request $request, $id_zona)
     {
+        $message =[
+            'zona.required' => 'El campo zona es obligatorio',
+            'id_partido.required' => 'El campo partido es obligatorio',
+        ];
+        $validator = \Validator::make($request->all(), [
+            'zona' => 'required',
+            'id_partido' => 'required',
+        ],$message);
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()->all()]);
+        }
+
         $buscar=Zonas::where('zona',$request->mi_zona)->where('id_partido',$request->id_partido_edit)->where('id','<>',$request->id_zona_x)->count();
         if($buscar > 0){
-            Alert::error('Error', 'El nombre del zona ya ha sido registrado al partido seleccionado')->persistent(true);
-        return redirect()->back();
+             return response()->json(['message'=>"La Zona ya ha sido registrado en dicho partido.",'icono'=>'warning','titulo'=>'Alerta']);
         }else{
             
                 $zona= Zonas::find($request->id_zona_x);
@@ -100,8 +136,7 @@ class ZonasController extends Controller
                 $zona->id_partido_edit=$request->id_partido_edit;
                 $zona->save();
 
-                Alert::success('Muy bien', 'Zona actualizada con éxito')->persistent(true);
-                return redirect()->back();
+                return response()->json(['message'=>"La zona ha sido registrada con éxito",'icono'=>'success','titulo'=>'Éxito']);
             
         }
     }
@@ -112,19 +147,19 @@ class ZonasController extends Controller
      * @param  \App\Models\Zonas  $zonas
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request)
+    public function destroy($id)
     {
-        $buscar=Tarifas::where('id_zona',$request->id_zona)->count();
+        $buscar=Tarifas::where('id_zona',$id)->count();
         if($buscar > 0){
-            Alert::warning('Alerta', 'La Zona que intenta eliminar se encuentra relacionada con alguna tarifa')->persistent(true);
+            return response()->json(['message'=>"La Zona que intenta eliminar se encuentra relacionada con alguna tarifa",'icono'=>'warning','titulo'=>'Alerta']);
         }else{
-            $zona=Zonas::find($request->id_zona);
+            $zona=Zonas::find($id);
             if($zona->delete()){
-              Alert::warning('Alerta', 'La zona no pudo ser eliminado')->persistent(true);  
+              return response()->json(['message'=>"La zona ha sido eliminada con éxito",'icono'=>'warning','titulo'=>'Éxito']);
             }else{
-                Alert::warning('Alerta', 'La zona fue eliminada con éxito')->persistent(true);
+                return response()->json(['message'=>"La zona no pudo ser eliminada",'icono'=>'warning','titulo'=>'Alerta']);
             }
         }
-        return redirect()->back();
+        
     }
 }

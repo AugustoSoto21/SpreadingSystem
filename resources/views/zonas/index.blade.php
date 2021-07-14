@@ -20,7 +20,6 @@
   <div class="container-fluid">
     @include('zonas.partials.create')
     @include('zonas.partials.edit')
-    @include('zonas.partials.delete')
     <div class="row">
       <div class="col-12">
         <div class="card card-primary card-outline card-tabs">
@@ -43,7 +42,7 @@
               @if(search_permits('Zonas','Registrar')=="Si")
               {{-- <a href="{!! route('zonas.create') !!}" class="btn bg-gradient-primary btn-sm pull-right" data-tooltip="tooltip" data-placement="top" title="Registrar zona"><i class="fas fa-edit"></i> Registrar zonas</a> --}}
 
-              <a class="btn btn-info btn-xs text-white" data-toggle="modal" data-target="#create_zonas" onclick="create_zonas()" data-tooltip="tooltip" data-placement="top" title="Crear Zonas">
+              <a class="btn btn-info btn-sm text-white" data-toggle="modal" data-target="#create_zonas" data-tooltip="tooltip" data-placement="top" title="Crear Zonas" id="createNewZona">
                 <i class="fa fa-save"> &nbsp;Registrar</i>
               </a>
               @endif
@@ -60,48 +59,7 @@
                 </tr>
               </thead>
               <tbody>
-                @foreach($zonas as $k)
-                  
-                  <tr >
-                    <td>{!!$k->zona!!}</td>
-                    <td>{!!$k->partidos->partido!!}</td>
-                    
-                    <td>
-                      <!--ACCIÓN DE VER PRODUCTOS -->
-                      {{-- @if(search_permits('Zonas','Ver todos los usuarios')=="Si")
-                        <a href="{!! route('zonas.show', $k->id) !!}" class="btn btn-info btn-xs" data-tooltip="tooltip" data-placement="top" title="Ver zona"><i class="fa fa-search"></i></a>
-                      @elseif(search_permits('Zonas','Ver mismo usuario')=="Si")
-                        @if($k->id_user == \Auth::User()->id)
-                          <a href="{!! route('zonas.show', $k->id) !!}" class="btn btn-info btn-xs" data-tooltip="tooltip" data-placement="top" title="Ver zona"><i class="fa fa-search"></i></a>
-                        @endif
-                      @endif
- --}}
-                      <!--ACCIÓN DE EDITAR PRODUCTOS -->
-                      @if(search_permits('Zonas','Editar todos los usuarios')=="Si")
-                        <a href="{!! route('zonas.edit', $k->id) !!}" class="btn btn-warning btn-xs" data-toggle="modal" data-target="#edit_zonas" onclick="edit_zonas('{!! $k->id !!}','{!! $k->zona !!}','{!! $k->id_partido !!}')" data-tooltip="tooltip" data-placement="top" title="Editar zona"><i class="fa fa-pencil-alt"></i></a>
-                      @elseif(search_permits('Zonas','Editar mismo usuario')=="Si")
-                        @if($k->id_user == \Auth::User()->id)
-                          <a href="{!! route('zonas.edit', $k->id) !!}" class="btn btn-warning btn-xs" data-toggle="modal" data-target="#edit_zonas" onclick="edit_zonas('{!! $k->id !!}','{!! $k->zona !!}','{!! $k->id_partido !!}')" data-tooltip="tooltip"  data-placement="top" title="Editar zona"><i class="fa fa-pencil-alt"></i></a>
-                        @endif
-                      @endif
-
-                      <!--ACCIÓN DE ELIMINAR PRODUCTO -->
-                      @if(search_permits('Zonas','Eliminar todos los usuarios')=="Si")
-                        <a class="btn btn-danger btn-xs text-white" data-toggle="modal" data-target="#delete_zonas" onclick="delete_zonas('{{$k->id}}')" data-tooltip="tooltip" data-placement="top" title="Eliminar zona">
-                          <i class="fa fa-trash"></i>
-                        </a>
-                      @elseif(search_permits('Zonas','Eliminar mismo usuario')=="Si")
-                        @if($k->id_user == \Auth::User()->id)
-                          <a class="btn btn-danger btn-xs text-white" data-toggle="modal" data-target="#delete_zonas" onclick="delete_zonas('{{$k->id}}')" data-tooltip="tooltip" data-placement="top" title="Eliminar zona">
-                          <i class="fa fa-trash"></i>
-                        </a>
-                        @endif
-                      @endif
-                      
-                    </td>
-                  </tr>
-                  
-                @endforeach
+                
               </tbody>
             </table>
           </div>
@@ -123,22 +81,148 @@
 @endsection
 @section('scripts')
 <script>
-  $(function () {
-    $("#zonas").DataTable({
-      "responsive": true,
-      "autoWidth": false,
-    });
+$(document).ready( function () {
+  $.ajaxSetup({
+    headers: {
+      'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    }
   });
-  function delete_zonas(id) {
-    $('#delete_id_zona').val(id);
-  }
-  
+  $('#zonas_table').DataTable({
+    processing: true,
+    serverSide: true,
+    ajax: {
+      url:"{{ url('zonas') }}"
+   },
+    columns: [
+      { data: 'zona', name: 'zona' },
+      { data: 'partido', name: 'partido' },
+      {data: 'action', name: 'action', orderable: false},
+    ],
+    order: [[0, 'desc']]
+  });
+});
+//--CODIGO PARA CREAR ESTADOS (LEVANTAR EL MODAL) ---------------------//
+$('#createNewZona').click(function () {
+  $('#zonaForm').trigger("reset");
+  $('#create_zonas').modal({backdrop: 'static', keyboard: true, show: true});
+  $('.alert-danger').hide();
+});
+//--CODIGO PARA CREAR ESTADOS (GUARDAR REGISTRO) ---------------------//
+$('#SubmitCreateZona').click(function(e) {
+  e.preventDefault();
+  $.ajaxSetup({
+    headers: {
+      'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    }
+  });
+  $.ajax({
+    url: "{{ route('zonas.store') }}",
+    method: 'post',
+    data: {
+      zona: $('#zona').val(),
+      id_partido: $('#id_partido').val(),
+    },
+    success: function(result) {
+      if(result.errors) {
+        $('.alert-danger').html('');
+        $.each(result.errors, function(key, value) {
+          $('.alert-danger').show();
+          $('.alert-danger').append('<strong><li>'+value+'</li></strong>');
+        });
+      } else {
+        $('.alert-danger').hide();
+        var oTable = $('#zonas_table').dataTable();
+        oTable.fnDraw(false);
+        Swal.fire ( result.titulo ,  result.message ,  result.icono );
+        if (result.icono=="success") {
+          $("#create_zonas").modal('hide');
+        }
+      }
+    }
+  });
+});
+
+//--CODIGO PARA EDITAR ESTADO ---------------------//
+$('body').on('click', '#editZona', function () {
+  var id = $(this).data('id');
+  $.ajax({
+    method:"GET",
+    url: "zonas/"+id+"/edit",
+    dataType: 'json',
+    success: function(data){
+      $('#edit_zonas').modal({backdrop: 'static', keyboard: true, show: true});
+      $('.alert-danger').hide();
+      $('#id_zona_edit').val(data.id);
+      $('#zona_edit').val(data.zona);
+      $('#id_partido_edit').val(data.id_partido);
+    }
+  });
+});
+//--CODIGO PARA UPDATE ESTADO ---------------------//
+$('#SubmitEditZona').click(function(e) {
+  e.preventDefault();
+  var id = $('#id_zona_edit').val();
+  $.ajax({
+    method:'PUT',
+    url: "zonas/"+id+"",
+    data: {
+      id_zona: $('#id_zona_edit').val(),
+      zona: $('#zona_edit').val(),
+      id_partido: $('#id_partido_edit').val()
+    },
+    success: (data) => {
+      if(data.errors) {
+        $('.alert-danger').html('');
+        $.each(data.errors, function(key, value) {
+          $('.alert-danger').show();
+          $('.alert-danger').append('<strong><li>'+value+'</li></strong>');
+        });
+      } else {
+        var oTable = $('#zonas_table').dataTable();
+        oTable.fnDraw(false);
+        Swal.fire ( data.titulo ,  data.message ,  data.icono );
+        if (data.icono=="success") {
+          $("#edit_zonas").modal('hide');
+        }
+      }
+    },
+    error: function(data){
+      console.log(data);
+    }
+  });
+});
+//--CODIGO PARA ELIMINAR ESTADO ---------------------//
+function deleteZona(id){
+  var id = id;
+  Swal.fire({
+    title: '¿Estás seguro que desea eliminar a esta zona?',
+    text: "¡Esta opción no podrá deshacerse en el futuro!",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: '¡Si, Eliminar!',
+    cancelButtonText: 'No, Cancelar!'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      // ajax
+      $.ajax({
+        type:"DELETE",
+        url: "zonas/"+id+"",
+        data: { id: id },
+        dataType: 'json',
+        success: function(response){
+          Swal.fire ( response.titulo ,  response.message ,  response.icono );
+          var oTable = $('#zonas_table').dataTable();
+          oTable.fnDraw(false);
+        },
+        error: function (data) {
+          Swal.fire({title: "Error del servidor", text:  "Zona no eliminada", icon:  "error"});
+        }
+      });
+    }
+  })
+}
 </script>
-<script type="text/javascript">
-  function edit_zonas(id,zona, id_partido) {
-    $('#id_zona_x').val(id);
-    $('#mi_zona_edit').val(zona);
-    $("#id_partido_edit option[value='"+ id_partido +"']").attr("selected",true);
-  }
-</script>
+<script src="{{ asset('js/sweetalert2.min.js') }}"></script>
 @endsection
