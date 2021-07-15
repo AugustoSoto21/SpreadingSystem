@@ -99,6 +99,9 @@ $(document).ready( function () {
       { data: 'color', name: 'color' },
       {data: 'action', name: 'action', orderable: false},
     ],
+    createdRow: function(row,data,index){
+      $('td',row).eq(1).css('background',data.color);
+    },
     order: [[0, 'desc']]
   });
 });
