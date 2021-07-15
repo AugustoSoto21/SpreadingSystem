@@ -5,7 +5,7 @@
   <div class="container-fluid">
     <div class="row mb-2">
       <div class="col-sm-6">
-        <h1 class="m-0 text-dark"><i class="nav-icon fa fa-shopping-basket"></i> Zonas</h1>
+        <h1 class="m-0 text-dark"><i class="nav-icon fas fa-search-location"></i> Zonas</h1>
       </div><!-- /.col -->
       <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
@@ -24,7 +24,7 @@
       <div class="col-12">
         <div class="card card-primary card-outline card-tabs">
           <div class="card-header">
-            <h3 class="card-title"><i class="nav-icon fa fa-shopping-basket"></i> Zonas registradas</h3>
+            <h3 class="card-title"><i class="nav-icon fas fa-search-location"></i> Zonas registradas</h3>
             <div class="card-tools">
               @if(search_permits('Zonas','Imprimir PDF')=="Si" || search_permits('Zonas','Imprimir Excel')=="Si")
               <div class="btn-group">
@@ -90,6 +90,8 @@ $(document).ready( function () {
   $('#zonas_table').DataTable({
     processing: true,
     serverSide: true,
+    responsive: true,
+    autoWidth: false,
     ajax: {
       url:"{{ url('zonas') }}"
    },

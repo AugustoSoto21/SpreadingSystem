@@ -1,7 +1,7 @@
 <!-- Main Sidebar Container -->
   <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
-    <a href="index3.html" class="brand-link">
+    <a href="{!!route('home')!!}" class="brand-link">
       <img src="{!! asset('img/AdminLTELogo.png') !!}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
       <span class="brand-text font-weight-light">Spreading System</span>
     </a>
@@ -41,43 +41,43 @@
           </li>
           <li class="nav-item">
             <a href="{!!route('estados.index')!!}" class="nav-link">
-              <i class="nav-icon fas fa-tachometer-alt"></i>
+              <i class="nav-icon fas fa-info-circle"></i>
               <p>Estados</p>
             </a>
           </li>
           <li class="nav-item">
             <a href="{!!route('partidos.index')!!}" class="nav-link">
-              <i class="nav-icon fas fa-tachometer-alt"></i>
+              <i class="nav-icon fas fa-globe-americas"></i>
               <p>Partidos</p>
             </a>
           </li>
           <li class="nav-item">
             <a href="{!!route('zonas.index')!!}" class="nav-link">
-              <i class="nav-icon fas fa-tachometer-alt"></i>
+              <i class="nav-icon fas fa-search-location"></i>
               <p>Zonas</p>
             </a>
           </li>
           <li class="nav-item">
             <a href="{!!route('agencias.index')!!}" class="nav-link">
-              <i class="nav-icon fas fa-tachometer-alt"></i>
+              <i class="nav-icon fas fa-home"></i>
               <p>Agencias</p>
             </a>
           </li>
           <li class="nav-item">
             <a href="{!!route('fuentes.index')!!}" class="nav-link">
-              <i class="nav-icon fas fa-tachometer-alt"></i>
+              <i class="nav-icon fas fa-share-alt-square"></i>
               <p>Fuentes</p>
             </a>
           </li>
           <li class="nav-item">
             <a href="{!!route('deliverys.index')!!}" class="nav-link">
-              <i class="nav-icon fas fa-tachometer-alt"></i>
+              <i class="nav-icon fas fa-motorcycle"></i>
               <p>Deliverys</p>
             </a>
           </li>
           <li class="nav-item">
             <a href="{!!route('clientes.index')!!}" class="nav-link">
-              <i class="nav-icon fas fa-tachometer-alt"></i>
+              <i class="nav-icon fas fa-users"></i>
               <p>Clientes</p>
             </a>
           </li>
