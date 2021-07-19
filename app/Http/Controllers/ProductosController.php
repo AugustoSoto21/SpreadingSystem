@@ -15,10 +15,8 @@ class ProductosController extends Controller
      */
     public function index()
     {
-        
         if(request()->ajax()) {
             $productos=Productos::all();
-            
             return datatables()->of($productos)
                 ->addColumn('action', function ($row) {
                     $edit = '<a href="javascript:void(0);" data-id="'.$row->id.'" class="btn btn-warning btn-xs" id="editProducto"><i class="fa fa-pencil-alt"></i></a>';
@@ -28,6 +26,7 @@ class ProductosController extends Controller
                 ->addIndexColumn()
                 ->make(true);
         }
+
         return view('productos.index');
     }
 

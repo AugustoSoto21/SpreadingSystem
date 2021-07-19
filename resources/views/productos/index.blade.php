@@ -24,7 +24,7 @@
       <div class="col-12">
         <div class="card card-primary card-outline card-tabs">
           <div class="card-header">
-            <h3 class="card-title"><i class="nav-icon fas fa-search-location"></i> Productos registradas</h3>
+            <h3 class="card-title"><i class="nav-icon fas fa-search-location"></i> Productos registrados</h3>
             <div class="card-tools">
               @if(search_permits('Productos','Imprimir PDF')=="Si" || search_permits('Productos','Imprimir Excel')=="Si")
               <div class="btn-group">
