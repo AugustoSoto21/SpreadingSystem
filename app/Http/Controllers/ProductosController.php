@@ -189,6 +189,7 @@ class ProductosController extends Controller
             
             return response()->json(['message'=>"El Cliente que intenta eliminar se encuentra relacionado con algún pedido",'icono'=>'warning','titulo'=>'Alerta']);
         }else{*/
+            //esperando relacion con inventario
             $producto=Productos::find($id);
             if($producto->delete()){
               return response()->json(['message'=>"El producto fue eliminado con éxito",'icono'=>'success','titulo'=>'Éxito']); 
