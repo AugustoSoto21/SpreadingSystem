@@ -21,6 +21,6 @@ class Deliverys extends Model
 
     public function pedidos(){
 
-    	return $this->hasOne(Pedidos::class);
+    	return $this->hasMany(Pedidos::class);
     }
 }

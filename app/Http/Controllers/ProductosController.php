@@ -4,7 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Productos;
 use Illuminate\Http\Request;
-
+use Alert;
+use Datatables;
 class ProductosController extends Controller
 {
     /**
@@ -14,7 +15,20 @@ class ProductosController extends Controller
      */
     public function index()
     {
-        //
+        
+        if(request()->ajax()) {
+            $productos=Productos::all();
+            
+            return datatables()->of($productos)
+                ->addColumn('action', function ($row) {
+                    $edit = '<a href="javascript:void(0);" data-id="'.$row->id.'" class="btn btn-warning btn-xs" id="editProducto"><i class="fa fa-pencil-alt"></i></a>';
+                    $delete = ' <a href="javascript:void(0);" id="delete-estado" onClick="deleteProducto('.$row->id.')" class="delete btn btn-danger btn-xs"><i class="fa fa-trash"></i></a>';
+                    return $edit . $delete;
+                })->rawColumns(['action'])
+                ->addIndexColumn()
+                ->make(true);
+        }
+        return view('productos.index');
     }
 
     /**

@@ -81,6 +81,12 @@
               <p>Clientes</p>
             </a>
           </li>
+          <li class="nav-item">
+            <a href="{!!route('productos.index')!!}" class="nav-link">
+              <i class="nav-icon fas fa-users"></i>
+              <p>Productos</p>
+            </a>
+          </li>
         </ul>
       </nav>
       <!-- /.sidebar-menu -->

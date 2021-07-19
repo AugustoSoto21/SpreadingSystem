@@ -1,16 +1,16 @@
 @extends('layouts.app')
-@section('title') Zonas @endsection
+@section('title') Productos @endsection
 @section('content')
 <div class="content-header">
   <div class="container-fluid">
     <div class="row mb-2">
       <div class="col-sm-6">
-        <h1 class="m-0 text-dark"><i class="nav-icon fas fa-search-location"></i> Zonas</h1>
+        <h1 class="m-0 text-dark"><i class="nav-icon fas fa-search-location"></i> Productos</h1>
       </div><!-- /.col -->
       <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
           <li class="breadcrumb-item"><a href="#">Home</a></li>
-          <li class="breadcrumb-item active">Zonas</li>
+          <li class="breadcrumb-item active">Productos</li>
         </ol>
       </div><!-- /.col -->
     </div><!-- /.row -->
@@ -18,41 +18,41 @@
 </div>
 <section class="content">
   <div class="container-fluid">
-    @include('zonas.partials.create')
-    @include('zonas.partials.edit')
+    @include('productos.partials.create')
+    @include('productos.partials.edit')
     <div class="row">
       <div class="col-12">
         <div class="card card-primary card-outline card-tabs">
           <div class="card-header">
-            <h3 class="card-title"><i class="nav-icon fas fa-search-location"></i> Zonas registradas</h3>
+            <h3 class="card-title"><i class="nav-icon fas fa-search-location"></i> Productos registradas</h3>
             <div class="card-tools">
-              @if(search_permits('Zonas','Imprimir PDF')=="Si" || search_permits('Zonas','Imprimir Excel')=="Si")
+              @if(search_permits('Productos','Imprimir PDF')=="Si" || search_permits('Productos','Imprimir Excel')=="Si")
               <div class="btn-group">
                 <a class="btn btn-danger dropdown-toggle btn-sm dropdown-icon text-white" data-toggle="dropdown" data-tooltip="tooltip" data-placement="top" title="Generar reportes">Imprimir </a>
                 <div class="dropdown-menu dropdown-menu-right">
-                  @if(search_permits('Zonas','Imprimir PDF')=="Si")
-                  {{-- <a class="dropdown-item" href="{!!route('zonas.pdf')!!}" target="_blank" data-tooltip="tooltip" data-placement="top" title="Reportes en PDF"><i class="fa fa-file-pdf"></i> Exportar a PDF</a> --}}
+                  @if(search_permits('Productos','Imprimir PDF')=="Si")
+                  {{-- <a class="dropdown-item" href="{!!route('productos.pdf')!!}" target="_blank" data-tooltip="tooltip" data-placement="top" title="Reportes en PDF"><i class="fa fa-file-pdf"></i> Exportar a PDF</a> --}}
                   @endif
-                  {{-- @if(search_permits('Zonas','Imprimir Excel')=="Si")
-                  <a class="dropdown-item" href="{!! route('zonas.excel') !!}" target="_blank" data-tooltip="tooltip" data-placement="top" title="Reportes en Excel"><i class="fa fa-file-excel"></i> Exportar a Excel</a>
+                  {{-- @if(search_permits('Productos','Imprimir Excel')=="Si")
+                  <a class="dropdown-item" href="{!! route('productos.excel') !!}" target="_blank" data-tooltip="tooltip" data-placement="top" title="Reportes en Excel"><i class="fa fa-file-excel"></i> Exportar a Excel</a>
                   @endif --}}
                 </div>
               </div>
               @endif
-              @if(search_permits('Zonas','Registrar')=="Si")
+              @if(search_permits('Productos','Registrar')=="Si")
               
-              <a class="btn btn-info btn-sm text-white" data-toggle="modal" data-target="#create_zonas" data-tooltip="tooltip" data-placement="top" title="Crear Zonas" id="createNewZona">
+              <a class="btn btn-info btn-sm text-white" data-toggle="modal" data-target="#create_productos" data-tooltip="tooltip" data-placement="top" title="Crear Productos" id="createNewProducto">
                 <i class="fa fa-save"> &nbsp;Registrar</i>
               </a>
               @endif
             </div>
           </div>
-          @if(search_permits('Zonas','Ver mismo usuario')=="Si" || search_permits('Zonas','Ver todos los usuarios')=="Si" || search_permits('Zonas','Editar mismo usuario')=="Si" || search_permits('Zonas','Editar todos los usuarios')=="Si" || search_permits('Zonas','Eliminar mismo usuario')=="Si" || search_permits('Zonas','Eliminar todos los usuarios')=="Si")
+          @if(search_permits('Productos','Ver mismo usuario')=="Si" || search_permits('Productos','Ver todos los usuarios')=="Si" || search_permits('Productos','Editar mismo usuario')=="Si" || search_permits('Productos','Editar todos los usuarios')=="Si" || search_permits('Productos','Eliminar mismo usuario')=="Si" || search_permits('Productos','Eliminar todos los usuarios')=="Si")
           <div class="card-body">
-            <table id="zonas_table" class="table table-bordered table-striped table-sm" style="font-size: 12px;">
+            <table id="productos_table" class="table table-bordered table-striped table-sm" style="font-size: 12px;">
               <thead>
                 <tr>
-                  <th>Zona</th>
+                  <th>Producto</th>
                   <th>Partido</th>
                   <th>Acciones</th>
                 </tr>
@@ -86,30 +86,36 @@ $(document).ready( function () {
       'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
     }
   });
-  $('#zonas_table').DataTable({
+  $('#productos_table').DataTable({
     processing: true,
     serverSide: true,
     responsive: true,
     autoWidth: false,
     ajax: {
-      url:"{{ url('zonas') }}"
+      url:"{{ url('productos') }}"
    },
     columns: [
-      { data: 'zona', name: 'zona' },
-      { data: 'partido', name: 'partido' },
+      { data: 'codigo', name: 'codigo' },
+      { data: 'nombre', name: 'nombre' },
+      { data: 'descripcion', name: 'descripcion' },
+      { data: 'modelo', name: 'modelo' },
+      { data: 'marca', name: 'marca' },
+      { data: 'color', name: 'color' },
+      { data: 'precio_venta', name: 'precio_venta' },
+      { data: 'status', name: 'status' },
       {data: 'action', name: 'action', orderable: false},
     ],
     order: [[0, 'desc']]
   });
 });
 //--CODIGO PARA CREAR ESTADOS (LEVANTAR EL MODAL) ---------------------//
-$('#createNewZona').click(function () {
-  $('#zonaForm').trigger("reset");
-  $('#create_zonas').modal({backdrop: 'static', keyboard: true, show: true});
+$('#createNewProducto').click(function () {
+  $('#productoForm').trigger("reset");
+  $('#create_productos').modal({backdrop: 'static', keyboard: true, show: true});
   $('.alert-danger').hide();
 });
 //--CODIGO PARA CREAR ESTADOS (GUARDAR REGISTRO) ---------------------//
-$('#SubmitCreateZona').click(function(e) {
+$('#SubmitCreateProducto').click(function(e) {
   e.preventDefault();
   $.ajaxSetup({
     headers: {
@@ -117,11 +123,17 @@ $('#SubmitCreateZona').click(function(e) {
     }
   });
   $.ajax({
-    url: "{{ route('zonas.store') }}",
+    url: "{{ route('productos.store') }}",
     method: 'post',
     data: {
-      zona: $('#zona').val(),
-      id_partido: $('#id_partido').val(),
+      codigo: $('#codigo').val(),
+      nombre: $('#nombre').val(),
+      descripcion: $('#descripcion').val(),
+      modelo: $('#modelo').val(),
+      marca: $('#marca').val(),
+      color: $('#color').val(),
+      precio_venta: $('#precio_venta').val(),
+      status: $('#status').val(),
     },
     success: function(result) {
       if(result.errors) {
@@ -132,11 +144,11 @@ $('#SubmitCreateZona').click(function(e) {
         });
       } else {
         $('.alert-danger').hide();
-        var oTable = $('#zonas_table').dataTable();
+        var oTable = $('#productos_table').dataTable();
         oTable.fnDraw(false);
         Swal.fire ( result.titulo ,  result.message ,  result.icono );
         if (result.icono=="success") {
-          $("#create_zonas").modal('hide');
+          $("#create_productos").modal('hide');
         }
       }
     }
@@ -144,32 +156,43 @@ $('#SubmitCreateZona').click(function(e) {
 });
 
 //--CODIGO PARA EDITAR ESTADO ---------------------//
-$('body').on('click', '#editZona', function () {
+$('body').on('click', '#editProducto', function () {
   var id = $(this).data('id');
   $.ajax({
     method:"GET",
-    url: "zonas/"+id+"/edit",
+    url: "productos/"+id+"/edit",
     dataType: 'json',
     success: function(data){
-      $('#edit_zonas').modal({backdrop: 'static', keyboard: true, show: true});
+      $('#edit_productos').modal({backdrop: 'static', keyboard: true, show: true});
       $('.alert-danger').hide();
-      $('#id_zona_edit').val(data[0].id);
-      $('#zona_edit').val(data[0].zona);
-      $('#id_partido_edit').val(data[0].id_partido);
+      $('#id_producto_edit').val(data[0].id);
+      $('#codigo_edit').val(data[0].codigo);
+      $('#nombre_edit').val(data[0].nombre);
+      $('#descripcion_edit').val(data[0].descripcion);
+      $('#modelo_edit').val(data[0].modelo);
+      $('#marca_edit').val(data[0].marca);
+      $('#precio_venta_edit').val(data[0].precio_venta);
+      $('#status_edit').val(data[0].status);
     }
   });
 });
 //--CODIGO PARA UPDATE ESTADO ---------------------//
-$('#SubmitEditZona').click(function(e) {
+$('#SubmitEditProducto').click(function(e) {
   e.preventDefault();
-  var id = $('#id_zona_edit').val();
+  var id = $('#id_producto_edit').val();
   $.ajax({
     method:'PUT',
-    url: "zonas/"+id+"",
+    url: "productos/"+id+"",
     data: {
-      id_zona: $('#id_zona_edit').val(),
-      zona: $('#zona_edit').val(),
-      id_partido: $('#id_partido_edit').val()
+      id_producto: $('#id_producto_edit').val(),
+      codigo: $('#codigo_edit').val(),
+      nombre: $('#nombre_edit').val(),
+      descripcion: $('#descripcion_edit').val(),
+      modelo: $('#modelo_edit').val(),
+      marca: $('#marca_edit').val(),
+      color: $('#color_edit').val(),
+      precio_venta: $('#precio_venta_edit').val(),
+      status: $('#status_edit').val()
     },
     success: (data) => {
       if(data.errors) {
@@ -179,11 +202,11 @@ $('#SubmitEditZona').click(function(e) {
           $('.alert-danger').append('<strong><li>'+value+'</li></strong>');
         });
       } else {
-        var oTable = $('#zonas_table').dataTable();
+        var oTable = $('#productos_table').dataTable();
         oTable.fnDraw(false);
         Swal.fire ( data.titulo ,  data.message ,  data.icono );
         if (data.icono=="success") {
-          $("#edit_zonas").modal('hide');
+          $("#edit_productos").modal('hide');
         }
       }
     },
@@ -193,10 +216,10 @@ $('#SubmitEditZona').click(function(e) {
   });
 });
 //--CODIGO PARA ELIMINAR ESTADO ---------------------//
-function deleteZona(id){
+function deleteProducto(id){
   var id = id;
   Swal.fire({
-    title: '¿Estás seguro que desea eliminar a esta zona?',
+    title: '¿Estás seguro que desea eliminar a esta producto?',
     text: "¡Esta opción no podrá deshacerse en el futuro!",
     icon: 'warning',
     showCancelButton: true,
@@ -209,16 +232,16 @@ function deleteZona(id){
       // ajax
       $.ajax({
         type:"DELETE",
-        url: "zonas/"+id+"",
+        url: "productos/"+id+"",
         data: { id: id },
         dataType: 'json',
         success: function(response){
           Swal.fire ( response.titulo ,  response.message ,  response.icono );
-          var oTable = $('#zonas_table').dataTable();
+          var oTable = $('#productos_table').dataTable();
           oTable.fnDraw(false);
         },
         error: function (data) {
-          Swal.fire({title: "Error del servidor", text:  "Zona no eliminada", icon:  "error"});
+          Swal.fire({title: "Error del servidor", text:  "Producto no eliminada", icon:  "error"});
         }
       });
     }

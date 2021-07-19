@@ -40,8 +40,7 @@
               </div>
               @endif
               @if(search_permits('Deliverys','Registrar')=="Si")
-              {{-- <a href="{!! route('deliverys.create') !!}" class="btn bg-gradient-primary btn-sm pull-right" data-tooltip="tooltip" data-placement="top" title="Registrar delivery"><i class="fas fa-edit"></i> Registrar deliverys</a> --}}
-
+              
               <a class="btn btn-info btn-sm text-white" data-toggle="modal" data-target="#create_deliverys" data-tooltip="tooltip" data-placement="top" title="Crear Deliverys" id="createNewDelivery">
                 <i class="fa fa-save"> &nbsp;Registrar</i>
               </a>
@@ -50,7 +49,7 @@
           </div>
           @if(search_permits('Deliverys','Ver mismo usuario')=="Si" || search_permits('Deliverys','Ver todos los usuarios')=="Si" || search_permits('Deliverys','Editar mismo usuario')=="Si" || search_permits('Deliverys','Editar todos los usuarios')=="Si" || search_permits('Deliverys','Eliminar mismo usuario')=="Si" || search_permits('Deliverys','Eliminar todos los usuarios')=="Si")
           <div class="card-body">
-            <table id="deliverys" class="table table-bordered table-striped table-sm" style="font-size: 12px;">
+            <table id="deliverys_table" class="table table-bordered table-striped table-sm" style="font-size: 12px;">
               <thead>
                 <tr>
                   <th>Delivery</th>
@@ -97,7 +96,7 @@ $(document).ready( function () {
    },
     columns: [
       { data: 'delivery', name: 'delivery' },
-      { data: 'agencia', name: 'agencia' },
+      { data: 'nombre', name: 'nombre' },
       {data: 'action', name: 'action', orderable: false},
     ],
     order: [[0, 'desc']]
@@ -152,11 +151,13 @@ $('body').on('click', '#editDelivery', function () {
     url: "deliverys/"+id+"/edit",
     dataType: 'json',
     success: function(data){
+      
       $('#edit_deliverys').modal({backdrop: 'static', keyboard: true, show: true});
       $('.alert-danger').hide();
-      $('#id_delivery_edit').val(data.id);
-      $('#delivery_edit').val(data.delivery);
-      $('#id_agencia_edit').val(data.id_agencia);
+      $('#id_delivery_edit').val(data[0].id);
+      $('#delivery_edit').val(data[0].delivery);
+      $("#id_agencia_edit option[value='"+ data[0].id_agencia +"']").attr("selected",true);
+      //$('#id_agencia_edit').val(data.id_agencia);
     }
   });
 });

@@ -21,10 +21,10 @@ class ZonasController extends Controller
     {
         $partidos=Partidos::all();
         if(request()->ajax()) {
-            $zonas=Zonas::all();
-            /*$zonas=\DB::table('zonas')
+            //$zonas=Zonas::all();
+            $zonas=\DB::table('zonas')
             ->join('partidos','partidos.id','=','zonas.id_partido')
-            ->select('zonas.*','partidos.partido')->get();*/
+            ->select('zonas.*','partidos.partido')->get();
             return datatables()->of($zonas)
                 ->addColumn('action', function ($row) {
                     $edit = '<a href="javascript:void(0);" data-id="'.$row->id.'" class="btn btn-warning btn-xs" id="editZona"><i class="fa fa-pencil-alt"></i></a>';
@@ -107,9 +107,9 @@ class ZonasController extends Controller
         $zonas=\DB::table('zonas')
             ->join('partidos','partidos.id','=','zonas.id_partido')
             ->where('zonas.id',$id)
-            ->select('zonas.*','partidos.partido')->get();
+            ->select('zonas.*','partidos.partido')->first();
         $partidos=Partidos::all();
-        return response()->json($zonas,$partidos);
+        return response()->json([$zonas,$partidos]);
 
     }
 
@@ -134,17 +134,17 @@ class ZonasController extends Controller
             return response()->json(['errors' => $validator->errors()->all()]);
         }
 
-        $buscar=Zonas::where('zona',$request->mi_zona)->where('id_partido',$request->id_partido_edit)->where('id','<>',$request->id_zona_x)->count();
+        $buscar=Zonas::where('zona',$request->zona)->where('id_partido',$request->id_partido)->where('id','<>',$request->id_zona)->count();
         if($buscar > 0){
              return response()->json(['message'=>"La Zona ya ha sido registrada en dicho partido.",'icono'=>'warning','titulo'=>'Alerta']);
         }else{
             
-                $zona= Zonas::find($request->id_zona_x);
-                $zona->zona=$request->mi_zona;
-                $zona->id_partido_edit=$request->id_partido_edit;
+                $zona= Zonas::find($request->id_zona);
+                $zona->zona=$request->zona;
+                $zona->id_partido=$request->id_partido;
                 $zona->save();
 
-                return response()->json(['message'=>"La zona ha sido registrada con éxito",'icono'=>'success','titulo'=>'Éxito']);
+                return response()->json(['message'=>"La zona ha sido actualizada con éxito",'icono'=>'success','titulo'=>'Éxito']);
             
         }
     }

@@ -18,8 +18,9 @@ class DeliverysController extends Controller
      */
     public function index()
     {
+        $agencias=Agencias::all();
         if(request()->ajax()) {
-            $deliverys=\DB::table('deliverys')->join('agencias','agencias.id','=','deliverys.id_agencia')->select('deliverys.*','agencias.agencia')->get();
+            $deliverys=\DB::table('deliverys')->join('agencias','agencias.id','=','deliverys.id_agencia')->select('deliverys.*','agencias.nombre')->get();
             return datatables()->of($deliverys)
                 ->addColumn('action', function ($row) {
                     $edit = '<a href="javascript:void(0);" data-id="'.$row->id.'" class="btn btn-warning btn-xs" id="editDelivery"><i class="fa fa-pencil-alt"></i></a>';
@@ -29,7 +30,7 @@ class DeliverysController extends Controller
                 ->addIndexColumn()
                 ->make(true);
         }
-        return view('deliverys.index');
+        return view('deliverys.index',compact('agencias'));
     }
 
     /**
@@ -101,9 +102,10 @@ class DeliverysController extends Controller
         //$deliverys=Deliverys::where('id',$id)->first();
         $deliverys=\DB::table('deliverys')
         ->join('agencias','agencias.id','=','deliverys.id_agencia')
-        ->select('deliverys.*','agencias.agencia')
-        ->where('deliverys.id',$id)->get();
+        ->select('deliverys.*','agencias.nombre')
+        ->where('deliverys.id',$id)->first();
         $agencias=Agencias::all();
+
         return Response()->json([$deliverys,$agencias]);
     }
 
@@ -114,7 +116,7 @@ class DeliverysController extends Controller
      * @param  \App\Models\Deliverys  $deliverys
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Deliverys $deliverys)
+    public function update(Request $request, $id_delivery)
     {
         $message =[
             'delivery.required' => 'El campo delivery es obligatorio',
@@ -128,17 +130,17 @@ class DeliverysController extends Controller
             return response()->json(['errors' => $validator->errors()->all()]);
         }
 
-        $buscar=Deliverys::where('delivery',$request->mi_delivery)->where('id_agencia',$request->id_agencia_edit)->where('id','<>',$request->id_delivery)->count();
+        $buscar=Deliverys::where('delivery',$request->delivery)->where('id_agencia',$request->id_agencia_edit)->where('id','<>',$request->id_delivery)->count();
         if($buscar > 0){
             return response()->json(['message' => 'El delivery ya ha sido registrado en la agencia seleccionada','icono' => 'warning','titulo' => 'Alerta']);
         }else{
             
                 $delivery= Deliverys::find($request->id_delivery);
-                $delivery->delivery=$request->mi_delivery;
-                $delivery->id_agencia_edit=$request->id_agencia_edit;
+                $delivery->delivery=$request->delivery;
+                $delivery->id_agencia=$request->id_agencia;
                 $delivery->save();
 
-                return response()->json(['message' => 'El delivery registrado con éxito', 'icono' => 'success', 'titulo' => 'Éxito']);
+                return response()->json(['message' => 'El delivery actualizado con éxito', 'icono' => 'success', 'titulo' => 'Éxito']);
             
         }
     }

@@ -27,7 +27,7 @@
           <div class="col-sm-4">
             <div class="form-group">
               <label for="mi_partido">Partido <b style="color: red;"> *</b></label>
-              <select name="id_partido_edit" id="id_partido_edit" class="form-control select2">
+              <select name="id_partido" id="id_partido_edit" class="form-control select2">
                 @foreach($partidos as $key)
                 <option value="{{ $key->id }}">{{ $key->partido }}</option>
                 @endforeach

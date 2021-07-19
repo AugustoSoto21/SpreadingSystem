@@ -11,12 +11,12 @@
         
         <div class="modal-body">
            <p align="center"><small>Todos los campos <b style="color: red;">*</b> son requeridos.</small></p>
-           <input type="hidden" name="id_delivery_x" value="" id="id_delivery_x" placeholder="" />
+           <input type="hidden" name="id_delivery" value="" id="id_delivery_edit" placeholder="" />
         <div class="row">
           <div class="col-sm-4">
             <div class="form-group">
               <label for="mi_delivery"> Delivery <b style="color: red;">*</b></label>
-              <input type="text" name="mi_delivery" id="mi_delivery_edit" required="required" placeholder="Ingrese la delivery a modificar" onkeyup="this.value=this.value.toUpperCase();">
+              <input type="text" name="delivery" id="delivery_edit" required="required" placeholder="Ingrese la delivery a modificar" onkeyup="this.value=this.value.toUpperCase();">
             </div>
             @error('mi_delivery')
                <div class="alert alert-danger">{{ $messge}}
@@ -28,7 +28,7 @@
           <div class="col-sm-4">
             <div class="form-group">
               <label for="mi_agencia">Agencia <b style="color: red;"> *</b></label>
-              <select name="id_agencia_edit" id="id_agencia_edit" class="form-control select2">
+              <select name="id_agencia" id="id_agencia_edit" class="form-control select2">
                 @foreach($agencias as $key)
                 <option value="{{ $key->id }}">{{ $key->nombre }}</option>
                 @endforeach
@@ -38,7 +38,7 @@
         </div>
         <div class="modal-footer justify-content-between">
           <button type="button" class="btn btn-default" data-dismiss="modal"> <i class="fa fa-times"></i>Cerrar</button>
-          <button type="submit" class="btn btn-info"><i class="fa fa-save"></i>Guardar</button>
+          <button type="submit" id="SubmitEditDelivery" class="btn btn-info"><i class="fa fa-save"></i>Guardar</button>
         </div>
         </div>
       </form> 

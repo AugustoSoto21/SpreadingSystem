@@ -8,7 +8,7 @@ use App\Http\Controllers\AgenciasController;
 use App\Http\Controllers\FuentesController;
 use App\Http\Controllers\DeliverysController;
 use App\Http\Controllers\ClientesController;
-
+use App\Http\Controllers\ProductosController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -36,3 +36,4 @@ Route::resource('/agencias',AgenciasController::class);
 Route::resource('/fuentes',FuentesController::class);
 Route::resource('/deliverys',DeliverysController::class);
 Route::resource('/clientes',ClientesController::class);
+Route::resource('/productos',ProductosController::class);
