@@ -146,6 +146,7 @@ $('#SubmitCreateProducto').click(function(e) {
       status: $('#status').val(),
     },
     success: function(result) {
+      console.log(result.errors);
       if(result.errors) {
         $('.alert-danger').html('');
         $.each(result.errors, function(key, value) {

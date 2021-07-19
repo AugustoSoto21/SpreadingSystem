@@ -61,6 +61,15 @@
                 <div class="alert alert-danger">{{ $message }}</div>
               @enderror
             </div>
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label for="color">Color <b style="color: red;">*</b></label>
+              <input type="text" name="color" id="color" class="form-control" required="required" placeholder="Ingrese el color del producto" onkeyup="this.value = this.value.toUpperCase();">
+              </div>
+              @error('color')
+                <div class="alert alert-danger">{{ $message }}</div>
+              @enderror
+            </div>
           </div>
           <div class="row">
             <div class="col-sm-6">
