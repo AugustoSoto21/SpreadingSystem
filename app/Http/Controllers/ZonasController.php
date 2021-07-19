@@ -19,11 +19,12 @@ class ZonasController extends Controller
      */
     public function index()
     {
+        $partidos=Partidos::all();
         if(request()->ajax()) {
-            //$zonas=Zonas::all();
-            $zonas=\DB::table('zonas')
+            $zonas=Zonas::all();
+            /*$zonas=\DB::table('zonas')
             ->join('partidos','partidos.id','=','zonas.id_partido')
-            ->select('zonas.*','partidos.partido')->get();
+            ->select('zonas.*','partidos.partido')->get();*/
             return datatables()->of($zonas)
                 ->addColumn('action', function ($row) {
                     $edit = '<a href="javascript:void(0);" data-id="'.$row->id.'" class="btn btn-warning btn-xs" id="editZona"><i class="fa fa-pencil-alt"></i></a>';
@@ -33,7 +34,7 @@ class ZonasController extends Controller
                 ->addIndexColumn()
                 ->make(true);
         }
-        return view('zonas.index');
+        return view('zonas.index',compact('partidos'));
     }
 
     /**
