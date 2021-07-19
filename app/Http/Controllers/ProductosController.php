@@ -48,7 +48,52 @@ class ProductosController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $message =[
+            'codigo.required' => 'El campo código es obligatorio',
+            'nombre.required' => 'El campo nombres es obligatorio',
+            'descripcion.required' => 'El campo descripción es obligatorio',
+            'modelo.required' => 'El campo modelo es obligatorio',
+            'marca.required' => 'El campo marca es obligatorio',
+            'color.required' => 'El campo color es obligatorio',
+            'precio_venta.required' => 'El campo precio de venta es obligatorio',
+            'status.required' => 'El campo status es obligatorio',
+        ];
+        $validator = \Validator::make($request->all(), [
+            'codigo' => 'required',
+            'nombre' => 'required',
+            'descripcion' => 'required',
+            'modelo' => 'required',
+            'marca' => 'required',
+            'color' => 'required',
+            'precio_venta' => 'required',
+            'status' => 'required',
+        ],$message);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()->all()]);
+        }
+
+        $buscar=Productos::where('codigo',$request->codigo)->count();
+
+        if($buscar > 0){
+            return response()->json(['message'=>"El còdigo del producto ya ha sido registrado.",'icono'=>'warning','titulo'=>'Alerta']);
+        }else{
+            
+                $producto= new Productos();
+                $producto->codigo=$request->codigo;
+                $producto->nombre=$request->nombre;
+                $producto->descripcion=$request->descripcion;
+                $producto->modelo=$request->modelo;
+                $producto->marca=$request->marca;
+                $producto->color=$request->color;
+                $producto->precio_venta=$request->precio_venta;
+                $producto->status=$request->status;
+
+                $producto->save();
+
+                 return response()->json(['message'=>"Producto ".$request->codigo." ".$request->nombre." registrado con éxito",'icono'=>'success','titulo'=>'Éxito']);
+            
+        }
     }
 
     /**
@@ -68,9 +113,10 @@ class ProductosController extends Controller
      * @param  \App\Models\Productos  $productos
      * @return \Illuminate\Http\Response
      */
-    public function edit(Productos $productos)
+    public function edit($id)
     {
-        //
+        $productos=Productos::where('id',$id)->first();
+        return response()->json($productos);
     }
 
     /**
@@ -80,9 +126,54 @@ class ProductosController extends Controller
      * @param  \App\Models\Productos  $productos
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Productos $productos)
+    public function update(Request $request, $id_producto)
     {
-        //
+        $message =[
+            'codigo.required' => 'El campo código es obligatorio',
+            'nombre.required' => 'El campo nombres es obligatorio',
+            'descripcion.required' => 'El campo descripción es obligatorio',
+            'modelo.required' => 'El campo modelo es obligatorio',
+            'marca.required' => 'El campo marca es obligatorio',
+            'color.required' => 'El campo color es obligatorio',
+            'precio_venta.required' => 'El campo precio de venta es obligatorio',
+            'status.required' => 'El campo status es obligatorio',
+        ];
+        $validator = \Validator::make($request->all(), [
+            'codigo' => 'required',
+            'nombre' => 'required',
+            'descripcion' => 'required',
+            'modelo' => 'required',
+            'marca' => 'required',
+            'color' => 'required',
+            'precio_venta' => 'required',
+            'status' => 'required',
+        ],$message);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()->all()]);
+        }
+
+        $buscar=Productos::where('codigo',$request->codigo)->count();
+
+        if($buscar > 0){
+            return response()->json(['message'=>"El código del producto ya ha sido registrado.",'icono'=>'warning','titulo'=>'Alerta']);
+        }else{
+            
+                $producto= Productos::find($request->id_producto);
+                $producto->codigo=$request->codigo;
+                $producto->nombre=$request->nombre;
+                $producto->descripcion=$request->descripcion;
+                $producto->modelo=$request->modelo;
+                $producto->marca=$request->marca;
+                $producto->color=$request->color;
+                $producto->precio_venta=$request->precio_venta;
+                $producto->status=$request->status;
+
+                $producto->save();
+
+                 return response()->json(['message'=>"Producto ".$request->codigo." ".$request->nombre." actualizado con éxito",'icono'=>'success','titulo'=>'Éxito']);
+            
+        }
     }
 
     /**
@@ -91,8 +182,20 @@ class ProductosController extends Controller
      * @param  \App\Models\Productos  $productos
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Productos $productos)
+    public function destroy($id)
     {
-        //
+        /*$buscar=Pedidos::where('id_producto',$id)->count();
+        if($buscar > 0){
+            
+            return response()->json(['message'=>"El Cliente que intenta eliminar se encuentra relacionado con algún pedido",'icono'=>'warning','titulo'=>'Alerta']);
+        }else{*/
+            $producto=Productos::find($id);
+            if($producto->delete()){
+              return response()->json(['message'=>"El producto fue eliminado con éxito",'icono'=>'success','titulo'=>'Éxito']); 
+            }else{
+                return response()->json(['message'=>"El producto no pudo ser eliminado",'icono'=>'warning','titulo'=>'Alerta']);
+            }
+        //}
+        return redirect()->back();
     }
 }

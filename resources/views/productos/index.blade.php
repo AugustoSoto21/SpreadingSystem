@@ -5,7 +5,7 @@
   <div class="container-fluid">
     <div class="row mb-2">
       <div class="col-sm-6">
-        <h1 class="m-0 text-dark"><i class="nav-icon fas fa-search-location"></i> Productos</h1>
+        <h1 class="m-0 text-dark"><i class="nav-icon fa fa-users"></i> Productos</h1>
       </div><!-- /.col -->
       <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
@@ -18,13 +18,12 @@
 </div>
 <section class="content">
   <div class="container-fluid">
-    @include('productos.partials.create')
-    @include('productos.partials.edit')
     <div class="row">
       <div class="col-12">
         <div class="card card-primary card-outline card-tabs">
+          <p></p>
           <div class="card-header">
-            <h3 class="card-title"><i class="nav-icon fas fa-search-location"></i> Productos registrados</h3>
+            <h3 class="card-title"><i class="nav-icon fa fa-users"></i> Productos registrados</h3>
             <div class="card-tools">
               @if(search_permits('Productos','Imprimir PDF')=="Si" || search_permits('Productos','Imprimir Excel')=="Si")
               <div class="btn-group">
@@ -40,20 +39,28 @@
               </div>
               @endif
               @if(search_permits('Productos','Registrar')=="Si")
-              
-              <a class="btn btn-info btn-sm text-white" data-toggle="modal" data-target="#create_productos" data-tooltip="tooltip" data-placement="top" title="Crear Productos" id="createNewProducto">
+              {{-- <a href="{!! route('productos.create') !!}" class="btn bg-gradient-primary btn-sm pull-right" data-tooltip="tooltip" data-placement="top" title="Registrar producto"><i class="fas fa-edit"></i> Registrar productos</a> --}}
+
+              <a class="btn btn-info btn-sm text-white" data-toggle="modal" data-target="#create_productos" data-tooltip="tooltip" data-placement="top" title="Crear Productos">
                 <i class="fa fa-save"> &nbsp;Registrar</i>
               </a>
               @endif
             </div>
           </div>
           @if(search_permits('Productos','Ver mismo usuario')=="Si" || search_permits('Productos','Ver todos los usuarios')=="Si" || search_permits('Productos','Editar mismo usuario')=="Si" || search_permits('Productos','Editar todos los usuarios')=="Si" || search_permits('Productos','Eliminar mismo usuario')=="Si" || search_permits('Productos','Eliminar todos los usuarios')=="Si")
+
           <div class="card-body">
             <table id="productos_table" class="table table-bordered table-striped table-sm" style="font-size: 12px;">
               <thead>
                 <tr>
-                  <th>Producto</th>
-                  <th>Partido</th>
+                  <th>Código</th>
+                  <th>Nombre</th>
+                  <th>Descripción</th>
+                  <th>Modelo</th>
+                  <th>Marca</th>
+                  <th>Color</th>
+                  <th>Precio Venta</th>
+                  <th>Status</th>
                   <th>Acciones</th>
                 </tr>
               </thead>
@@ -75,6 +82,8 @@
         </div>
       </div>
     </div>
+    @include('productos.partials.create')
+    @include('productos.partials.edit')
   </div><!-- /.container-fluid -->
 </section>
 @endsection
@@ -116,6 +125,7 @@ $('#createNewProducto').click(function () {
 });
 //--CODIGO PARA CREAR ESTADOS (GUARDAR REGISTRO) ---------------------//
 $('#SubmitCreateProducto').click(function(e) {
+  
   e.preventDefault();
   $.ajaxSetup({
     headers: {
