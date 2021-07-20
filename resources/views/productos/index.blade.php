@@ -175,16 +175,16 @@ $('body').on('click', '#editProducto', function () {
     url: "productos/"+id+"/edit",
     dataType: 'json',
     success: function(data){
-      $('#edit_productos').modal({backdrop: 'static', keyboard: true, show: true});
+      $('#edit_producto').modal({backdrop: 'static', keyboard: true, show: true});
       $('.alert-danger').hide();
-      /*$('#id_producto_edit').val(data.id);
+      $('#id_producto_edit').val(data.id);
       $('#codigo_edit').val(data.codigo);
       $('#nombre_edit').val(data.nombre);
       $('#descripcion_edit').val(data.descripcion);
       $('#modelo_edit').val(data.modelo);
       $('#marca_edit').val(data.marca);
       $('#precio_venta_edit').val(data.precio_venta);
-      $('#status_edit').val(data.status);*/
+      $('#status_edit').val(data.status);
     }
   });
 });
