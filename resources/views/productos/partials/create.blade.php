@@ -43,7 +43,7 @@
             </div>
           </div>
           <div class="row">
-            <div class="col-sm-6">
+            <div class="col-sm-4">
               <div class="form-group">
                 <label for="modelo">Modelo <b style="color: red;">*</b></label>
                 <input type="text" name="modelo" id="modelo" class="form-control" required="required" placeholder="Ingrese el modelo del producto" onkeyup="this.value = this.value.toUpperCase();">
@@ -52,7 +52,7 @@
                 <div class="alert alert-danger">{{ $message }}</div>
               @enderror
             </div>
-            <div class="col-sm-6">
+            <div class="col-sm-4">
               <div class="form-group">
                 <label for="marca">Marca <b style="color: red;">*</b></label>
               <input type="text" name="marca" id="marca" class="form-control" required="required" placeholder="Ingrese la marca del producto" onkeyup="this.value = this.value.toUpperCase();">
@@ -61,7 +61,7 @@
                 <div class="alert alert-danger">{{ $message }}</div>
               @enderror
             </div>
-            <div class="col-sm-6">
+            <div class="col-sm-4">
               <div class="form-group">
                 <label for="color">Color <b style="color: red;">*</b></label>
               <input type="text" name="color" id="color" class="form-control" required="required" placeholder="Ingrese el color del producto" onkeyup="this.value = this.value.toUpperCase();">

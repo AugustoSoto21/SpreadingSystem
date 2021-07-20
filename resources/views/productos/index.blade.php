@@ -169,6 +169,7 @@ $('#SubmitCreateProducto').click(function(e) {
 //--CODIGO PARA EDITAR ESTADO ---------------------//
 $('body').on('click', '#editProducto', function () {
   var id = $(this).data('id');
+
   $.ajax({
     method:"GET",
     url: "productos/"+id+"/edit",
@@ -176,14 +177,14 @@ $('body').on('click', '#editProducto', function () {
     success: function(data){
       $('#edit_productos').modal({backdrop: 'static', keyboard: true, show: true});
       $('.alert-danger').hide();
-      $('#id_producto_edit').val(data[0].id);
-      $('#codigo_edit').val(data[0].codigo);
-      $('#nombre_edit').val(data[0].nombre);
-      $('#descripcion_edit').val(data[0].descripcion);
-      $('#modelo_edit').val(data[0].modelo);
-      $('#marca_edit').val(data[0].marca);
-      $('#precio_venta_edit').val(data[0].precio_venta);
-      $('#status_edit').val(data[0].status);
+      /*$('#id_producto_edit').val(data.id);
+      $('#codigo_edit').val(data.codigo);
+      $('#nombre_edit').val(data.nombre);
+      $('#descripcion_edit').val(data.descripcion);
+      $('#modelo_edit').val(data.modelo);
+      $('#marca_edit').val(data.marca);
+      $('#precio_venta_edit').val(data.precio_venta);
+      $('#status_edit').val(data.status);*/
     }
   });
 });
