@@ -7,7 +7,7 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <form action="#" method="POST" data-parsley-validate name="productoForm" id="productoForm">
+      <form action="#" method="POST" data-parsley-validate name="productoForm" id="productoForm" enctype="Multipart/form-data">
         
         <div class="modal-body">
           <p align="center"><small>Todos los campos <b style="color: red;">*</b> son requeridos.</small></p>
@@ -91,6 +91,13 @@
               @error('precio_venta')
                 <div class="alert alert-danger">{{ $message }}</div>
               @enderror
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-sm-12">
+              <label for="imagenes" >Imágenes <b style="color: red;">*</b></label>
+              <input type="file" name="imagenes[]" id="imagenes" multiple="multiple" class="form-control">
             </div>
           </div>
 

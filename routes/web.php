@@ -36,4 +36,8 @@ Route::resource('/agencias',AgenciasController::class);
 Route::resource('/fuentes',FuentesController::class);
 Route::resource('/deliverys',DeliverysController::class);
 Route::resource('/clientes',ClientesController::class);
+
+Route::get('productos/imagenes','ProductosController@imagenes')->name('productos.imagenes');
 Route::resource('/productos',ProductosController::class);
+Route::post('productos/eliminar_imagen','ProductosController@eliminar_imagen')->name('eliminar_imagen');
+Route::post('productos/mostrar','ProductosController@mostrar')->name('productos.mostrar_producto');

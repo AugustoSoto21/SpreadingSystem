@@ -135,6 +135,7 @@ $('#SubmitCreateProducto').click(function(e) {
   $.ajax({
     url: "{{ route('productos.store') }}",
     method: 'post',
+    enctype: 'Multipart/form-data',
     data: {
       codigo: $('#codigo').val(),
       nombre: $('#nombre').val(),
@@ -144,6 +145,7 @@ $('#SubmitCreateProducto').click(function(e) {
       color: $('#color').val(),
       precio_venta: $('#precio_venta').val(),
       status: $('#status').val(),
+      imagenes: $('#imagenes').val()
     },
     success: function(result) {
       console.log(result.errors);
