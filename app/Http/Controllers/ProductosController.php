@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Alert;
 use Datatables;
 use App\Models\Imagenes;
+use App\Models\Inventario;
+use App\Models\Almacen;
 class ProductosController extends Controller
 {
     /**
