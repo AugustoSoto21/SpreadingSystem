@@ -14,12 +14,12 @@ class AgenciasTableSeeder extends Seeder
     public function run()
     {
         \DB::table('agencias')->insert([
-        	['nombre' => 'FULLTRANS'],
-        	['nombre' => 'OESTE'],
-        	['nombre' => 'EEED'],
-        	['nombre' => 'NEX LOGÍSTICA'],
-        	['nombre' => 'ENVÍOS FLEX'],
-        	['nombre' => 'ECOFLEX'],
+        	['nombre' => 'FULLTRANS', 'almacen' => 'No'],
+        	['nombre' => 'OESTE', 'almacen' => 'No'],
+        	['nombre' => 'EEED', 'almacen' => 'No'],
+        	['nombre' => 'NEX LOGÍSTICA', 'almacen' => 'Si'],
+        	['nombre' => 'ENVÍOS FLEX', 'almacen' => 'No'],
+        	['nombre' => 'ECOFLEX', 'almacen' => 'Si'],
         ]);
     }
 }

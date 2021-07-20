@@ -54,6 +54,7 @@
               <thead>
                 <tr>
                   <th>Agencia</th>
+                  <th>Almacen</th>
                   <th>Acciones</th>
                 </tr>
               </thead>
@@ -96,6 +97,7 @@ $(document).ready( function () {
    },
     columns: [
       { data: 'nombre', name: 'nombre' },
+      { data: 'almacen', name: 'almacen' },
       {data: 'action', name: 'action', orderable: false},
     ],
     order: [[0, 'desc']]
@@ -121,6 +123,7 @@ $('#SubmitCreateAgencia').click(function(e) {
     method: 'post',
     data: {
       nombre: $('#nombre').val(),
+      almacen: $('#almacen').val()
     },
     success: function(result) {
       if(result.errors) {
@@ -154,7 +157,8 @@ $('body').on('click', '#editAgencia', function () {
       $('.alert-danger').hide();
       $('#id_agencia_edit').val(data.id);
       $('#agencia_edit').val(data.nombre);
-      console.log(data.nombre+'-----');
+      $('#almacen_edit').val(data.almacen);
+      //console.log(data.nombre+'-----');
     }
   });
 });
@@ -167,7 +171,8 @@ $('#SubmitEditAgencia').click(function(e) {
     url: "agencias/"+id+"",
     data: {
       id_agencia: $('#id_agencia_edit').val(),
-      agencia: $('#agencia_edit').val()
+      agencia: $('#agencia_edit').val(),
+      almacen: $('#almacen_edit').val()
     },
     success: (data) => {
       if(data.errors) {
