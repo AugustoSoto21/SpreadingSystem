@@ -13,7 +13,7 @@ class Agencias extends Model
 
     protected $table='agencias';
 
-    protected $fillable=['nombre'];
+    protected $fillable=['nombre','almacen'];
 
     public function deliverys(){
 

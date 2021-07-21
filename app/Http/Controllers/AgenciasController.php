@@ -68,6 +68,7 @@ class AgenciasController extends Controller
         }else{           
             $agencia= new Agencias();
             $agencia->nombre=$request->nombre;
+            $agencia->almacen=$request->almacen;
             $agencia->save();
             return response()->json(['message'=>"Agencia ".$request->nombre." registrada con éxito",'icono'=>'success','titulo'=>'Éxito']);            
         }
@@ -124,6 +125,7 @@ class AgenciasController extends Controller
             
             $agencia=  Agencias::find($request->id_agencia);
             $agencia->nombre=$request->agencia;
+            $agencia->almacen=$request->almacen;
             $agencia->save();
 
             return response()->json(['message'=>"Agencia ".$request->nombre." modificada con éxito",'icono'=>'success','titulo'=>'Éxito']); 

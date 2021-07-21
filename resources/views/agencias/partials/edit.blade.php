@@ -12,10 +12,19 @@
           <p align="center"><small>Todos los campos <b style="color: red;">*</b> son requeridos.</small></p>
           <input type="hidden" name="id_agencia" value="" id="id_agencia_edit" placeholder="">
           <div class="row">
-            <div class="col-sm-4">
+            <div class="col-sm-6">
               <div class="form-group">
                 <label for="agencia">Agencia <b style="color: red;">*</b></label>
                 <input type="text" name="agencia" id="agencia_edit" class="form-control" required="required" placeholder="Ingrese el nombre de la agencia" onkeyup="this.value = this.value.toUpperCase();">
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label for="almacen">Tiene Alamacén <b style="color: red;">*</b></label>
+                <select name="almacen" id="almacen_edit" class="form-control select2">
+                  <option value="No">No</option>
+                  <option value="Si">Sí</option>
+                </select>
               </div>
             </div>
           </div>
