@@ -26,4 +26,6 @@
 <script src="{{ asset('vendor/datatables-responsive/js/dataTables.responsive.min.js') }}"></script>
 <script src="{{ asset('vendor/datatables-responsive/js/responsive.bootstrap4.min.js') }}"></script>
 <script src="{{ asset('js/sweetalert2.min.js') }}"></script>
+<!-- bs-custom-file-input -->
+<script src="{!! asset('vendor/bs-custom-file-input/bs-custom-file-input.min.js') !!}"></script>
 @yield('scripts')

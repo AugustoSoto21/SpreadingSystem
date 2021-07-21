@@ -5,7 +5,7 @@
   <div class="container-fluid">
     <div class="row mb-2">
       <div class="col-sm-6">
-        <h1 class="m-0 text-dark"><i class="nav-icon fa fa-users"></i> Productos</h1>
+        <h1 class="m-0 text-dark"><i class="nav-icon fa fa-shopping-basket"></i> Productos</h1>
       </div><!-- /.col -->
       <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
@@ -23,7 +23,7 @@
         <div class="card card-primary card-outline card-tabs">
           <p></p>
           <div class="card-header">
-            <h3 class="card-title"><i class="nav-icon fa fa-users"></i> Productos registrados</h3>
+            <h3 class="card-title"><i class="nav-icon fa fa-shopping-basket"></i> Productos registrados</h3>
             <div class="card-tools">
               @if(search_permits('Productos','Imprimir PDF')=="Si" || search_permits('Productos','Imprimir Excel')=="Si")
               <div class="btn-group">
@@ -41,7 +41,7 @@
               @if(search_permits('Productos','Registrar')=="Si")
               {{-- <a href="{!! route('productos.create') !!}" class="btn bg-gradient-primary btn-sm pull-right" data-tooltip="tooltip" data-placement="top" title="Registrar producto"><i class="fas fa-edit"></i> Registrar productos</a> --}}
 
-              <a class="btn btn-info btn-sm text-white" data-toggle="modal" data-target="#create_productos" data-tooltip="tooltip" data-placement="top" title="Crear Productos">
+              <a href="{!! route('productos.create') !!}" class="btn btn-info btn-sm text-white" data-tooltip="tooltip" data-placement="top" title="Crear Productos">
                 <i class="fa fa-save"> &nbsp;Registrar</i>
               </a>
               @endif
@@ -115,56 +115,6 @@ $(document).ready( function () {
       {data: 'action', name: 'action', orderable: false},
     ],
     order: [[0, 'desc']]
-  });
-});
-//--CODIGO PARA CREAR ESTADOS (LEVANTAR EL MODAL) ---------------------//
-$('#createNewProducto').click(function () {
-  $('#productoForm').trigger("reset");
-  $('#create_productos').modal({backdrop: 'static', keyboard: true, show: true});
-  $('.alert-danger').hide();
-});
-//--CODIGO PARA CREAR ESTADOS (GUARDAR REGISTRO) ---------------------//
-$('#SubmitCreateProducto').click(function(e) {
-  
-  e.preventDefault();
-  $.ajaxSetup({
-    headers: {
-      'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-    }
-  });
-  $.ajax({
-    url: "{{ route('productos.store') }}",
-    method: 'post',
-    enctype: 'Multipart/form-data',
-    data: {
-      codigo: $('#codigo').val(),
-      nombre: $('#nombre').val(),
-      descripcion: $('#descripcion').val(),
-      modelo: $('#modelo').val(),
-      marca: $('#marca').val(),
-      color: $('#color').val(),
-      precio_venta: $('#precio_venta').val(),
-      status: $('#status').val(),
-      imagenes: $('#imagenes').val()
-    },
-    success: function(result) {
-      console.log(result.errors);
-      if(result.errors) {
-        $('.alert-danger').html('');
-        $.each(result.errors, function(key, value) {
-          $('.alert-danger').show();
-          $('.alert-danger').append('<strong><li>'+value+'</li></strong>');
-        });
-      } else {
-        $('.alert-danger').hide();
-        var oTable = $('#productos_table').dataTable();
-        oTable.fnDraw(false);
-        Swal.fire ( result.titulo ,  result.message ,  result.icono );
-        if (result.icono=="success") {
-          $("#create_productos").modal('hide');
-        }
-      }
-    }
   });
 });
 

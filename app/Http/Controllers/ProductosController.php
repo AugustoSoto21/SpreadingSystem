@@ -22,7 +22,7 @@ class ProductosController extends Controller
             $productos=Productos::all();
             return datatables()->of($productos)
                 ->addColumn('action', function ($row) {
-                    $edit = '<a href="javascript:void(0);" data-id="'.$row->id.'" class="btn btn-warning btn-xs" id="editProducto"><i class="fa fa-pencil-alt"></i></a>';
+                    $edit = '<a href="productos/'.$row->id.'/edit" data-id="'.$row->id.'" class="btn btn-warning btn-xs" id="editProducto"><i class="fa fa-pencil-alt"></i></a>';
                     $delete = ' <a href="javascript:void(0);" id="delete-estado" onClick="deleteProducto('.$row->id.')" class="delete btn btn-danger btn-xs"><i class="fa fa-trash"></i></a>';
                     return $edit . $delete;
                 })->rawColumns(['action'])
@@ -40,7 +40,7 @@ class ProductosController extends Controller
      */
     public function create()
     {
-        //
+        return view('productos.create');
     }
 
     /**
@@ -60,6 +60,7 @@ class ProductosController extends Controller
             'color.required' => 'El campo color es obligatorio',
             'precio_venta.required' => 'El campo precio de venta es obligatorio',
             'status.required' => 'El campo status es obligatorio',
+            'imagenes.required' => 'El campo imagenes es obligatorio',
         ];
         $validator = \Validator::make($request->all(), [
             'codigo' => 'required',
@@ -70,7 +71,10 @@ class ProductosController extends Controller
             'color' => 'required',
             'precio_venta' => 'required',
             'status' => 'required',
+            'imagenes' => 'required',
         ],$message);
+
+
 
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()->all()]);
@@ -81,45 +85,43 @@ class ProductosController extends Controller
         if($buscar > 0){
             return response()->json(['message'=>"El código del producto ya ha sido registrado.",'icono'=>'warning','titulo'=>'Alerta']);
         }else{
-            
-            //dd(count($request->imagenes));
-            $validacion=$this->validar_imagen($request->file('imagenes'));
-                if($validacion['valida'] > 0){
-                    return response()->json(['message'=>"Error a enviar imágenes",'icono'=>'warning','titulo'=>'Alerta']);
-                }
+            /*$validacion=$this->validar_imagen($request->file('imagenes'));
+            if($validacion['valida'] > 0){
+                return response()->json(['message'=>"Error a enviar imágenes",'icono'=>'warning','titulo'=>'Alerta']);
+            }*/
 
-                $producto= new Productos();
-                $producto->codigo=$request->codigo;
-                $producto->nombre=$request->nombre;
-                $producto->descripcion=$request->descripcion;
-                $producto->modelo=$request->modelo;
-                $producto->marca=$request->marca;
-                $producto->color=$request->color;
-                $producto->precio_venta=$request->precio_venta;
-                $producto->status=$request->status;
+            $producto= new Productos();
+            $producto->codigo=$request->codigo;
+            $producto->nombre=$request->nombre;
+            $producto->descripcion=$request->descripcion;
+            $producto->modelo=$request->modelo;
+            $producto->marca=$request->marca;
+            $producto->color=$request->color;
+            $producto->precio_venta=$request->precio_venta;
+            $producto->status=$request->status;
+            $producto->save();
+            //cargando imagenes
+            $imagenes=$request->file('imagenes');
+            foreach($imagenes as $imagen){
+                $codigo=$this->generarCodigo();
+                /*
+                $validatedData = $request->validate([
+                    'imagenes' => 'mimes:jpeg,png'
+                ]);*/
+                $name=$codigo."_".$imagen->getClientOriginalName();
+                $imagen->move(public_path().'/img_productos', $name);  
+                $url ='img_productos/'.$name;
+                $img=new Imagenes();
+                $img->id_producto=$producto->id;
+                $img->nombre=$name;
+                $img->url=$url;
+                $img->save();
 
-                $producto->save();
-                //cargando imagenes
-                $imagenes=$request->file('imagenes');
-                foreach($imagenes as $imagen){
-                    $codigo=$this->generarCodigo();
-                    /*
-                    $validatedData = $request->validate([
-                        'imagenes' => 'mimes:jpeg,png'
-                    ]);*/
-                    $name=$codigo."_".$imagen->getClientOriginalName();
-                    $imagen->move(public_path().'/img_productos', $name);  
-                    $url ='img_productos/'.$name;
-                    $img=new Imagenes();
-                    $img->id_producto=$producto->id;
-                    $img->nombre=$name;
-                    $img->url=$url;
-                    $img->save();
-
-                    $producto->imagenes()->attach($img);
-                }
-                 return response()->json(['message'=>"Producto ".$request->codigo." ".$request->nombre." registrado con éxito",'icono'=>'success','titulo'=>'Éxito']);
-            
+                $producto->imagenes()->attach($img);
+            }
+            Alert::success('Éxito', 'Producto registrado')->persistent(true);
+            return redirect()->to('productos');
+            //return response()->json(['message'=>"Producto ".$request->codigo." ".$request->nombre." registrado con éxito",'icono'=>'success','titulo'=>'Éxito']);            
         }
     }
 
@@ -143,7 +145,7 @@ class ProductosController extends Controller
     public function edit($id)
     {
         $productos=Productos::where('id',$id)->first();
-        return response()->json($productos);
+        return view('productos.edit', compact('productos'));
     }
 
     /**
