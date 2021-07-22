@@ -25,7 +25,7 @@
         </div>
         <div class="modal-footer justify-content-between">
           <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i> Cerrar</button>
-          <button type="submit" id="SubmitCreateFuente" class="btn btn-info"><i class="fa fa-save"></i> Registrar</button>
+          <button type="submit" id="SubmitCreatePartido" class="btn btn-info"><i class="fa fa-save"></i> Registrar</button>
         </div>
       </form>
     </div>

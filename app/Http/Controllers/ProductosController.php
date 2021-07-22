@@ -51,6 +51,7 @@ class ProductosController extends Controller
      */
     public function store(Request $request)
     {
+
         $message =[
             'codigo.required' => 'El campo código es obligatorio',
             'nombre.required' => 'El campo nombres es obligatorio',
@@ -60,7 +61,7 @@ class ProductosController extends Controller
             'color.required' => 'El campo color es obligatorio',
             'precio_venta.required' => 'El campo precio de venta es obligatorio',
             'status.required' => 'El campo status es obligatorio',
-            'imagenes.required' => 'El campo imagenes es obligatorio',
+            //'imagenes.required' => 'El campo imagenes es obligatorio',
         ];
         $validator = \Validator::make($request->all(), [
             'codigo' => 'required',
@@ -71,7 +72,7 @@ class ProductosController extends Controller
             'color' => 'required',
             'precio_venta' => 'required',
             'status' => 'required',
-            'imagenes' => 'required',
+            //'imagenes' => 'required',
         ],$message);
 
 
@@ -100,6 +101,7 @@ class ProductosController extends Controller
             $producto->precio_venta=$request->precio_venta;
             $producto->status=$request->status;
             $producto->save();
+            
             //cargando imagenes
             $imagenes=$request->file('imagenes');
             foreach($imagenes as $imagen){
@@ -108,6 +110,7 @@ class ProductosController extends Controller
                 $validatedData = $request->validate([
                     'imagenes' => 'mimes:jpeg,png'
                 ]);*/
+                
                 $name=$codigo."_".$imagen->getClientOriginalName();
                 $imagen->move(public_path().'/img_productos', $name);  
                 $url ='img_productos/'.$name;
@@ -119,9 +122,9 @@ class ProductosController extends Controller
 
                 $producto->imagenes()->attach($img);
             }
-            Alert::success('Éxito', 'Producto registrado')->persistent(true);
-            return redirect()->to('productos');
-            //return response()->json(['message'=>"Producto ".$request->codigo." ".$request->nombre." registrado con éxito",'icono'=>'success','titulo'=>'Éxito']);            
+            
+            return response()->json(['message'=>"Producto registrado con éxito",'icono'=>'success','titulo'=>'Éxito']);            
+            
         }
     }
 

@@ -50,7 +50,7 @@
           </div>
           @if(search_permits('Partidos','Ver mismo usuario')=="Si" || search_permits('Partidos','Ver todos los usuarios')=="Si" || search_permits('Partidos','Editar mismo usuario')=="Si" || search_permits('Partidos','Editar todos los usuarios')=="Si" || search_permits('Partidos','Eliminar mismo usuario')=="Si" || search_permits('Partidos','Eliminar todos los usuarios')=="Si") 
           <div class="card-body">
-            <table id="partidos" class="table table-bordered table-striped table-sm" style="font-size: 12px;">
+            <table id="partidos_table" class="table table-bordered table-striped table-sm" style="font-size: 12px;">
               <thead>
                 <tr>
                   <th>Partido</th>
@@ -62,7 +62,7 @@
               </tbody>
             </table>
           </div>
-          
+          @else
           <div class="row">
             <div class="col-12">                          
               <div class="alert alert-danger alert-dismissible text-center">
@@ -71,7 +71,7 @@
               </div>
             </div>
           </div>
-          
+          @endif
         </div>
       </div>
     </div>

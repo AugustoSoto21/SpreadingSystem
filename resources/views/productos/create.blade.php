@@ -151,10 +151,19 @@ $('#SubmitCreateProducto').click(function(e) {
       'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
     }
   });
+  var datos = $('#productoForm').serializeArray(); //datos serializados
+      var imagenes = new FormData($("#productoForm")[8]);
+
+      //agergaremos los datos serializados al objecto imagen
+      
   $.ajax({
+
     url: "{{ route('productos.store') }}",
     method: 'post',
-    enctype: 'multipart/form-data',
+    contentType: 'multipart/form-data',
+    /*contentType:false,
+    processData:false,*/
+    file: (document.getElementById("imagenes").files.length == 0) ? false :true,
     data: {
       codigo: $('#codigo').val(),
       nombre: $('#nombre').val(),
@@ -164,10 +173,10 @@ $('#SubmitCreateProducto').click(function(e) {
       color: $('#color').val(),
       precio_venta: $('#precio_venta').val(),
       status: $('#status').val(),
-      imagenes: $('#imagenes').val()
+      
     },
     success: function(result) {
-      console.log(result.errors);
+      console.log(result);
       if(result.errors) {
         $('#message_error').html('');
         $.each(result.errors, function(key, value) {
