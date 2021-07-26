@@ -21,6 +21,7 @@
 <!-- Main content -->
 <section class="content">
   <div class="container-fluid">
+    @include('categorias.partials.create')
     <div class="row">
       <div class="col-md-12">
         <!-- Horizontal Form -->
@@ -52,6 +53,11 @@
                       <option value="{{ $k->id }}">{{ $k->categoria }}</option>
                       @endforeach
                     </select>
+                    @if(search_permits('Categorias','Registrar')=="Si")
+                    <a class="btn btn-info btn-sm text-white" data-toggle="modal" data-target="#create_categorias" data-tooltip="tooltip" data-placement="top" title="Crear Categorias" id="createNewCategoria">
+                      <i class="fa fa-plus"> &nbsp;Agregar</i>
+                    </a>
+                    @endif
                   </div>
                   @error('id_categoria')
                     <div class="alert alert-danger">{{ $message }}</div>
@@ -144,6 +150,45 @@ $('#SubmitCreateProducto').click(function(e) {
       } else {
         $('#message_error').hide();
         Swal.fire ( result.titulo ,  result.message ,  result.icono );
+      }
+    }
+  });
+});
+//--CODIGO PARA CREAR CATEGORIAS (LEVANTAR EL MODAL) ---------------------//
+$('#createNewCategoria').click(function () {
+  $('#categoriaForm').trigger("reset");
+  $('#create_categorias').modal({backdrop: 'static', keyboard: true, show: true});
+  $('.alert-danger').hide();
+});
+//--CODIGO PARA CREAR CATEGORIAS (GUARDAR REGISTRO) ---------------------//
+$('#SubmitCreateCategoria').click(function(e) {
+  e.preventDefault();
+  $.ajaxSetup({
+    headers: {
+      'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    }
+  });
+  $.ajax({
+    url: "{{ route('categorias.store') }}",
+    method: 'post',
+    data: {
+      categoria: $('#categoria').val()
+    },
+    success: function(result) {
+      if(result.errors) {
+        $('.alert-danger').html('');
+        $.each(result.errors, function(key, value) {
+          $('.alert-danger').show();
+          $('.alert-danger').append('<strong><li>'+value+'</li></strong>');
+        });
+      } else {
+        $('.alert-danger').hide();
+        var oTable = $('#categorias_table').dataTable();
+        oTable.fnDraw(false);
+        Swal.fire ( result.titulo ,  result.message ,  result.icono );
+        if (result.icono=="success") {
+          $("#create_categorias").modal('hide');
+        }
       }
     }
   });
