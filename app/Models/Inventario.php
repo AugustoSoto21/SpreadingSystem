@@ -11,7 +11,7 @@ class Inventario extends Model
 
     protected $table='inventario';
 
-    protected $fillable=['id_producto','existencia','stock_min','stock_max'];
+    protected $fillable=['id_producto','stock','stock_min'];
 
     public function productos(){
 

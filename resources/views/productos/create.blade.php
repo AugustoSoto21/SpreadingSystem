@@ -44,68 +44,25 @@
                   </button>
               </div>
               <div class="row">
-                <div class="col-sm-3">
+                <div class="col-sm-4">
                   <div class="form-group">
-                    <label for="codigo">Código <b style="color: red;">*</b></label>
-                    <input type="text" name="codigo" id="codigo" class="form-control" required="required" placeholder="Ingrese el código del producto" onkeyup="this.value = this.value.toUpperCase();">
+                    <label for="id_categoria">Categoría <b style="color: red;">*</b></label>
+                    <select name="status" id="status" class="form-control select2">
+                      @foreach($categorias as $k)
+                      <option value="{{ $k->id }}">{{ $k->categoria }}</option>
+                      @endforeach
+                    </select>
                   </div>
-                  @error('codigo')
+                  @error('id_categoria')
                     <div class="alert alert-danger">{{ $message }}</div>
                   @enderror
                 </div>
-                <div class="col-sm-3">
+                <div class="col-sm-5">
                   <div class="form-group">
-                    <label for="nombre">Nombre <b style="color: red;">*</b></label>
-                    <input type="text" name="nombre" id="nombre" class="form-control" required="required" placeholder="Ingrese el nombre del producto" onkeyup="this.value = this.value.toUpperCase();">
+                    <label for="detalles">Detalles <b style="color: red;">*</b></label>
+                    <input type="text" name="detalles" id="detalles" class="form-control" required="required" placeholder="Ingrese los detalles del producto" onkeyup="this.value = this.value.toUpperCase();">
                   </div>
-                  @error('nombre')
-                    <div class="alert alert-danger">{{ $message }}</div>
-                  @enderror
-                </div>
-                <div class="col-sm-3">
-                  <div class="form-group">
-                    <label for="descripcion">Descripción <b style="color: red;">*</b></label>
-                    <input type="text" name="descripcion" id="descripcion" class="form-control" required="required" placeholder="Ingrese la descripcion del producto" onkeyup="this.value = this.value.toUpperCase();">
-                  </div>
-                  @error('descripcion')
-                    <div class="alert alert-danger">{{ $message }}</div>
-                  @enderror
-                </div>
-                <div class="col-sm-3">
-                  <div class="form-group">
-                    <label for="modelo">Modelo <b style="color: red;">*</b></label>
-                    <input type="text" name="modelo" id="modelo" class="form-control" required="required" placeholder="Ingrese el modelo del producto" onkeyup="this.value = this.value.toUpperCase();">
-                  </div>
-                  @error('modelo')
-                    <div class="alert alert-danger">{{ $message }}</div>
-                  @enderror
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-md-3">
-                  <div class="form-group">
-                    <label for="marca">Marca <b style="color: red;">*</b></label>
-                    <input type="text" name="marca" id="marca" class="form-control" required="required" placeholder="Ingrese la marca del producto" onkeyup="this.value = this.value.toUpperCase();">
-                  </div>
-                  @error('marca')
-                    <div class="alert alert-danger">{{ $message }}</div>
-                  @enderror
-                </div>
-                <div class="col-md-3">
-                  <div class="form-group">
-                    <label for="color">Color <b style="color: red;">*</b></label>
-                    <input type="text" name="color" id="color" class="form-control" required="required" placeholder="Ingrese el color del producto" onkeyup="this.value = this.value.toUpperCase();">
-                  </div>
-                  @error('color')
-                    <div class="alert alert-danger">{{ $message }}</div>
-                  @enderror
-                </div>
-                <div class="col-md-3">
-                  <div class="form-group">
-                    <label for="precio_venta">Precio de Venta <b style="color: red;">*</b></label>
-                    <input type="text" name="precio_venta" id="precio_venta" class="form-control" required="required" placeholder="Ingrese el precio de venta del producto" onkeyup="this.value = this.value.toUpperCase();">
-                  </div>
-                  @error('precio_venta')
+                  @error('detalles')
                     <div class="alert alert-danger">{{ $message }}</div>
                   @enderror
                 </div>
@@ -117,8 +74,9 @@
                       <option value="Inactivo">Inactivo</option>
                     </select>
                   </div>
-                </div>
+                </div>  
               </div>
+              
               <div class="row">
                 <div class="col-sm-12">
                   <label for="imagenes1" >Imágenes <b style="color: red;">*</b></label>
@@ -165,13 +123,9 @@ $('#SubmitCreateProducto').click(function(e) {
     processData:false,*/
     file: (document.getElementById("imagenes").files.length == 0) ? false :true,
     data: {
-      codigo: $('#codigo').val(),
-      nombre: $('#nombre').val(),
-      descripcion: $('#descripcion').val(),
-      modelo: $('#modelo').val(),
-      marca: $('#marca').val(),
-      color: $('#color').val(),
-      precio_venta: $('#precio_venta').val(),
+      
+      detalles: $('#detalles').val(),
+      id_categoria: $('#id_categoria').val(),
       status: $('#status').val(),
       
     },

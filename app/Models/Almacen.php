@@ -13,7 +13,7 @@ class Almacen extends Model
 
     protected $table='almacens';
 
-    protected $fillable=['id_agencia','id_producto','existencia','stock_min','stock_max'];
+    protected $fillable=['id_agencia','id_producto','stock','stock_min'];
 
     public function agencias(){
 

@@ -1,16 +1,16 @@
 @extends('layouts.app')
-@section('title') Partidos @endsection
+@section('title') Categorías @endsection
 @section('content')
 <div class="content-header">
   <div class="container-fluid">
     <div class="row mb-2">
       <div class="col-sm-6">
-        <h1 class="m-0 text-dark"><i class="nav-icon fas fa-globe-americas"></i> Partidos</h1>
+        <h1 class="m-0 text-dark"><i class="nav-icon fas fa-globe-americas"></i> Categorías</h1>
       </div><!-- /.col -->
       <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
           <li class="breadcrumb-item"><a href="#">Home</a></li>
-          <li class="breadcrumb-item active">Partidos</li>
+          <li class="breadcrumb-item active">Categorías</li>
         </ol>
       </div><!-- /.col -->
     </div><!-- /.row -->
@@ -18,40 +18,40 @@
 </div>
 <section class="content">
   <div class="container-fluid">
-    @include('partidos.partials.create')
-    @include('partidos.partials.edit')
+    @include('categorias.partials.create')
+    @include('categorias.partials.edit')
     <div class="row">
       <div class="col-12">
         <div class="card card-primary card-outline card-tabs">
           <div class="card-header">
-            <h3 class="card-title"><i class="nav-icon fas fa-globe-americas"></i> Partidos registrados</h3>
+            <h3 class="card-title"><i class="nav-icon fas fa-globe-americas"></i> Categorias registrados</h3>
             <div class="card-tools">
-              @if(search_permits('Partidos','Imprimir PDF')=="Si" || search_permits('Partidos','Imprimir Excel')=="Si")
+              @if(search_permits('Categorias','Imprimir PDF')=="Si" || search_permits('Categorias','Imprimir Excel')=="Si")
               <div class="btn-group">
                 <a class="btn btn-danger dropdown-toggle btn-sm dropdown-icon text-white" data-toggle="dropdown" data-tooltip="tooltip" data-placement="top" title="Generar reportes">Imprimir </a>
                 <div class="dropdown-menu dropdown-menu-right">
-                  @if(search_permits('Partidos','Imprimir PDF')=="Si")
-                  {{-- <a class="dropdown-item" href="{!!route('partidos.pdf')!!}" target="_blank" data-tooltip="tooltip" data-placement="top" title="Reportes en PDF"><i class="fa fa-file-pdf"></i> Exportar a PDF</a> --}}
+                  @if(search_permits('Categorias','Imprimir PDF')=="Si")
+                  {{-- <a class="dropdown-item" href="{!!route('categorias.pdf')!!}" target="_blank" data-tooltip="tooltip" data-placement="top" title="Reportes en PDF"><i class="fa fa-file-pdf"></i> Exportar a PDF</a> --}}
                   @endif
-                  {{-- @if(search_permits('Partidos','Imprimir Excel')=="Si")
-                  <a class="dropdown-item" href="{!! route('partidos.excel') !!}" target="_blank" data-tooltip="tooltip" data-placement="top" title="Reportes en Excel"><i class="fa fa-file-excel"></i> Exportar a Excel</a>
+                  {{-- @if(search_permits('Categorias','Imprimir Excel')=="Si")
+                  <a class="dropdown-item" href="{!! route('categorias.excel') !!}" target="_blank" data-tooltip="tooltip" data-placement="top" title="Reportes en Excel"><i class="fa fa-file-excel"></i> Exportar a Excel</a>
                   @endif --}}
                 </div>
               </div>
               @endif
-              @if(search_permits('Partidos','Registrar')=="Si")
-              <a class="btn btn-info btn-sm text-white" data-toggle="modal" data-target="#create_partidos" data-tooltip="tooltip" data-placement="top" title="Crear Partidos" id="createNewPartido">
+              @if(search_permits('Categorias','Registrar')=="Si")
+              <a class="btn btn-info btn-sm text-white" data-toggle="modal" data-target="#create_categorias" data-tooltip="tooltip" data-placement="top" title="Crear Categorias" id="createNewCategoria">
                 <i class="fa fa-save"> &nbsp;Registrar</i>
               </a>
               @endif
             </div>
           </div>
-          @if(search_permits('Partidos','Ver mismo usuario')=="Si" || search_permits('Partidos','Ver todos los usuarios')=="Si" || search_permits('Partidos','Editar mismo usuario')=="Si" || search_permits('Partidos','Editar todos los usuarios')=="Si" || search_permits('Partidos','Eliminar mismo usuario')=="Si" || search_permits('Partidos','Eliminar todos los usuarios')=="Si") 
+          @if(search_permits('Categorias','Ver mismo usuario')=="Si" || search_permits('Categorias','Ver todos los usuarios')=="Si" || search_permits('Categorias','Editar mismo usuario')=="Si" || search_permits('Categorias','Editar todos los usuarios')=="Si" || search_permits('Categorias','Eliminar mismo usuario')=="Si" || search_permits('Categorias','Eliminar todos los usuarios')=="Si") 
           <div class="card-body">
-            <table id="partidos_table" class="table table-bordered table-striped table-sm" style="font-size: 12px;">
+            <table id="categorias_table" class="table table-bordered table-striped table-sm" style="font-size: 12px;">
               <thead>
                 <tr>
-                  <th>Partido</th>
+                  <th>Categoría</th>
                   <th>Acciones</th>
                 </tr>
               </thead>
@@ -83,29 +83,29 @@
       'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
     }
   });
-  $('#partidos_table').DataTable({
+  $('#categorias_table').DataTable({
     processing: true,
     serverSide: true,
     responsive: true,
     autoWidth: false,
     ajax: {
-      url:"{{ url('partidos') }}"
+      url:"{{ url('categorias') }}"
    },
     columns: [
-      { data: 'partido', name: 'partido' },
+      { data: 'categoria', name: 'categoria' },
       {data: 'action', name: 'action', orderable: false},
     ],
     order: [[0, 'desc']]
   });
 });
 //--CODIGO PARA CREAR ESTADOS (LEVANTAR EL MODAL) ---------------------//
-$('#createNewPartido').click(function () {
-  $('#partidoForm').trigger("reset");
-  $('#create_partidos').modal({backdrop: 'static', keyboard: true, show: true});
+$('#createNewCategoria').click(function () {
+  $('#categoriaForm').trigger("reset");
+  $('#create_categorias').modal({backdrop: 'static', keyboard: true, show: true});
   $('.alert-danger').hide();
 });
 //--CODIGO PARA CREAR ESTADOS (GUARDAR REGISTRO) ---------------------//
-$('#SubmitCreatePartido').click(function(e) {
+$('#SubmitCreateCategoria').click(function(e) {
   e.preventDefault();
   $.ajaxSetup({
     headers: {
@@ -113,10 +113,10 @@ $('#SubmitCreatePartido').click(function(e) {
     }
   });
   $.ajax({
-    url: "{{ route('partidos.store') }}",
+    url: "{{ route('categorias.store') }}",
     method: 'post',
     data: {
-      partido: $('#partido').val()
+      categoria: $('#categoria').val()
     },
     success: function(result) {
       if(result.errors) {
@@ -127,11 +127,11 @@ $('#SubmitCreatePartido').click(function(e) {
         });
       } else {
         $('.alert-danger').hide();
-        var oTable = $('#partidos_table').dataTable();
+        var oTable = $('#categorias_table').dataTable();
         oTable.fnDraw(false);
         Swal.fire ( result.titulo ,  result.message ,  result.icono );
         if (result.icono=="success") {
-          $("#create_partidos").modal('hide');
+          $("#create_categorias").modal('hide');
         }
       }
     }
@@ -139,30 +139,31 @@ $('#SubmitCreatePartido').click(function(e) {
 });
 
 //--CODIGO PARA EDITAR ESTADO ---------------------//
-$('body').on('click', '#editPartido', function () {
+$('body').on('click', '#editCategoria', function () {
   var id = $(this).data('id');
   $.ajax({
     method:"GET",
-    url: "partidos/"+id+"/edit",
+    url: "categorias/"+id+"/edit",
     dataType: 'json',
     success: function(data){
-      $('#edit_partidos').modal({backdrop: 'static', keyboard: true, show: true});
+      //console.log(data);
+      $('#edit_categorias').modal({backdrop: 'static', keyboard: true, show: true});
       $('.alert-danger').hide();
-      $('#id_partido_edit').val(data.id);
-      $('#partido_edit').val(data.partido);
+      $('#id_categoria_edit').val(data.id);
+      $('#categoria_edit').val(data.categoria);
     }
   });
 });
 //--CODIGO PARA UPDATE ESTADO ---------------------//
-$('#SubmitEditPartido').click(function(e) {
+$('#SubmitEditCategoria').click(function(e) {
   e.preventDefault();
-  var id = $('#id_partido_edit').val();
+  var id = $('#id_categoria_edit').val();
   $.ajax({
     method:'PUT',
-    url: "partidos/"+id+"",
+    url: "categorias/"+id+"",
     data: {
-      id_partido: $('#id_partido_edit').val(),
-      partido: $('#partido_edit').val()
+      id_categoria: $('#id_categoria_edit').val(),
+      categoria: $('#categoria_edit').val()
     },
     success: (data) => {
       if(data.errors) {
@@ -172,11 +173,11 @@ $('#SubmitEditPartido').click(function(e) {
           $('.alert-danger').append('<strong><li>'+value+'</li></strong>');
         });
       } else {
-        var oTable = $('#partidos_table').dataTable();
+        var oTable = $('#categorias_table').dataTable();
         oTable.fnDraw(false);
         Swal.fire ( data.titulo ,  data.message ,  data.icono );
         if (data.icono=="success") {
-          $("#edit_partidos").modal('hide');
+          $("#edit_categorias").modal('hide');
         }
       }
     },
@@ -186,10 +187,10 @@ $('#SubmitEditPartido').click(function(e) {
   });
 });
 //--CODIGO PARA ELIMINAR ESTADO ---------------------//
-function deletePartido(id){
+function deleteCategoria(id){
   var id = id;
   Swal.fire({
-    title: '¿Estás seguro que desea eliminar a este partido?',
+    title: '¿Estás seguro que desea eliminar a este categoría?',
     text: "¡Esta opción no podrá deshacerse en el futuro!",
     icon: 'warning',
     showCancelButton: true,
@@ -202,16 +203,16 @@ function deletePartido(id){
       // ajax
       $.ajax({
         type:"DELETE",
-        url: "partidos/"+id+"",
+        url: "categorias/"+id+"",
         data: { id: id },
         dataType: 'json',
         success: function(response){
           Swal.fire ( response.titulo ,  response.message ,  response.icono );
-          var oTable = $('#partidos_table').dataTable();
+          var oTable = $('#categorias_table').dataTable();
           oTable.fnDraw(false);
         },
         error: function (data) {
-          Swal.fire({title: "Error del servidor", text:  "Partido no eliminado", icon:  "error"});
+          Swal.fire({title: "Error del servidor", text:  "Categoría no eliminada", icon:  "error"});
         }
       });
     }

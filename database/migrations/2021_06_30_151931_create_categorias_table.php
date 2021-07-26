@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateInventariosTable extends Migration
+class CreateCategoriasTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,9 @@ class CreateInventariosTable extends Migration
      */
     public function up()
     {
-        Schema::create('inventarios', function (Blueprint $table) {
+        Schema::create('categorias', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('id_producto');
-            $table->integer('stock');
-            $table->integer('stock_min')->nullable();
-
-            $table->foreign('id_producto')->references('id')->on('productos')->onDelete('cascade');
+            $table->string('categoria');
             $table->timestamps();
         });
     }
@@ -31,6 +27,6 @@ class CreateInventariosTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('inventarios');
+        Schema::dropIfExists('categorias');
     }
 }

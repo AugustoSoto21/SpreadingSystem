@@ -126,7 +126,7 @@ class PartidosController extends Controller
             $partido->partido=$request->partido;
             $partido->save();
 
-            return response()->json(['message'=>"El partido ha sido registrado con éxito.",'icono'=>'success','titulo'=>'Éxito']);
+            return response()->json(['message'=>"El partido ha sido actualizado con éxito.",'icono'=>'success','titulo'=>'Éxito']);
             
         }
     }

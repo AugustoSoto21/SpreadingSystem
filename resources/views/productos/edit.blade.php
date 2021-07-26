@@ -28,7 +28,7 @@
           <form action="" class="form-horizontal" method="POST" autocomplete="off" name="productoForm" id="productoForm" enctype="Multipart/form-data">
             @csrf
             <div class="card-header">
-              <h3 class="card-title" style="margin-top: 5px;"><i class="nav-icon fa fa-shopping-basket"></i> Editar producto</h3>
+              <h3 class="card-title" style="margin-top: 5px;"><i class="nav-icon fa fa-shopping-basket"></i> Editar producto: <span id="codigo_edit"></span></h3>
               <div class="float-right">
                 <a href="{{ route('productos.index') }}" class="btn btn-default btn-sm"><i class="fa fa-arrow-left"></i> Regresar</a>                
                 <button type="submit" class="btn btn-primary btn-sm" id="SubmitCreateProducto"><i class="fa fa-save"></i> Guardar registro</button>
@@ -44,80 +44,37 @@
                   </button>
               </div>
               <div class="row">
-                <div class="col-sm-3">
+                <div class="col-sm-4">
                   <div class="form-group">
-                    <label for="codigo">Código <b style="color: red;">*</b></label>
-                    <input type="text" name="codigo" id="codigo" class="form-control" required="required" placeholder="Ingrese el código del producto" onkeyup="this.value = this.value.toUpperCase();" disabled="true" value="{!!$productos->codigo!!}">
+                    <label for="id_categoria">Categoría <b style="color: red;">*</b></label>
+                    <select name="id_categoria" id="id_categoria_edit" class="form-control select2">
+                      @foreach($categorias as $k)
+                      <option value="{{ $k->id }}">{{ $k->categoria }}</option>
+                      @endforeach
+                    </select>
                   </div>
-                  @error('codigo')
+                  @error('id_categoria')
                     <div class="alert alert-danger">{{ $message }}</div>
                   @enderror
                 </div>
-                <div class="col-sm-3">
+                <div class="col-sm-5">
                   <div class="form-group">
-                    <label for="nombre">Nombre <b style="color: red;">*</b></label>
-                    <input type="text" name="nombre" id="nombre" class="form-control" required="required" placeholder="Ingrese el nombre del producto" onkeyup="this.value = this.value.toUpperCase();" value="{!!$productos->nombre!!}">
+                    <label for="detalles">Detalles <b style="color: red;">*</b></label>
+                    <input type="text" name="detalles" id="detalles_edit" class="form-control" required="required" placeholder="Ingrese los detalles del producto" onkeyup="this.value = this.value.toUpperCase();">
                   </div>
-                  @error('nombre')
-                    <div class="alert alert-danger">{{ $message }}</div>
-                  @enderror
-                </div>
-                <div class="col-sm-3">
-                  <div class="form-group">
-                    <label for="descripcion">Descripción <b style="color: red;">*</b></label>
-                    <input type="text" name="descripcion" id="descripcion" class="form-control" required="required" placeholder="Ingrese la descripcion del producto" onkeyup="this.value = this.value.toUpperCase();" value="{!!$productos->descripcion!!}">
-                  </div>
-                  @error('descripcion')
-                    <div class="alert alert-danger">{{ $message }}</div>
-                  @enderror
-                </div>
-                <div class="col-sm-3">
-                  <div class="form-group">
-                    <label for="modelo">Modelo <b style="color: red;">*</b></label>
-                    <input type="text" name="modelo" id="modelo" class="form-control" required="required" placeholder="Ingrese el modelo del producto" onkeyup="this.value = this.value.toUpperCase();" value="{!!$productos->modelo!!}">
-                  </div>
-                  @error('modelo')
-                    <div class="alert alert-danger">{{ $message }}</div>
-                  @enderror
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-md-3">
-                  <div class="form-group">
-                    <label for="marca">Marca <b style="color: red;">*</b></label>
-                    <input type="text" name="marca" id="marca" class="form-control" required="required" placeholder="Ingrese la marca del producto" onkeyup="this.value = this.value.toUpperCase();" value="{!!$productos->marca!!}">
-                  </div>
-                  @error('marca')
-                    <div class="alert alert-danger">{{ $message }}</div>
-                  @enderror
-                </div>
-                <div class="col-md-3">
-                  <div class="form-group">
-                    <label for="color">Color <b style="color: red;">*</b></label>
-                    <input type="text" name="color" id="color" class="form-control" required="required" placeholder="Ingrese el color del producto" onkeyup="this.value = this.value.toUpperCase();" value="{!!$productos->color!!}">
-                  </div>
-                  @error('color')
-                    <div class="alert alert-danger">{{ $message }}</div>
-                  @enderror
-                </div>
-                <div class="col-md-3">
-                  <div class="form-group">
-                    <label for="precio_venta">Precio de Venta <b style="color: red;">*</b></label>
-                    <input type="text" name="precio_venta" id="precio_venta" class="form-control" required="required" placeholder="Ingrese el precio de venta del producto" onkeyup="this.value = this.value.toUpperCase();" value="{!!$productos->precio_venta!!}">
-                  </div>
-                  @error('precio_venta')
+                  @error('detalles')
                     <div class="alert alert-danger">{{ $message }}</div>
                   @enderror
                 </div>
                 <div class="col-md-3">
                   <div class="form-group">
                     <label for="status">Status <b style="color: red;">*</b></label>
-                    <select name="status" id="status" class="form-control select2">
-                      <option value="Activo" @if($productos->status=="Activo") selected @endif>Activo</option>
-                      <option value="Inactivo" @if($productos->status=="Inactivo") selected @endif>Inactivo</option>
+                    <select name="status" id="status_edit" class="form-control select2">
+                      <option value="Activo">Activo</option>
+                      <option value="Inactivo">Inactivo</option>
                     </select>
                   </div>
-                </div>
+                </div>  
               </div>
               <div class="row">
                 <div class="col-sm-12">
@@ -171,12 +128,8 @@ $('#SubmitCreateProducto').click(function(e) {
     enctype: 'multipart/form-data',
     data: {
       codigo: $('#codigo').val(),
-      nombre: $('#nombre').val(),
-      descripcion: $('#descripcion').val(),
-      modelo: $('#modelo').val(),
-      marca: $('#marca').val(),
-      color: $('#color').val(),
-      precio_venta: $('#precio_venta').val(),
+      detalles: $('#detalles').val(),
+      id_categoria: $('#id_categoria').val(),
       status: $('#status').val(),
       imagenes: $('#imagenes').val()
     },

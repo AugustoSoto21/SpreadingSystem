@@ -14,7 +14,7 @@ class Productos extends Model
 
     protected $table='productos';
 
-    protected $fillable=['codigo','nombre','descripcion','modelo','marca','color','precio_venta','status'];
+    protected $fillable=['codigo','detalles','id_categoria','status'];
 
     public function imagenes(){
 
@@ -34,5 +34,10 @@ class Productos extends Model
     public function inventario(){
 
     	return $this->hasMany(Inventario::class);
+    }
+
+    public function categorias(){
+
+        return $this->belongsTo('App\Models\Categorias','id_categoria','id');
     }
 }

@@ -9,6 +9,7 @@ use Datatables;
 use App\Models\Imagenes;
 use App\Models\Inventario;
 use App\Models\Almacen;
+use App\Models\Categorias;
 class ProductosController extends Controller
 {
     /**
@@ -18,8 +19,12 @@ class ProductosController extends Controller
      */
     public function index()
     {
+        $categorias=Categorias::all();
         if(request()->ajax()) {
-            $productos=Productos::all();
+            $productos=\DB::table('productos')
+            ->join('categorias','categorias.id','=','productos.id_categoria')
+            ->select('productos.*','categorias.categoria')
+            ->get();
             return datatables()->of($productos)
                 ->addColumn('action', function ($row) {
                     $edit = '<a href="productos/'.$row->id.'/edit" data-id="'.$row->id.'" class="btn btn-warning btn-xs" id="editProducto"><i class="fa fa-pencil-alt"></i></a>';
@@ -30,7 +35,7 @@ class ProductosController extends Controller
                 ->make(true);
         }
 
-        return view('productos.index');
+        return view('productos.index',compact('categorias'));
     }
 
     /**
@@ -40,7 +45,8 @@ class ProductosController extends Controller
      */
     public function create()
     {
-        return view('productos.create');
+        $categorias=Categorias::all();
+        return view('productos.create',compact('categorias'));
     }
 
     /**
@@ -53,24 +59,14 @@ class ProductosController extends Controller
     {
 
         $message =[
-            'codigo.required' => 'El campo código es obligatorio',
-            'nombre.required' => 'El campo nombres es obligatorio',
-            'descripcion.required' => 'El campo descripción es obligatorio',
-            'modelo.required' => 'El campo modelo es obligatorio',
-            'marca.required' => 'El campo marca es obligatorio',
-            'color.required' => 'El campo color es obligatorio',
-            'precio_venta.required' => 'El campo precio de venta es obligatorio',
+            'detalles.required' => 'El campo nombres es obligatorio',
+            'id_categoria.required' => 'La Categoría es obligatoria',
             'status.required' => 'El campo status es obligatorio',
             //'imagenes.required' => 'El campo imagenes es obligatorio',
         ];
         $validator = \Validator::make($request->all(), [
-            'codigo' => 'required',
-            'nombre' => 'required',
-            'descripcion' => 'required',
-            'modelo' => 'required',
-            'marca' => 'required',
-            'color' => 'required',
-            'precio_venta' => 'required',
+            'detalles' => 'required',
+            'id_categoria' => 'required',
             'status' => 'required',
             //'imagenes' => 'required',
         ],$message);
@@ -81,24 +77,29 @@ class ProductosController extends Controller
             return response()->json(['errors' => $validator->errors()->all()]);
         }
 
-        $buscar=Productos::where('codigo',$request->codigo)->count();
+        $buscar=Productos::where('detalles',$request->detalles)->count();
 
         if($buscar > 0){
-            return response()->json(['message'=>"El código del producto ya ha sido registrado.",'icono'=>'warning','titulo'=>'Alerta']);
+            return response()->json(['message'=>"Ya existe un producto con los mismos detalles",'icono'=>'warning','titulo'=>'Alerta']);
         }else{
             /*$validacion=$this->validar_imagen($request->file('imagenes'));
             if($validacion['valida'] > 0){
                 return response()->json(['message'=>"Error a enviar imágenes",'icono'=>'warning','titulo'=>'Alerta']);
             }*/
-
+            //GENERANDO CODIGO DEL PRODUCTO
+                //fecha de primero
+                $fecha=date('Ymd');
+                //3 primeras letras de la categoria
+                $categoria=Categorias::find($request->id_categoria);
+                $cat=substr($categoria->categoria, 0,3);
+                //codigo aleatorio de 4 digitos
+                $cod=generarCodigo();
+                $codigo=$fecha.$cat.$cod;
+            //------------------------------
             $producto= new Productos();
-            $producto->codigo=$request->codigo;
-            $producto->nombre=$request->nombre;
-            $producto->descripcion=$request->descripcion;
-            $producto->modelo=$request->modelo;
-            $producto->marca=$request->marca;
-            $producto->color=$request->color;
-            $producto->precio_venta=$request->precio_venta;
+            $producto->codigo=$codigo;
+            $producto->detalles=$request->detalles;
+            $producto->id_categoria=$request->id_categoria;
             $producto->status=$request->status;
             $producto->save();
             
@@ -148,6 +149,7 @@ class ProductosController extends Controller
     public function edit($id)
     {
         $productos=Productos::where('id',$id)->first();
+        $categorias=Categorias::all();
         return view('productos.edit', compact('productos'));
     }
 
@@ -161,34 +163,28 @@ class ProductosController extends Controller
     public function update(Request $request, $id_producto)
     {
         $message =[
-            'codigo.required' => 'El campo código es obligatorio',
-            'nombre.required' => 'El campo nombres es obligatorio',
-            'descripcion.required' => 'El campo descripción es obligatorio',
-            'modelo.required' => 'El campo modelo es obligatorio',
-            'marca.required' => 'El campo marca es obligatorio',
-            'color.required' => 'El campo color es obligatorio',
-            'precio_venta.required' => 'El campo precio de venta es obligatorio',
+            'detalles.required' => 'El campo nombres es obligatorio',
+            'id_categoria.required' => 'La Categoría es obligatoria',
             'status.required' => 'El campo status es obligatorio',
+            //'imagenes.required' => 'El campo imagenes es obligatorio',
         ];
         $validator = \Validator::make($request->all(), [
-            'codigo' => 'required',
-            'nombre' => 'required',
-            'descripcion' => 'required',
-            'modelo' => 'required',
-            'marca' => 'required',
-            'color' => 'required',
-            'precio_venta' => 'required',
+            'detalles' => 'required',
+            'id_categoria' => 'required',
             'status' => 'required',
+            //'imagenes' => 'required',
         ],$message);
+
+
 
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()->all()]);
         }
 
-        $buscar=Productos::where('codigo',$request->codigo)->count();
+        $buscar=Productos::where('detalles',$request->detalles)->count();
 
         if($buscar > 0){
-            return response()->json(['message'=>"El código del producto ya ha sido registrado.",'icono'=>'warning','titulo'=>'Alerta']);
+            return response()->json(['message'=>"Ya existe un producto con los mismos detalles",'icono'=>'warning','titulo'=>'Alerta']);
         }else{
             if($request->imagenes!=null){
                     $validacion=$this->validar_imagen($request->file('imagenes'));
@@ -198,13 +194,8 @@ class ProductosController extends Controller
                     }  
                 }
                 $producto= Productos::find($request->id_producto);
-                $producto->codigo=$request->codigo;
-                $producto->nombre=$request->nombre;
-                $producto->descripcion=$request->descripcion;
-                $producto->modelo=$request->modelo;
-                $producto->marca=$request->marca;
-                $producto->color=$request->color;
-                $producto->precio_venta=$request->precio_venta;
+                $producto->detalles=$request->detalles;
+                $producto->id_categoria=$request->id_categoria;
                 $producto->status=$request->status;
 
                 $producto->save();
@@ -230,7 +221,7 @@ class ProductosController extends Controller
                     }
 
                 }
-                 return response()->json(['message'=>"Producto ".$request->codigo." ".$request->nombre." actualizado con éxito",'icono'=>'success','titulo'=>'Éxito']);
+                 return response()->json(['message'=>"Producto ".$producto->codigo." - ".$request->detalles." actualizado con éxito",'icono'=>'success','titulo'=>'Éxito']);
             
         }
     }

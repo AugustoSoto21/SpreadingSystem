@@ -17,9 +17,8 @@ class CreateAlmacensTable extends Migration
             $table->id();
             $table->unsignedBigInteger('id_agencia');
             $table->unsignedBigInteger('id_producto');
-            $table->integer('existencia');
-            $table->integer('stock_min');
-            $table->integer('stock_max');
+            $table->integer('stock');
+            $table->integer('stock_min')->nullable();
 
             $table->foreign('id_agencia')->references('id')->on('agencias')->onDelete('cascade');
             $table->foreign('id_producto')->references('id')->on('productos')->onDelete('cascade');

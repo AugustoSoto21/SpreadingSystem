@@ -9,6 +9,7 @@ use App\Http\Controllers\FuentesController;
 use App\Http\Controllers\DeliverysController;
 use App\Http\Controllers\ClientesController;
 use App\Http\Controllers\ProductosController;
+use App\Http\Controllers\CategoriasController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -41,3 +42,4 @@ Route::get('productos/imagenes','ProductosController@imagenes')->name('productos
 Route::resource('/productos',ProductosController::class);
 Route::post('productos/eliminar_imagen','ProductosController@eliminar_imagen')->name('eliminar_imagen');
 Route::post('productos/mostrar','ProductosController@mostrar')->name('productos.mostrar_producto');
+Route::resource('/categorias',CategoriasController::class);

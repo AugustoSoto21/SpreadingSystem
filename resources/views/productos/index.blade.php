@@ -54,12 +54,8 @@
               <thead>
                 <tr>
                   <th>Código</th>
-                  <th>Nombre</th>
-                  <th>Descripción</th>
-                  <th>Modelo</th>
-                  <th>Marca</th>
-                  <th>Color</th>
-                  <th>Precio Venta</th>
+                  <th>Categoría</th>
+                  <th>Detalles</th>
                   <th>Status</th>
                   <th>Acciones</th>
                 </tr>
@@ -105,12 +101,8 @@ $(document).ready( function () {
    },
     columns: [
       { data: 'codigo', name: 'codigo' },
-      { data: 'nombre', name: 'nombre' },
-      { data: 'descripcion', name: 'descripcion' },
-      { data: 'modelo', name: 'modelo' },
-      { data: 'marca', name: 'marca' },
-      { data: 'color', name: 'color' },
-      { data: 'precio_venta', name: 'precio_venta' },
+      { data: 'categoria', name: 'categoria' },
+      { data: 'detalles', name: 'detalles' },
       { data: 'status', name: 'status' },
       {data: 'action', name: 'action', orderable: false},
     ],
@@ -130,12 +122,9 @@ $('body').on('click', '#editProducto', function () {
       $('#edit_producto').modal({backdrop: 'static', keyboard: true, show: true});
       $('.alert-danger').hide();
       $('#id_producto_edit').val(data.id);
-      $('#codigo_edit').val(data.codigo);
-      $('#nombre_edit').val(data.nombre);
-      $('#descripcion_edit').val(data.descripcion);
-      $('#modelo_edit').val(data.modelo);
-      $('#marca_edit').val(data.marca);
-      $('#precio_venta_edit').val(data.precio_venta);
+      $('#codigo_edit').text(data.codigo);
+      $('#detalles_edit').val(data.detalles);
+      $('#id_categoria_edit').val(data.id_categoria);
       $('#status_edit').val(data.status);
     }
   });
@@ -149,14 +138,9 @@ $('#SubmitEditProducto').click(function(e) {
     url: "productos/"+id+"",
     data: {
       id_producto: $('#id_producto_edit').val(),
-      codigo: $('#codigo_edit').val(),
-      nombre: $('#nombre_edit').val(),
-      descripcion: $('#descripcion_edit').val(),
-      modelo: $('#modelo_edit').val(),
-      marca: $('#marca_edit').val(),
-      color: $('#color_edit').val(),
-      precio_venta: $('#precio_venta_edit').val(),
-      status: $('#status_edit').val()
+      detalles: $('#detalles_edit').val(),
+      status: $('#status_edit').val(),
+      id_categoria: $('#id_categoria_edit').val()
     },
     success: (data) => {
       if(data.errors) {
