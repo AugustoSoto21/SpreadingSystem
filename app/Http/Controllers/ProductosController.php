@@ -96,53 +96,87 @@ class ProductosController extends Controller
         if($buscar > 0){
             return response()->json(['message'=>"Ya existe un producto con los mismos detalles, modelo y color",'icono'=>'warning','titulo'=>'Alerta']);
         }else{
-            /*$validacion=$this->validar_imagen($request->file('imagenes'));
-            if($validacion['valida'] > 0){
-                return response()->json(['message'=>"Error a enviar imágenes",'icono'=>'warning','titulo'=>'Alerta']);
-            }*/
-            //GENERANDO CODIGO DEL PRODUCTO
-                //fecha de primero
-                $fecha=date('Ymd');
-                //3 primeras letras de la categoria
-                $categoria=Categorias::find($request->id_categoria);
-                $cat=substr($categoria->categoria, 0,3);
-                //codigo aleatorio de 4 digitos
-                $cod=generarCodigo();
-                $codigo=$fecha.$cat.$cod;
-            //------------------------------
-            $producto= new Productos();
-            $producto->codigo=$codigo;
-            $producto->detalles=$request->detalles;
-            $producto->marca=$request->marca;
-            $producto->modelo=$request->modelo;
-            $producto->color=$request->color;
-            $producto->id_categoria=$request->id_categoria;
-            $producto->status=$request->status;
-            $producto->save();
-            
-            //cargando imagenes
-            $imagenes=$request->file('imagenes');
-            foreach($imagenes as $imagen){
-                $codigo=$this->generarCodigo();
-                /*
-                $validatedData = $request->validate([
-                    'imagenes' => 'mimes:jpeg,png'
-                ]);*/
-                
-                $name=$codigo."_".$imagen->getClientOriginalName();
-                $imagen->move(public_path().'/img_productos', $name);  
-                $url ='img_productos/'.$name;
-                $img=new Imagenes();
-                $img->id_producto=$producto->id;
-                $img->nombre=$name;
-                $img->url=$url;
-                $img->save();
+            //validando arreglo de almacen
+            if(count($request->id_agencia) > 0 && count($request->stock) < count($request->id_agencia)){
+                return response()->json(['message'=>"Los campos de stock son obligatorios",'icono'=>'warning','titulo'=>'Alerta']);
+            }else{
 
-                $producto->imagenes()->attach($img);
+                /*$validacion=$this->validar_imagen($request->file('imagenes'));
+                if($validacion['valida'] > 0){
+                    return response()->json(['message'=>"Error a enviar imágenes",'icono'=>'warning','titulo'=>'Alerta']);
+                }*/
+                //GENERANDO CODIGO DEL PRODUCTO
+                    //fecha de primero
+                    //$fecha=date('Ymd');
+                    //3 primeras letras de la categoria
+                    $categoria=Categorias::find($request->id_categoria);
+                    $cat=substr($categoria->categoria, 0,3);
+                    //codigo aleatorio de 4 digitos
+                    $cod=generarCodigo();
+                    //$codigo=$fecha.$cat.$cod;
+                    $codigo=$cat.$cod;
+                //------------------------------
+                $producto= new Productos();
+                $producto->codigo=$codigo;
+                $producto->detalles=$request->detalles;
+                $producto->marca=$request->marca;
+                $producto->modelo=$request->modelo;
+                $producto->color=$request->color;
+                $producto->id_categoria=$request->id_categoria;
+                $producto->status=$request->status;
+                $producto->save();
+                
+                //agregando inventario
+                $inventario= new Inventario();
+                $inventario->id_producto=$producto->id;
+                $inventario->stock=$request->stock_s;
+                $inventario->stock_min=$request->stock_min_s;
+                $inventario->save();
+                //----------------
+                //-----------agregando almacén-----------
+                $stock_min=array();
+                if(count($request->stock_min)==0){
+                    for ($i=0; $i < count($stock); $i++) { 
+                        $stock_min[$i]=0;
+                    }
+                }else{
+                    for ($i=0; $i < count($stock); $i++) { 
+                        $stock_min[$i]=$request->stock_min[$i];
+                    }
+                }
+                for ($i=0; $i < count($request->id_agencia); $i++) { 
+                    $almacen= new Almacen();
+                    $almacen->id_agencia=$request->id_agencia[$i];
+                    $almacen->id_producto=$producto->id;
+                    $almacen->stock=$request->stock[$i];
+                    $almacen->stock_min=$stock_min[$i];
+                    $almacen->save();
+                }
+                //-----------------------------------
+                //cargando imagenes
+                $imagenes=$request->file('imagenes');
+                foreach($imagenes as $imagen){
+                    $codigo=$this->generarCodigo();
+                    /*
+                    $validatedData = $request->validate([
+                        'imagenes' => 'mimes:jpeg,png'
+                    ]);*/
+                    
+                    $name=$codigo."_".$imagen->getClientOriginalName();
+                    $imagen->move(public_path().'/img_productos', $name);  
+                    $url ='img_productos/'.$name;
+                    $img=new Imagenes();
+                    $img->id_producto=$producto->id;
+                    $img->nombre=$name;
+                    $img->url=$url;
+                    $img->save();
+
+                    $producto->imagenes()->attach($img);
+                }
+                
+                return response()->json(['message'=>"Producto registrado con éxito",'icono'=>'success','titulo'=>'Éxito']);            
+                
             }
-            
-            return response()->json(['message'=>"Producto registrado con éxito",'icono'=>'success','titulo'=>'Éxito']);            
-            
         }
     }
 
@@ -181,8 +215,9 @@ class ProductosController extends Controller
      */
     public function update(Request $request, $id_producto)
     {
+        
         $message =[
-            'detalles.required' => 'El campo nombres es obligatorio',
+            'detalles.required' => 'El campo detalles es obligatorio',
             'modelo.required' => 'El campo modelo es obligatorio',
             'color.required' => 'El campo color es obligatorio',
             'id_categoria.required' => 'La Categoría es obligatoria',
@@ -209,45 +244,72 @@ class ProductosController extends Controller
         if($buscar > 0){
             return response()->json(['message'=>"Ya existe un producto con los mismos detalles, marca, modelo y color",'icono'=>'warning','titulo'=>'Alerta']);
         }else{
-            if($request->imagenes!=null){
-                    $validacion=$this->validar_imagen($request->file('imagenes'));
-                    if($validacion['valida'] > 0){
-                        toastr()->warning('intente otra vez!!', $validacion['mensaje'].'');
-                        return redirect()->back();
-                    }  
-                }
-                $producto= Productos::find($request->id_producto);
-                $producto->detalles=$request->detalles;
-                $producto->marca=$request->marca;   
-                $producto->id_categoria=$request->id_categoria;
-                $producto->status=$request->status;
-
-                $producto->save();
+            if(count($request->id_agencia) > 0 && count($request->stock) < count($request->id_agencia)){
+                return response()->json(['message'=>"Los campos de stock son obligatorios",'icono'=>'warning','titulo'=>'Alerta']);
+            }else{
                 if($request->imagenes!=null){
-                    //cargando imagenes
-                $imagenes=$request->file('imagenes');
-                    foreach($imagenes as $imagen){
-                        $codigo=$this->generarCodigo();
-                        /*
-                        $validatedData = $request->validate([
-                            'imagenes' => 'mimes:jpeg,png'
-                        ]);*/
-                        $name=$codigo."_".$imagen->getClientOriginalName();
-                        $imagen->move(public_path().'/img_productos', $name);  
-                        $url ='img_productos/'.$name;
-                        $img=new Imagenes();
-                        $img->id_producto=$producto->id;
-                        $img->nombre=$name;
-                        $img->url=$url;
-                        $img->save();
-
-                        $producto->imagenes()->attach($img);
+                        $validacion=$this->validar_imagen($request->file('imagenes'));
+                        if($validacion['valida'] > 0){
+                            toastr()->warning('intente otra vez!!', $validacion['mensaje'].'');
+                            return redirect()->back();
+                        }  
                     }
+                    $producto= Productos::find($request->id_producto);
+                    $producto->detalles=$request->detalles;
+                    $producto->marca=$request->marca;   
+                    $producto->id_categoria=$request->id_categoria;
+                    $producto->status=$request->status;
 
+                    $producto->save();
+
+                            //-----------agregando almacén-----------
+                    $stock_min=array();
+                    if(count($request->stock_min)==0){
+                        for ($i=0; $i < count($stock); $i++) { 
+                            $stock_min[$i]=0;
+                        }
+                    }else{
+                        for ($i=0; $i < count($stock); $i++) { 
+                            $stock_min[$i]=$request->stock_min[$i];
+                        }
+                    }
+                    //ELEIMINANDO REGISTROS DEL ALMACÉN DEL PRODUCTO
+                        \DB::table('almacen')->where('id_producto',$producto->id)->delete();
+                    //-------
+                    for ($i=0; $i < count($request->id_agencia); $i++) { 
+                        $almacen= new Almacen();
+                        $almacen->id_agencia=$request->id_agencia[$i];
+                        $almacen->id_producto=$producto->id;
+                        $almacen->stock=$request->stock[$i];
+                        $almacen->stock_min=$stock_min[$i];
+                        $almacen->save();
+                    }
+                    //-----------------------------------
+                    if($request->imagenes!=null){
+                        //cargando imagenes
+                    $imagenes=$request->file('imagenes');
+                        foreach($imagenes as $imagen){
+                            $codigo=$this->generarCodigo();
+                            /*
+                            $validatedData = $request->validate([
+                                'imagenes' => 'mimes:jpeg,png'
+                            ]);*/
+                            $name=$codigo."_".$imagen->getClientOriginalName();
+                            $imagen->move(public_path().'/img_productos', $name);  
+                            $url ='img_productos/'.$name;
+                            $img=new Imagenes();
+                            $img->id_producto=$producto->id;
+                            $img->nombre=$name;
+                            $img->url=$url;
+                            $img->save();
+
+                            $producto->imagenes()->attach($img);
+                        }
+
+                    }
+                     return response()->json(['message'=>"Producto ".$producto->codigo." - ".$request->detalles." actualizado con éxito",'icono'=>'success','titulo'=>'Éxito']);
                 }
-                 return response()->json(['message'=>"Producto ".$producto->codigo." - ".$request->detalles." actualizado con éxito",'icono'=>'success','titulo'=>'Éxito']);
-            
-        }
+            }
     }
 
     /**
@@ -263,6 +325,8 @@ class ProductosController extends Controller
             
             return response()->json(['message'=>"El Cliente que intenta eliminar se encuentra relacionado con algún pedido",'icono'=>'warning','titulo'=>'Alerta']);
         }else{*/
+            $inventario=\DB::table('inventario')->where('id_producto',$id)->delete();
+            $almacen=\DB::table('almacen')->where('id_producto',$id)->delete();
             //esperando relacion con inventario
             $producto=Productos::find($id);
             if($producto->delete()){
