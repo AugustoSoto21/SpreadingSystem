@@ -10,6 +10,7 @@ use App\Models\Imagenes;
 use App\Models\Inventario;
 use App\Models\Almacen;
 use App\Models\Categorias;
+use App\Models\Agencias;
 class ProductosController extends Controller
 {
     /**
@@ -19,6 +20,7 @@ class ProductosController extends Controller
      */
     public function index()
     {
+        
         $categorias=Categorias::all();
         if(request()->ajax()) {
             $productos=\DB::table('productos')
@@ -53,7 +55,8 @@ class ProductosController extends Controller
     public function create()
     {
         $categorias=Categorias::all();
-        return view('productos.create',compact('categorias'));
+        $agencias=Agencias::where('almacen','Si')->get();
+        return view('productos.create',compact('categorias','agencias'));
     }
 
     /**
@@ -162,9 +165,11 @@ class ProductosController extends Controller
      */
     public function edit($id)
     {
+        $almacen=array();
         $productos=Productos::where('id',$id)->first();
         $categorias=Categorias::all();
-        return view('productos.edit', compact('productos'));
+        $agencias=Agencias::where('almacen','Si')->get();
+        return view('productos.edit', compact('productos','categorias','agencias','almacen'));
     }
 
     /**

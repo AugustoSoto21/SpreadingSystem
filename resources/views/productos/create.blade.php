@@ -111,6 +111,52 @@
                       @enderror
                   </div>
               </div>
+              
+              <div class="row">
+                  <div class="col-sm-4">
+                    <label for="nombre_agencia" style="color: blue;"> INVENTARIO SPREADING</label>
+                  </div>
+                  <div class="col-sm-4">
+                    <div class="form-group">
+                        <label for="stock">Stock <b style="color: red;">*</b></label>
+                        <input type="number" name="stock_s" id="stock_s" class="form-control" required="required" min="0">
+                      </div>
+                  </div>
+                  <div class="col-sm-4">
+                    <div class="form-group">
+                        <label for="color">Stock Mínimo </label>
+                        <input type="number" name="stock_min_s" id="stock_min_s" class="form-control" min="0">
+                      </div>
+                  </div>
+                </div>
+
+              @if(count($agencias) > 0)
+                <div class="row">
+                  <div class="col-sm-12">
+                    <label for="titulo">Agencias con Almacén</label>
+                  </div>
+                </div>
+              @endif
+              @foreach($agencias as $k)
+                <div class="row">
+                  <div class="col-sm-4">
+                    <label for="nombre_agencia" style="color: blue;">{{ $k->nombre}}</label>
+                      <input type="hidden" name="id_agencia" id="id_agencia" value="{{ $k->id }}">
+                  </div>
+                  <div class="col-sm-4">
+                    <div class="form-group">
+                        <label for="stock">Stock <b style="color: red;">*</b></label>
+                        <input type="number" name="stock[]" id="stock" class="form-control" required="required" min="0">
+                      </div>
+                  </div>
+                  <div class="col-sm-4">
+                    <div class="form-group">
+                        <label for="color">Stock Mínimo </label>
+                        <input type="number" name="stock_min[]" id="stock_min" class="form-control" min="0">
+                      </div>
+                  </div>
+                </div>
+              @endforeach
               <div class="row">
                 <div class="col-sm-12">
                   <label for="imagenes1" >Imágenes <b style="color: red;">*</b></label>

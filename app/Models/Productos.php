@@ -28,12 +28,12 @@ class Productos extends Model
 
     public function almacen(){
 
-    	return $this->hasMany(Almacen::class);
+    	return $this->hasMany('App\Models\Almacen','id_producto','id');
     }
 
     public function inventario(){
 
-    	return $this->hasMany(Inventario::class);
+    	return $this->hasMany('App\Models\Inventario','id_producto','id');
     }
 
     public function categorias(){

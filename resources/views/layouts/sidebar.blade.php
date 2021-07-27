@@ -83,13 +83,13 @@
           </li>
           <li class="nav-item">
             <a href="{!!route('productos.index')!!}" class="nav-link">
-              <i class="nav-icon fas fa-users"></i>
+              <i class="nav-icon fa fa-shopping-basket"></i>
               <p>Productos</p>
             </a>
           </li>
           <li class="nav-item">
             <a href="{!!route('categorias.index')!!}" class="nav-link">
-              <i class="nav-icon fas fa-users"></i>
+              <i class="nav-icon fas fa-tag"></i>
               <p>Categorías</p>
             </a>
           </li>

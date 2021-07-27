@@ -9,7 +9,7 @@ class Inventario extends Model
 {
     use HasFactory;
 
-    protected $table='inventario';
+    protected $table='inventarios';
 
     protected $fillable=['id_producto','stock','stock_min'];
 
