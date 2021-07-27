@@ -215,7 +215,7 @@ class ProductosController extends Controller
      */
     public function update(Request $request, $id_producto)
     {
-        
+        dd($request->all());
         $message =[
             'detalles.required' => 'El campo detalles es obligatorio',
             'modelo.required' => 'El campo modelo es obligatorio',

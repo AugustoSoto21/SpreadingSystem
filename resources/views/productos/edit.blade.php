@@ -26,7 +26,8 @@
       <div class="col-md-12">
         <!-- Horizontal Form -->
         <div class="card card-primary card-outline">
-          <form action="" class="form-horizontal" method="POST" autocomplete="off" name="productoForm" id="productoForm" enctype="Multipart/form-data">
+          <form action="" class="form-horizontal" method="PUT" autocomplete="off" enctype="Multipart/form-data">
+            @method('PUT')
             @csrf
             <div class="card-header">
               <h3 class="card-title" style="margin-top: 5px;"><i class="nav-icon fa fa-shopping-basket"></i> Editar producto: <span id="codigo_edit">{{ $productos->codigo }}</span></h3>
@@ -198,39 +199,43 @@
 @endsection
 @section('scripts')
 <script type="text/javascript">
-//--CODIGO PARA CREAR ESTADOS (GUARDAR REGISTRO) ---------------------//
-$('#SubmitCreateProducto').click(function(e) {  
+//--CODIGO PARA EDITAR ESTADO ---------------------//
+//--CODIGO PARA UPDATE ESTADO ---------------------//
+$('#SubmitEditProducto').click(function(e) {
   e.preventDefault();
-  $.ajaxSetup({
-    headers: {
-      'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-    }
-  });
+  var id = $('#id_producto_edit').val();
   $.ajax({
-    url: "{{ route('productos.store') }}",
-    method: 'post',
-    enctype: 'multipart/form-data',
+    method:'PUT',
+    url: "productos/"+id+"",
     data: {
-      detalles: $('#detalles').val(),
-      id_categoria: $('#id_categoria').val(),
-      status: $('#status').val(),
-      imagenes: $('#imagenes').val(),
-      marca: $('#marca').val(),
-      modelo: $('#modelo').val(),
-      color: $('#color').val(),
+      id_producto: $('#id_producto_edit').val(),
+      detalles: $('#detalles_edit').val(),
+      status: $('#status_edit').val(),
+      marca: $('#marca_edit').val(),
+      modelo: $('#modelo_edit').val(),
+      color: $('#color_edit').val(),
+      stock_s: $('#stock_s_edit').val(),
+      stock_min_s: $('#stock_min_s_edit').val(),
+      
     },
-    success: function(result) {
-      console.log(result.errors);
-      if(result.errors) {
-        $('#message_error').html('');
-        $.each(result.errors, function(key, value) {
-          $('#message_error').show();
-          $('#message_error').append('<strong><li>'+value+'</li></strong>');
+    success: (data) => {
+      if(data.errors) {
+        $('.alert-danger').html('');
+        $.each(data.errors, function(key, value) {
+          $('.alert-danger').show();
+          $('.alert-danger').append('<strong><li>'+value+'</li></strong>');
         });
       } else {
-        $('#message_error').hide();
-        Swal.fire ( result.titulo ,  result.message ,  result.icono );
+        var oTable = $('#productos_table').dataTable();
+        oTable.fnDraw(false);
+        Swal.fire ( data.titulo ,  data.message ,  data.icono );
+        if (data.icono=="success") {
+          $("#edit_productos").modal('hide');
+        }
       }
+    },
+    error: function(data){
+      console.log(data);
     }
   });
 });
