@@ -16,7 +16,10 @@ class CreateProductosTable extends Migration
         Schema::create('productos', function (Blueprint $table) {
             $table->id();
             $table->string('codigo')->unique();
-            $table->string('detalle');
+            $table->string('detalles');
+            $table->string('marca')->nullable();
+            $table->string('modelo');
+            $table->string('color');
             $table->unsignedBigInteger('id_categoria');
             $table->enum('status',['Activo','Inactivo'])->default('Activo');
 

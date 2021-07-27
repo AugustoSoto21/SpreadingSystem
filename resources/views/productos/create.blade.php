@@ -82,7 +82,35 @@
                   </div>
                 </div>  
               </div>
-              
+              <div class="row">
+                  <div class="col-sm-4">
+                    <div class="form-group">
+                        <label for="marca">Marca </label>
+                        <input type="text" name="marca" id="marca" class="form-control" placeholder="Ingrese la marca del producto" onkeyup="this.value = this.value.toUpperCase();">
+                      </div>
+                      @error('marca')
+                        <div class="alert alert-danger">{{ $message }}</div>
+                      @enderror
+                  </div>
+                  <div class="col-sm-4">
+                    <div class="form-group">
+                        <label for="modelo">Modelo <b style="color: red;">*</b></label>
+                        <input type="text" name="modelo" id="modelo" class="form-control" required="required" placeholder="Ingrese el modelo del producto" onkeyup="this.value = this.value.toUpperCase();">
+                      </div>
+                      @error('modelo')
+                        <div class="alert alert-danger">{{ $message }}</div>
+                      @enderror
+                  </div>
+                  <div class="col-sm-4">
+                    <div class="form-group">
+                        <label for="color">Color <b style="color: red;">*</b></label>
+                        <input type="text" name="color" id="color" class="form-control" required="required" placeholder="Ingrese el color del producto" onkeyup="this.value = this.value.toUpperCase();">
+                      </div>
+                      @error('color')
+                        <div class="alert alert-danger">{{ $message }}</div>
+                      @enderror
+                  </div>
+              </div>
               <div class="row">
                 <div class="col-sm-12">
                   <label for="imagenes1" >Imágenes <b style="color: red;">*</b></label>
@@ -133,7 +161,9 @@ $('#SubmitCreateProducto').click(function(e) {
       detalles: $('#detalles').val(),
       id_categoria: $('#id_categoria').val(),
       status: $('#status').val(),
-      
+      marca: $('#marca').val(),
+      modelo: $('#modelo').val(),
+      color: $('#color').val(),
     },
     success: function(result) {
       console.log(result);

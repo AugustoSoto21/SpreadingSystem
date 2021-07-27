@@ -20,5 +20,6 @@ class DatabaseSeeder extends Seeder
         $this->call(PartidosZonasTablesSeeder::class);
         $this->call(TarifasTableSeeder::class);
         $this->call(CategoriasTableSeeder::class);
+        $this->call(ProductosTableSeeder::class);
     }
 }

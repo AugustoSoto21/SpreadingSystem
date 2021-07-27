@@ -60,12 +60,16 @@ class ProductosController extends Controller
 
         $message =[
             'detalles.required' => 'El campo nombres es obligatorio',
+            'modelo.required' => 'El campo modelo es obligatorio',
+            'color.required' => 'El campo color es obligatorio',
             'id_categoria.required' => 'La Categoría es obligatoria',
             'status.required' => 'El campo status es obligatorio',
             //'imagenes.required' => 'El campo imagenes es obligatorio',
         ];
         $validator = \Validator::make($request->all(), [
             'detalles' => 'required',
+            'modelo' => 'required',
+            'color' => 'required',
             'id_categoria' => 'required',
             'status' => 'required',
             //'imagenes' => 'required',
@@ -77,10 +81,10 @@ class ProductosController extends Controller
             return response()->json(['errors' => $validator->errors()->all()]);
         }
 
-        $buscar=Productos::where('detalles',$request->detalles)->count();
+        $buscar=Productos::where('detalles',$request->detalles)->where('marca',$request->marca)->where('modelo',$request->modelo)->where('color',$request->color)->count();
 
         if($buscar > 0){
-            return response()->json(['message'=>"Ya existe un producto con los mismos detalles",'icono'=>'warning','titulo'=>'Alerta']);
+            return response()->json(['message'=>"Ya existe un producto con los mismos detalles, modelo y color",'icono'=>'warning','titulo'=>'Alerta']);
         }else{
             /*$validacion=$this->validar_imagen($request->file('imagenes'));
             if($validacion['valida'] > 0){
@@ -99,6 +103,9 @@ class ProductosController extends Controller
             $producto= new Productos();
             $producto->codigo=$codigo;
             $producto->detalles=$request->detalles;
+            $producto->marca=$request->marca;
+            $producto->modelo=$request->modelo;
+            $producto->color=$request->color;
             $producto->id_categoria=$request->id_categoria;
             $producto->status=$request->status;
             $producto->save();
@@ -164,12 +171,16 @@ class ProductosController extends Controller
     {
         $message =[
             'detalles.required' => 'El campo nombres es obligatorio',
+            'modelo.required' => 'El campo modelo es obligatorio',
+            'color.required' => 'El campo color es obligatorio',
             'id_categoria.required' => 'La Categoría es obligatoria',
             'status.required' => 'El campo status es obligatorio',
             //'imagenes.required' => 'El campo imagenes es obligatorio',
         ];
         $validator = \Validator::make($request->all(), [
             'detalles' => 'required',
+            'modelo' => 'required',
+            'color' => 'required',
             'id_categoria' => 'required',
             'status' => 'required',
             //'imagenes' => 'required',
@@ -181,10 +192,10 @@ class ProductosController extends Controller
             return response()->json(['errors' => $validator->errors()->all()]);
         }
 
-        $buscar=Productos::where('detalles',$request->detalles)->count();
+        $buscar=Productos::where('detalles',$request->detalles)->where('marca',$request->marca)->where('modelo',$request->modelo)->where('color',$request->color)->where('id','<>',$request->id_producto)->count();
 
         if($buscar > 0){
-            return response()->json(['message'=>"Ya existe un producto con los mismos detalles",'icono'=>'warning','titulo'=>'Alerta']);
+            return response()->json(['message'=>"Ya existe un producto con los mismos detalles, marca, modelo y color",'icono'=>'warning','titulo'=>'Alerta']);
         }else{
             if($request->imagenes!=null){
                     $validacion=$this->validar_imagen($request->file('imagenes'));
@@ -195,6 +206,7 @@ class ProductosController extends Controller
                 }
                 $producto= Productos::find($request->id_producto);
                 $producto->detalles=$request->detalles;
+                $producto->marca=$request->marca;   
                 $producto->id_categoria=$request->id_categoria;
                 $producto->status=$request->status;
 

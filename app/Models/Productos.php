@@ -14,7 +14,7 @@ class Productos extends Model
 
     protected $table='productos';
 
-    protected $fillable=['codigo','detalles','id_categoria','status'];
+    protected $fillable=['codigo','detalles','marca','modelo','color','id_categoria','status'];
 
     public function imagenes(){
 

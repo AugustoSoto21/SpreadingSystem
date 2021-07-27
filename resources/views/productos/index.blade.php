@@ -57,6 +57,9 @@
                   <th>Código</th>
                   <th>Categoría</th>
                   <th>Detalles</th>
+                  <th>Marca</th>
+                  <th>Modelo</th>
+                  <th>Color</th>
                   <th>Status</th>
                   <th>Acciones</th>
                 </tr>
@@ -104,6 +107,9 @@ $(document).ready( function () {
       { data: 'codigo', name: 'codigo' },
       { data: 'categoria', name: 'categoria' },
       { data: 'detalles', name: 'detalles' },
+      { data: 'marca', name: 'marca' },
+      { data: 'modelo', name: 'modelo' },
+      { data: 'color', name: 'color' },
       { data: 'status', name: 'status' },
       {data: 'action', name: 'action', orderable: false},
     ],
