@@ -119,13 +119,13 @@
                   <div class="col-sm-4">
                     <div class="form-group">
                         <label for="stock">Stock <b style="color: red;">*</b></label>
-                        <input type="number" name="stock_s" id="stock_s" class="form-control" required="required" min="0">
+                        <input type="number" name="stock_s" id="stock_s" class="form-control stocks" required="required" min="0">
                       </div>
                   </div>
                   <div class="col-sm-4">
                     <div class="form-group">
                         <label for="color">Stock Mínimo </label>
-                        <input type="number" name="stock_min_s" id="stock_min_s" class="form-control" min="0">
+                        <input type="number" name="stock_min_s" id="stock_min_s" class="form-control stocks_min" min="0">
                       </div>
                   </div>
                 </div>
@@ -190,10 +190,16 @@ $('#SubmitCreateProducto').click(function(e) {
     }
   });
   var datos = $('#productoForm').serializeArray(); //datos serializados
-      var imagenes = new FormData($("#productoForm")[8]);
+  var imagenes = new FormData($("#productoForm")[8]);
 
       //agergaremos los datos serializados al objecto imagen
-      
+  /*var stocks=[];
+  var stocks_min=[];
+  var valor='';
+   $('.stocks').each(function(index){
+      valor=$(this).val();
+      stocks[]=valor
+   });*/   
   $.ajax({
 
     url: "{{ route('productos.store') }}",
@@ -210,6 +216,9 @@ $('#SubmitCreateProducto').click(function(e) {
       marca: $('#marca').val(),
       modelo: $('#modelo').val(),
       color: $('#color').val(),
+      stock_s: $('#stock_s_edit').val(),
+      stock_min_s: $('#stock_min_s_edit').val(),
+      
     },
     success: function(result) {
       console.log(result);
