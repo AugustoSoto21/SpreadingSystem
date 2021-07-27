@@ -31,6 +31,13 @@ class ProductosController extends Controller
                     $delete = ' <a href="javascript:void(0);" id="delete-estado" onClick="deleteProducto('.$row->id.')" class="delete btn btn-danger btn-xs"><i class="fa fa-trash"></i></a>';
                     return $edit . $delete;
                 })->rawColumns(['action'])
+                ->editColumn('detalles',function($row){
+                    $d=$row->detalles;
+                    $ma=$row->marca;
+                    $mo=$row->modelo;
+                    $c=$row->color;
+                    return $d.' '.$ma.' '.$mo.' '.$c;
+                })
                 ->addIndexColumn()
                 ->make(true);
         }
