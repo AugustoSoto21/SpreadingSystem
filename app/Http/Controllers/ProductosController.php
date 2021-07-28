@@ -136,11 +136,11 @@ class ProductosController extends Controller
                 //-----------agregando almacén-----------
                 $stock_min=array();
                 if(count($request->stock_min)==0){
-                    for ($i=0; $i < count($stock); $i++) { 
+                    for ($i=0; $i < count($request->stock); $i++) { 
                         $stock_min[$i]=0;
                     }
                 }else{
-                    for ($i=0; $i < count($stock); $i++) { 
+                    for ($i=0; $i < count($request->stock); $i++) { 
                         $stock_min[$i]=$request->stock_min[$i];
                     }
                 }
@@ -171,7 +171,8 @@ class ProductosController extends Controller
                     $img->url=$url;
                     $img->save();
 
-                    $producto->imagenes()->attach($img);
+                    //$producto->imagenes()->attach($img);
+                    
                 }
                 
                 return response()->json(['message'=>"Producto registrado con éxito",'icono'=>'success','titulo'=>'Éxito']);            
