@@ -28,4 +28,7 @@
 <script src="{{ asset('js/sweetalert2.min.js') }}"></script>
 <!-- bs-custom-file-input -->
 <script src="{!! asset('vendor/bs-custom-file-input/bs-custom-file-input.min.js') !!}"></script>
+<!-- Parsley -->
+<script src="{{ asset('vendor/parsleyjs/parsley.min.js') }}"></script>
+<script src="{{ asset('vendor/parsleyjs/i18n/es.js') }}"></script>
 @yield('scripts')

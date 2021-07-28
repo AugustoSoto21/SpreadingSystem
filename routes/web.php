@@ -42,4 +42,6 @@ Route::get('productos/imagenes','ProductosController@imagenes')->name('productos
 Route::resource('/productos',ProductosController::class);
 Route::post('productos/eliminar_imagen','ProductosController@eliminar_imagen')->name('eliminar_imagen');
 Route::post('productos/mostrar','ProductosController@mostrar')->name('productos.mostrar_producto');
+Route::get('/buscar_categorias',[ProductosController::class, 'buscar_categorias']);
 Route::resource('/categorias',CategoriasController::class);
+

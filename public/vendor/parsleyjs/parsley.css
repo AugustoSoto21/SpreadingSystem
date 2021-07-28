@@ -1,0 +1,259 @@
+  /* -------------------------------------------- */
+/* ############### 4.12 Parsley ############### */
+/* -------------------------------------------- */
+input.parsley-error:focus,
+textarea.parsley-error:focus {
+  box-shadow: none !important; }
+
+input.parsley-success:focus,
+textarea.parsley-success:focus {
+  box-shadow: none !important; }
+
+.parsley-checkbox.parsley-error {
+  display: inline-block;
+  padding: 10px;
+  border: 1px solid #DC3545; }
+
+.parsley-checkbox.parsley-success {
+  display: inline-block;
+  padding: 10px;
+  border: 1px solid #23BF08; }
+
+.parsley-errors-list {
+  color: #DC3545;
+  list-style: none;
+  font-size: 12px;
+  padding: 0;
+  margin-bottom: 0; }
+  .parsley-errors-list li {
+    margin: 5px 0 0; }
+
+/***** CUSTOM STYLED ERROR MESSAGE *****/
+.parsley-style-1 .parsley-input.parsley-error .form-control, .parsley-style-1 .parsley-input.parsley-error .dataTables_filter input, .dataTables_filter .parsley-style-1 .parsley-input.parsley-error input {
+  background-color: #fef9f9;
+  border-color: #DC3545;
+  border-bottom-width: 0;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0; }
+
+.parsley-style-1 .parsley-input.parsley-success .form-control, .parsley-style-1 .parsley-input.parsley-success .dataTables_filter input, .dataTables_filter .parsley-style-1 .parsley-input.parsley-success input {
+  border-color: #23BF08; }
+
+.parsley-style-1 .parsley-checkbox.parsley-error {
+  border: 1px solid #DC3545;
+  background-color: #fef9f9;
+  border-top-left-radius: 2px;
+  border-top-right-radius: 2px; }
+
+.parsley-style-1 .parsley-select.parsley-error .select2-container--default .select2-selection--single {
+  background-color: #fef9f9;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0; }
+
+.parsley-style-1 .parsley-errors-list.filled {
+  background-color: #DC3545;
+  color: #fff;
+  padding: 7px 10px;
+  border-bottom-right-radius: 2px;
+  border-bottom-left-radius: 2px; }
+  .parsley-style-1 .parsley-errors-list.filled li:first-child {
+    margin-top: 0; }
+
+    .was-validated .form-control:valid, .was-validated .dataTables_filter input:valid, .dataTables_filter .was-validated input:valid, .form-control.is-valid, .dataTables_filter input.is-valid, .dataTables_filter input.parsley-success, input.form-control.parsley-success,
+textarea.form-control.parsley-success, .was-validated
+.custom-select:valid,
+.custom-select.is-valid,
+input.custom-select.parsley-success,
+textarea.custom-select.parsley-success {
+  border-color: #23BF08; }
+  .was-validated .form-control:valid:focus, .was-validated .dataTables_filter input:valid:focus, .dataTables_filter .was-validated input:valid:focus, .form-control.is-valid:focus, .dataTables_filter input.is-valid:focus, .dataTables_filter input.parsley-success:focus, input.form-control.parsley-success:focus,
+  textarea.form-control.parsley-success:focus, .was-validated
+  .custom-select:valid:focus,
+  .custom-select.is-valid:focus,
+  input.custom-select.parsley-success:focus,
+  textarea.custom-select.parsley-success:focus {
+    border-color: #23BF08;
+    box-shadow: 0 0 0 0.2rem rgba(35, 191, 8, 0.25); }
+  .was-validated .form-control:valid ~ .valid-feedback, .was-validated .dataTables_filter input:valid ~ .valid-feedback, .dataTables_filter .was-validated input:valid ~ .valid-feedback,
+  .was-validated .form-control:valid ~ .valid-tooltip,
+  .was-validated .dataTables_filter input:valid ~ .valid-tooltip, .dataTables_filter
+  .was-validated input:valid ~ .valid-tooltip, .form-control.is-valid ~ .valid-feedback, .dataTables_filter input.is-valid ~ .valid-feedback, .dataTables_filter input.parsley-success ~ .valid-feedback, input.form-control.parsley-success ~ .valid-feedback,
+  textarea.form-control.parsley-success ~ .valid-feedback,
+  .form-control.is-valid ~ .valid-tooltip, .dataTables_filter input.is-valid ~ .valid-tooltip, .dataTables_filter input.parsley-success ~ .valid-tooltip, input.form-control.parsley-success ~ .valid-tooltip,
+  textarea.form-control.parsley-success ~ .valid-tooltip, .was-validated
+  .custom-select:valid ~ .valid-feedback,
+  .was-validated
+  .custom-select:valid ~ .valid-tooltip,
+  .custom-select.is-valid ~ .valid-feedback, input.custom-select.parsley-success ~ .valid-feedback,
+  textarea.custom-select.parsley-success ~ .valid-feedback,
+  .custom-select.is-valid ~ .valid-tooltip, input.custom-select.parsley-success ~ .valid-tooltip,
+  textarea.custom-select.parsley-success ~ .valid-tooltip {
+    display: block; }
+
+.was-validated .form-control-file:valid ~ .valid-feedback,
+.was-validated .form-control-file:valid ~ .valid-tooltip, .form-control-file.is-valid ~ .valid-feedback, input.form-control-file.parsley-success ~ .valid-feedback,
+textarea.form-control-file.parsley-success ~ .valid-feedback,
+.form-control-file.is-valid ~ .valid-tooltip, input.form-control-file.parsley-success ~ .valid-tooltip,
+textarea.form-control-file.parsley-success ~ .valid-tooltip {
+  display: block; }
+
+.was-validated .form-check-input:valid ~ .form-check-label, .form-check-input.is-valid ~ .form-check-label, input.form-check-input.parsley-success ~ .form-check-label,
+textarea.form-check-input.parsley-success ~ .form-check-label {
+  color: #23BF08; }
+
+.was-validated .form-check-input:valid ~ .valid-feedback,
+.was-validated .form-check-input:valid ~ .valid-tooltip, .form-check-input.is-valid ~ .valid-feedback, input.form-check-input.parsley-success ~ .valid-feedback,
+textarea.form-check-input.parsley-success ~ .valid-feedback,
+.form-check-input.is-valid ~ .valid-tooltip, input.form-check-input.parsley-success ~ .valid-tooltip,
+textarea.form-check-input.parsley-success ~ .valid-tooltip {
+  display: block; }
+
+.was-validated .custom-control-input:valid ~ .custom-control-label, .custom-control-input.is-valid ~ .custom-control-label, input.custom-control-input.parsley-success ~ .custom-control-label,
+textarea.custom-control-input.parsley-success ~ .custom-control-label {
+  color: #23BF08; }
+  .was-validated .custom-control-input:valid ~ .custom-control-label::before, .custom-control-input.is-valid ~ .custom-control-label::before, input.custom-control-input.parsley-success ~ .custom-control-label::before,
+  textarea.custom-control-input.parsley-success ~ .custom-control-label::before {
+    background-color: #68f84f; }
+
+.was-validated .custom-control-input:valid ~ .valid-feedback,
+.was-validated .custom-control-input:valid ~ .valid-tooltip, .custom-control-input.is-valid ~ .valid-feedback, input.custom-control-input.parsley-success ~ .valid-feedback,
+textarea.custom-control-input.parsley-success ~ .valid-feedback,
+.custom-control-input.is-valid ~ .valid-tooltip, input.custom-control-input.parsley-success ~ .valid-tooltip,
+textarea.custom-control-input.parsley-success ~ .valid-tooltip {
+  display: block; }
+
+.was-validated .custom-control-input:valid:checked ~ .custom-control-label::before, .custom-control-input.is-valid:checked ~ .custom-control-label::before, input.custom-control-input.parsley-success:checked ~ .custom-control-label::before,
+textarea.custom-control-input.parsley-success:checked ~ .custom-control-label::before {
+  background-color: #2cf00a; }
+
+.was-validated .custom-control-input:valid:focus ~ .custom-control-label::before, .custom-control-input.is-valid:focus ~ .custom-control-label::before, input.custom-control-input.parsley-success:focus ~ .custom-control-label::before,
+textarea.custom-control-input.parsley-success:focus ~ .custom-control-label::before {
+  box-shadow: 0 0 0 1px #E9ECEF, 0 0 0 0.2rem rgba(35, 191, 8, 0.25); }
+
+.was-validated .custom-file-input:valid ~ .custom-file-label, .custom-file-input.is-valid ~ .custom-file-label, input.custom-file-input.parsley-success ~ .custom-file-label,
+textarea.custom-file-input.parsley-success ~ .custom-file-label {
+  border-color: #23BF08; }
+  .was-validated .custom-file-input:valid ~ .custom-file-label::after, .custom-file-input.is-valid ~ .custom-file-label::after, input.custom-file-input.parsley-success ~ .custom-file-label::after,
+  textarea.custom-file-input.parsley-success ~ .custom-file-label::after {
+    border-color: inherit; }
+
+.was-validated .custom-file-input:valid ~ .valid-feedback,
+.was-validated .custom-file-input:valid ~ .valid-tooltip, .custom-file-input.is-valid ~ .valid-feedback, input.custom-file-input.parsley-success ~ .valid-feedback,
+textarea.custom-file-input.parsley-success ~ .valid-feedback,
+.custom-file-input.is-valid ~ .valid-tooltip, input.custom-file-input.parsley-success ~ .valid-tooltip,
+textarea.custom-file-input.parsley-success ~ .valid-tooltip {
+  display: block; }
+
+.was-validated .custom-file-input:valid:focus ~ .custom-file-label, .custom-file-input.is-valid:focus ~ .custom-file-label, input.custom-file-input.parsley-success:focus ~ .custom-file-label,
+textarea.custom-file-input.parsley-success:focus ~ .custom-file-label {
+  box-shadow: 0 0 0 0.2rem rgba(35, 191, 8, 0.25); }
+
+.invalid-feedback {
+  display: none;
+  width: 100%;
+  margin-top: 0.25rem;
+  font-size: 80%;
+  color: #DC3545; }
+
+.invalid-tooltip {
+  position: absolute;
+  top: 100%;
+  z-index: 5;
+  display: none;
+  max-width: 100%;
+  padding: 0.25rem 0.5rem;
+  margin-top: .1rem;
+  font-size: 0.76563rem;
+  line-height: 1.5;
+  color: #fff;
+  background-color: rgba(220, 53, 69, 0.9);
+  border-radius: 3px; }
+
+.was-validated .form-control:invalid, .was-validated .dataTables_filter input:invalid, .dataTables_filter .was-validated input:invalid, .form-control.is-invalid, .dataTables_filter input.is-invalid, .dataTables_filter input.parsley-error, input.form-control.parsley-error,
+textarea.form-control.parsley-error, .was-validated
+.custom-select:invalid,
+.custom-select.is-invalid,
+input.custom-select.parsley-error,
+textarea.custom-select.parsley-error {
+  border-color: #DC3545; }
+  .was-validated .form-control:invalid:focus, .was-validated .dataTables_filter input:invalid:focus, .dataTables_filter .was-validated input:invalid:focus, .form-control.is-invalid:focus, .dataTables_filter input.is-invalid:focus, .dataTables_filter input.parsley-error:focus, input.form-control.parsley-error:focus,
+  textarea.form-control.parsley-error:focus, .was-validated
+  .custom-select:invalid:focus,
+  .custom-select.is-invalid:focus,
+  input.custom-select.parsley-error:focus,
+  textarea.custom-select.parsley-error:focus {
+    border-color: #DC3545;
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25); }
+  .was-validated .form-control:invalid ~ .invalid-feedback, .was-validated .dataTables_filter input:invalid ~ .invalid-feedback, .dataTables_filter .was-validated input:invalid ~ .invalid-feedback,
+  .was-validated .form-control:invalid ~ .invalid-tooltip,
+  .was-validated .dataTables_filter input:invalid ~ .invalid-tooltip, .dataTables_filter
+  .was-validated input:invalid ~ .invalid-tooltip, .form-control.is-invalid ~ .invalid-feedback, .dataTables_filter input.is-invalid ~ .invalid-feedback, .dataTables_filter input.parsley-error ~ .invalid-feedback, input.form-control.parsley-error ~ .invalid-feedback,
+  textarea.form-control.parsley-error ~ .invalid-feedback,
+  .form-control.is-invalid ~ .invalid-tooltip, .dataTables_filter input.is-invalid ~ .invalid-tooltip, .dataTables_filter input.parsley-error ~ .invalid-tooltip, input.form-control.parsley-error ~ .invalid-tooltip,
+  textarea.form-control.parsley-error ~ .invalid-tooltip, .was-validated
+  .custom-select:invalid ~ .invalid-feedback,
+  .was-validated
+  .custom-select:invalid ~ .invalid-tooltip,
+  .custom-select.is-invalid ~ .invalid-feedback, input.custom-select.parsley-error ~ .invalid-feedback,
+  textarea.custom-select.parsley-error ~ .invalid-feedback,
+  .custom-select.is-invalid ~ .invalid-tooltip, input.custom-select.parsley-error ~ .invalid-tooltip,
+  textarea.custom-select.parsley-error ~ .invalid-tooltip {
+    display: block; }
+
+.was-validated .form-control-file:invalid ~ .invalid-feedback,
+.was-validated .form-control-file:invalid ~ .invalid-tooltip, .form-control-file.is-invalid ~ .invalid-feedback, input.form-control-file.parsley-error ~ .invalid-feedback,
+textarea.form-control-file.parsley-error ~ .invalid-feedback,
+.form-control-file.is-invalid ~ .invalid-tooltip, input.form-control-file.parsley-error ~ .invalid-tooltip,
+textarea.form-control-file.parsley-error ~ .invalid-tooltip {
+  display: block; }
+
+.was-validated .form-check-input:invalid ~ .form-check-label, .form-check-input.is-invalid ~ .form-check-label, input.form-check-input.parsley-error ~ .form-check-label,
+textarea.form-check-input.parsley-error ~ .form-check-label {
+  color: #DC3545; }
+
+.was-validated .form-check-input:invalid ~ .invalid-feedback,
+.was-validated .form-check-input:invalid ~ .invalid-tooltip, .form-check-input.is-invalid ~ .invalid-feedback, input.form-check-input.parsley-error ~ .invalid-feedback,
+textarea.form-check-input.parsley-error ~ .invalid-feedback,
+.form-check-input.is-invalid ~ .invalid-tooltip, input.form-check-input.parsley-error ~ .invalid-tooltip,
+textarea.form-check-input.parsley-error ~ .invalid-tooltip {
+  display: block; }
+
+.was-validated .custom-control-input:invalid ~ .custom-control-label, .custom-control-input.is-invalid ~ .custom-control-label, input.custom-control-input.parsley-error ~ .custom-control-label,
+textarea.custom-control-input.parsley-error ~ .custom-control-label {
+  color: #DC3545; }
+  .was-validated .custom-control-input:invalid ~ .custom-control-label::before, .custom-control-input.is-invalid ~ .custom-control-label::before, input.custom-control-input.parsley-error ~ .custom-control-label::before,
+  textarea.custom-control-input.parsley-error ~ .custom-control-label::before {
+    background-color: #efa2a9; }
+
+.was-validated .custom-control-input:invalid ~ .invalid-feedback,
+.was-validated .custom-control-input:invalid ~ .invalid-tooltip, .custom-control-input.is-invalid ~ .invalid-feedback, input.custom-control-input.parsley-error ~ .invalid-feedback,
+textarea.custom-control-input.parsley-error ~ .invalid-feedback,
+.custom-control-input.is-invalid ~ .invalid-tooltip, input.custom-control-input.parsley-error ~ .invalid-tooltip,
+textarea.custom-control-input.parsley-error ~ .invalid-tooltip {
+  display: block; }
+
+.was-validated .custom-control-input:invalid:checked ~ .custom-control-label::before, .custom-control-input.is-invalid:checked ~ .custom-control-label::before, input.custom-control-input.parsley-error:checked ~ .custom-control-label::before,
+textarea.custom-control-input.parsley-error:checked ~ .custom-control-label::before {
+  background-color: #e4606d; }
+
+.was-validated .custom-control-input:invalid:focus ~ .custom-control-label::before, .custom-control-input.is-invalid:focus ~ .custom-control-label::before, input.custom-control-input.parsley-error:focus ~ .custom-control-label::before,
+textarea.custom-control-input.parsley-error:focus ~ .custom-control-label::before {
+  box-shadow: 0 0 0 1px #E9ECEF, 0 0 0 0.2rem rgba(220, 53, 69, 0.25); }
+
+.was-validated .custom-file-input:invalid ~ .custom-file-label, .custom-file-input.is-invalid ~ .custom-file-label, input.custom-file-input.parsley-error ~ .custom-file-label,
+textarea.custom-file-input.parsley-error ~ .custom-file-label {
+  border-color: #DC3545; }
+  .was-validated .custom-file-input:invalid ~ .custom-file-label::after, .custom-file-input.is-invalid ~ .custom-file-label::after, input.custom-file-input.parsley-error ~ .custom-file-label::after,
+  textarea.custom-file-input.parsley-error ~ .custom-file-label::after {
+    border-color: inherit; }
+
+.was-validated .custom-file-input:invalid ~ .invalid-feedback,
+.was-validated .custom-file-input:invalid ~ .invalid-tooltip, .custom-file-input.is-invalid ~ .invalid-feedback, input.custom-file-input.parsley-error ~ .invalid-feedback,
+textarea.custom-file-input.parsley-error ~ .invalid-feedback,
+.custom-file-input.is-invalid ~ .invalid-tooltip, input.custom-file-input.parsley-error ~ .invalid-tooltip,
+textarea.custom-file-input.parsley-error ~ .invalid-tooltip {
+  display: block; }
+
+.was-validated .custom-file-input:invalid:focus ~ .custom-file-label, .custom-file-input.is-invalid:focus ~ .custom-file-label, input.custom-file-input.parsley-error:focus ~ .custom-file-label,
+textarea.custom-file-input.parsley-error:focus ~ .custom-file-label {
+  box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25); }

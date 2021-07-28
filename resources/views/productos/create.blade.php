@@ -26,13 +26,13 @@
       <div class="col-md-12">
         <!-- Horizontal Form -->
         <div class="card card-primary card-outline">
-          <form action="" class="form-horizontal" method="POST" autocomplete="off" name="productoForm" id="productoForm" enctype="Multipart/form-data">
+          <form action="{{ route('productos.store') }}" class="form-horizontal" method="POST" autocomplete="off" name="productoForm" id="productoForm" enctype="Multipart/form-data" data-parsley-validate>
             @csrf
             <div class="card-header">
               <h3 class="card-title" style="margin-top: 5px;"><i class="nav-icon fa fa-shopping-basket"></i> Registro de producto</h3>
               <div class="float-right">
                 <a href="{{ route('productos.index') }}" class="btn btn-default btn-sm"><i class="fa fa-arrow-left"></i> Regresar</a>                
-                <button type="submit" class="btn btn-primary btn-sm" id="SubmitCreateProducto"><i class="fa fa-save"></i> Guardar registro</button>
+                <button type="submit" class="btn btn-primary btn-sm"><i class="fa fa-save"></i> Guardar registro</button>
               </div>
             </div>
             <!-- /.card-header -->
@@ -48,10 +48,7 @@
                 <div class="col-sm-4">
                   <div class="form-group">
                     <label for="id_categoria">Categoría <b style="color: red;">*</b></label>
-                    <select name="status" id="status" class="form-control select2">
-                      @foreach($categorias as $k)
-                      <option value="{{ $k->id }}">{{ $k->categoria }}</option>
-                      @endforeach
+                    <select name="id_categoria" id="id_categoria" class="form-control select2">
                     </select>
                     @if(search_permits('Categorias','Registrar')=="Si")
                     <a class="btn btn-info btn-sm text-white" data-toggle="modal" data-target="#create_categorias" data-tooltip="tooltip" data-placement="top" title="Crear Categorias" id="createNewCategoria">
@@ -141,7 +138,7 @@
                 <div class="row">
                   <div class="col-sm-4">
                     <label for="nombre_agencia" style="color: blue;">{{ $k->nombre}}</label>
-                      <input type="hidden" name="id_agencia" id="id_agencia" value="{{ $k->id }}">
+                      <input type="hidden" name="id_agencia[]" id="id_agencia" value="{{ $k->id }}">
                   </div>
                   <div class="col-sm-4">
                     <div class="form-group">
@@ -181,70 +178,32 @@
 @endsection
 @section('scripts')
 <script type="text/javascript">
-//--CODIGO PARA CREAR ESTADOS (GUARDAR REGISTRO) ---------------------//
-$('#SubmitCreateProducto').click(function(e) {  
-  e.preventDefault();
-  $.ajaxSetup({
-    headers: {
-      'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-    }
-  });
-  var datos = $('#productoForm').serializeArray(); //datos serializados
-  var imagenes = new FormData($("#productoForm")[8]);
-
-      //agergaremos los datos serializados al objecto imagen
-  /*var stocks=[];
-  var stocks_min=[];
-  var valor='';
-   $('.stocks').each(function(index){
-      valor=$(this).val();
-      stocks[]=valor
-   });*/   
-  $.ajax({
-
-    url: "{{ route('productos.store') }}",
-    method: 'post',
-    contentType: 'multipart/form-data',
-    /*contentType:false,
-    processData:false,*/
-    file: (document.getElementById("imagenes").files.length == 0) ? false :true,
-    data: {
-      
-      detalles: $('#detalles').val(),
-      id_categoria: $('#id_categoria').val(),
-      status: $('#status').val(),
-      marca: $('#marca').val(),
-      modelo: $('#modelo').val(),
-      color: $('#color').val(),
-      stock_s: $('#stock_s_edit').val(),
-      stock_min_s: $('#stock_min_s_edit').val(),
-      
-    },
-    success: function(result) {
-      console.log(result);
-      if(result.errors) {
-        $('#message_error').html('');
-        $.each(result.errors, function(key, value) {
-          $('#message_error').show();
-          $('#message_error').append('<strong><li>'+value+'</li></strong>');
-        });
-      } else {
-        $('#message_error').hide();
-        Swal.fire ( result.titulo ,  result.message ,  result.icono );
-      }
-    }
-  });
-});
 $(document).ready(function () {
   bsCustomFileInput.init();
 });
-
+categoria_data();
 //--CODIGO PARA CREAR CATEGORIAS (LEVANTAR EL MODAL) ---------------------//
 $('#createNewCategoria').click(function () {
   $('#categoriaForm').trigger("reset");
   $('#create_categorias').modal({backdrop: 'static', keyboard: true, show: true});
   $('.alert-danger').hide();
 });
+function categoria_data() {
+  $.ajax({
+    type:"GET",
+    url: "{{ url('buscar_categorias') }}",
+    dataType: 'json',
+    success: function(response){
+      $('#id_categoria').empty();
+      $.each(response, function(key, registro) {
+        $('#id_categoria').append('<option value='+registro.id+'>'+registro.categoria+'</option>');
+      });
+    },
+    error: function (data) {
+      Swal.fire({title: "Error del servidor", text: "Consulta de medio publicitario.", icon:  "error"});
+    }
+  });
+}
 //--CODIGO PARA CREAR CATEGORIAS (GUARDAR REGISTRO) ---------------------//
 $('#SubmitCreateCategoria').click(function(e) {
   e.preventDefault();
@@ -273,6 +232,7 @@ $('#SubmitCreateCategoria').click(function(e) {
         Swal.fire ( result.titulo ,  result.message ,  result.icono );
         if (result.icono=="success") {
           $("#create_categorias").modal('hide');
+          categoria_data();
         }
       }
     }

@@ -92,7 +92,7 @@ class ProductosController extends Controller
         }
 
         $buscar=Productos::where('detalles',$request->detalles)->where('marca',$request->marca)->where('modelo',$request->modelo)->where('color',$request->color)->count();
-
+        
         if($buscar > 0){
             return response()->json(['message'=>"Ya existe un producto con los mismos detalles, modelo y color",'icono'=>'warning','titulo'=>'Alerta']);
         }else{
@@ -112,7 +112,7 @@ class ProductosController extends Controller
                     $categoria=Categorias::find($request->id_categoria);
                     $cat=substr($categoria->categoria, 0,3);
                     //codigo aleatorio de 4 digitos
-                    $cod=generarCodigo();
+                    $cod=$this->generarCodigo();
                     //$codigo=$fecha.$cat.$cod;
                     $codigo=$cat.$cod;
                 //------------------------------
@@ -453,5 +453,10 @@ class ProductosController extends Controller
             toastr()->success('Éxito!!', 'La Imagen será mostrada en el portal');
             return redirect()->back();
         }
+    }
+    public function buscar_categorias()
+    {
+        $categorias=Categorias::all();
+        return Response()->json($categorias);
     }
 }
