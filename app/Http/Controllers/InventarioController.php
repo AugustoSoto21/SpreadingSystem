@@ -109,4 +109,32 @@ class InventarioController extends Controller
     {
         //
     }
+
+    public function historial(){
+
+        $agencias=Agencias::all();
+        $productos=Productos::all();
+        if(request()->ajax()) {
+            $productos=\DB::table('historial')
+            ->join('productos','productos.id','=','historial.id_producto')
+            ->join('agencias','agencias.id','=','historial.id_agencia')
+            ->select('historial.*')
+            ->get();
+            return datatables()->of($productos)
+                ->addColumn('action', function ($row) {
+                    $edit = '<a href="productos/'.$row->id.'/edit" data-id="'.$row->id.'" class="btn btn-warning btn-xs" id="editStocks"><i class="fa fa-pencil-alt"></i></a>';
+                    $delete = ' <a href="javascript:void(0);" id="delete-estado" onClick="deleteStocks('.$row->id.')" class="delete btn btn-danger btn-xs"><i class="fa fa-trash"></i></a>';
+                    return $edit . $delete;
+                })->rawColumns(['action'])
+                ->editColumn('id_agencia',function($row){
+                    $select="<div class='form-group'>
+                                <select name='id_agencia' id></select>
+                            </div>"
+                })
+                ->addIndexColumn()
+                ->make(true);
+        }
+
+        return view('stocks.historial',compact('agencias','productos'));
+    }
 }

@@ -99,7 +99,14 @@
               <p>Stocks</p>
             </a>
           </li>
+          <li class="nav-item">
+            <a href="{!!route('stocks.hisrorial')!!}" class="nav-link">
+              <i class="nav-icon fas fa-tag"></i>
+              <p>Historial de Stocks</p>
+            </a>
+          </li>
         </ul>
+
       </nav>
       <!-- /.sidebar-menu -->
     </div>

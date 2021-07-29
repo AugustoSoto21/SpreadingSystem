@@ -47,3 +47,4 @@ Route::get('/buscar_categorias',[ProductosController::class, 'buscar_categorias'
 Route::resource('/categorias',CategoriasController::class);
 
 Route::resource('/stocks',InventarioController::class);
+Route::get('/stocks/historial','InventarioController@historial')->name('stocks.historial');

@@ -24,4 +24,9 @@ class Agencias extends Model
 
     	return $this->hasMany(Tarifas::class);
     }
+
+    public function historial(){
+
+    	return $this->hasMany('App\Models\HistorialStocks','id_agencia','id');
+    }
 }

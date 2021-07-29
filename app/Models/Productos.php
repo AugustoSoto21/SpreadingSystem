@@ -40,4 +40,9 @@ class Productos extends Model
 
         return $this->belongsTo('App\Models\Categorias','id_categoria','id');
     }
+
+    public function historial(){
+
+        return $this->hasMany('App\Models\HistorialStocks','id_producto','id');
+    }
 }
