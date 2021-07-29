@@ -87,18 +87,20 @@ class ProductosController extends Controller
 
 
 
-        if ($validator->fails()) {
+        /*if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()->all()]);
-        }
+        }*/
 
         $buscar=Productos::where('detalles',$request->detalles)->where('marca',$request->marca)->where('modelo',$request->modelo)->where('color',$request->color)->count();
         
         if($buscar > 0){
-            return response()->json(['message'=>"Ya existe un producto con los mismos detalles, modelo y color",'icono'=>'warning','titulo'=>'Alerta']);
+            Alert::error('Alerta', 'Ya existe un producto con los mismos detalles, modelo y color.')->persistent(true);
+            return redirect()->back();
         }else{
             //validando arreglo de almacen
             if(count($request->id_agencia) > 0 && count($request->stock) < count($request->id_agencia)){
-                return response()->json(['message'=>"Los campos de stock son obligatorios",'icono'=>'warning','titulo'=>'Alerta']);
+                Alert::error('Alerta', 'Los campos de stock son obligatorios.')->persistent(true);
+                return redirect()->back();
             }else{
 
                 /*$validacion=$this->validar_imagen($request->file('imagenes'));
@@ -174,9 +176,8 @@ class ProductosController extends Controller
                     //$producto->imagenes()->attach($img);
                     
                 }
-                
-                return response()->json(['message'=>"Producto registrado con éxito",'icono'=>'success','titulo'=>'Éxito']);            
-                
+                Alert::success('Muy bien', 'Producto registrado con éxito.')->persistent(true);
+                return redirect()->to('productos');                
             }
         }
     }
