@@ -10,6 +10,7 @@ use App\Http\Controllers\DeliverysController;
 use App\Http\Controllers\ClientesController;
 use App\Http\Controllers\ProductosController;
 use App\Http\Controllers\CategoriasController;
+use App\Http\Controllers\InventarioController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -45,3 +46,4 @@ Route::post('productos/mostrar','ProductosController@mostrar')->name('productos.
 Route::get('/buscar_categorias',[ProductosController::class, 'buscar_categorias']);
 Route::resource('/categorias',CategoriasController::class);
 
+Route::resource('/stocks',InventarioController::class);

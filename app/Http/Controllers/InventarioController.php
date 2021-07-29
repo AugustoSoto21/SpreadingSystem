@@ -4,7 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Inventario;
 use Illuminate\Http\Request;
-
+use App\Models\Productos;
+use App\Models\Categorias;
+use App\Models\Almacen;
+use App\Models\Agencias;
 class InventarioController extends Controller
 {
     /**
@@ -14,7 +17,31 @@ class InventarioController extends Controller
      */
     public function index()
     {
-        //
+        $categorias=Categorias::all();
+        if(request()->ajax()) {
+            $productos=\DB::table('productos')
+            ->join('categorias','categorias.id','=','productos.id_categoria')
+            ->join('inventarios','inventarios.id_producto','=','productos.id')
+            ->select('productos.*','categorias.categoria','inventarios.stock','inventarios.stock_disponible','inventarios.stock_min','inventarios.stock_probar','inventarios.stock_fallas','inventarios.stock_devueltos')
+            ->get();
+            return datatables()->of($productos)
+                ->addColumn('action', function ($row) {
+                    $edit = '<a href="productos/'.$row->id.'/edit" data-id="'.$row->id.'" class="btn btn-warning btn-xs" id="editStocks"><i class="fa fa-pencil-alt"></i></a>';
+                    $delete = ' <a href="javascript:void(0);" id="delete-estado" onClick="deleteStocks('.$row->id.')" class="delete btn btn-danger btn-xs"><i class="fa fa-trash"></i></a>';
+                    return $edit . $delete;
+                })->rawColumns(['action'])
+                ->editColumn('detalles',function($row){
+                    $d=$row->detalles;
+                    $ma=$row->marca;
+                    $mo=$row->modelo;
+                    $c=$row->color;
+                    return $d.' '.$ma.' '.$mo.' '.$c;
+                })
+                ->addIndexColumn()
+                ->make(true);
+        }
+
+        return view('stocks.index',compact('categorias'));
     }
 
     /**

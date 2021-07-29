@@ -32,8 +32,8 @@ class ProductosTableSeeder extends Seeder
         ]);
 
         \DB::table('inventarios')->insert([
-            ['id_producto' => 1, 'stock' => 10, 'stock_min' => 2],
-            ['id_producto' => 2, 'stock' => 20, 'stock_min' => 5]
+            ['id_producto' => 1, 'stock' => 10,'stock_disponible' => 5, 'stock_min' => 2],
+            ['id_producto' => 2, 'stock' => 20,'stock_disponible' => 10, 'stock_min' => 5]
         ]);
     }
 }

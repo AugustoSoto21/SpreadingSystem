@@ -17,7 +17,7 @@ class CreateEstadosTable extends Migration
             $table->id();
             $table->string('estado');
             $table->string('color');
-            $table->enum('status_stock',['Incrementa','Decrementa','Mantiene'])->default('Mantiene');
+            $table->enum('status_stock',['INCREMENTA','DECREMENTA','MANTIENE'])->default('MANTIENE');
             $table->timestamps();
         });
     }
