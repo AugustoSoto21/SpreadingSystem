@@ -29,22 +29,23 @@ Route::middleware('guest')->group(function () {
 });
 
 Auth::routes();
+Route::group(['middleware' => ['web', 'auth']], function() {
+	Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+	Route::resource('/estados',EstadosController::class);
+	Route::resource('/partidos',PartidosController::class);
+	Route::resource('/zonas',ZonasController::class);
+	Route::resource('/agencias',AgenciasController::class);
+	Route::resource('/fuentes',FuentesController::class);
+	Route::resource('/deliverys',DeliverysController::class);
+	Route::resource('/clientes',ClientesController::class);
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-Route::resource('/estados',EstadosController::class);
-Route::resource('/partidos',PartidosController::class);
-Route::resource('/zonas',ZonasController::class);
-Route::resource('/agencias',AgenciasController::class);
-Route::resource('/fuentes',FuentesController::class);
-Route::resource('/deliverys',DeliverysController::class);
-Route::resource('/clientes',ClientesController::class);
+	Route::get('productos/imagenes',[ProductosController::class,'imagenes'])->name('productos.imagenes');
+	Route::resource('/productos',ProductosController::class);
+	Route::post('/productos/eliminar_imagen',[ProductosController::class,'eliminar_imagen'])->name('eliminar_imagen');
+	Route::post('/productos/mostrar', [ProductosController::class,'mostrar'])->name('productos.mostrar_producto');
+	Route::get('/buscar_categorias',[ProductosController::class, 'buscar_categorias']);
+	Route::resource('/categorias',CategoriasController::class);
 
-Route::get('productos/imagenes','ProductosController@imagenes')->name('productos.imagenes');
-Route::resource('/productos',ProductosController::class);
-Route::post('productos/eliminar_imagen','ProductosController@eliminar_imagen')->name('eliminar_imagen');
-Route::post('productos/mostrar','ProductosController@mostrar')->name('productos.mostrar_producto');
-Route::get('/buscar_categorias',[ProductosController::class, 'buscar_categorias']);
-Route::resource('/categorias',CategoriasController::class);
-
-Route::resource('/stocks',InventarioController::class);
-Route::get('/stocks/historial','InventarioController@historial')->name('stocks.historial');
+	Route::get('/stocks/historial', [InventarioController::class, 'historial'])->name('stocks.historial');
+	Route::resource('/stocks',InventarioController::class);
+});

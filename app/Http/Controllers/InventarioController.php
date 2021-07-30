@@ -115,17 +115,17 @@ class InventarioController extends Controller
         $agencias=Agencias::all();
         $productos=Productos::all();
         if(request()->ajax()) {
-            $productos=\DB::table('historial')
-            ->join('productos','productos.id','=','historial.id_producto')
-            ->join('agencias','agencias.id','=','historial.id_agencia')
-            ->select('historial.*')
+            $productos=\DB::table('historial_stocks')
+            ->join('productos','productos.id','=','historial_stocks.id_producto')
+            ->join('agencias','agencias.id','=','historial_stocks.id_agencia')
+            ->select('historial_stocks.*')
             ->get();
             return datatables()->of($productos)
                 ->addColumn('action', function ($row) {
                     $edit = '<a href="productos/'.$row->id.'/edit" data-id="'.$row->id.'" class="btn btn-warning btn-xs" id="editStocks"><i class="fa fa-pencil-alt"></i></a>';
                     $delete = ' <a href="javascript:void(0);" id="delete-estado" onClick="deleteStocks('.$row->id.')" class="delete btn btn-danger btn-xs"><i class="fa fa-trash"></i></a>';
                     return $edit . $delete;
-                })->rawColumns(['action'])
+                })->rawColumns(['action','id_agencia','locker','id_producto','cantidad'])
                 ->editColumn('id_agencia',function($row){
                     $select="<div class='form-group'>
                                 <select class='form-control' name='id_agencia' id='id_agencia".$row->id."'>";
