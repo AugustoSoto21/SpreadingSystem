@@ -14,7 +14,7 @@ class AgenciasTableSeeder extends Seeder
     public function run()
     {
         \DB::table('agencias')->insert([
-        	['nombre' => 'FULLTRANS', 'almacen' => 'No'],
+            ['nombre' => 'FULLTRANS', 'almacen' => 'No'],
         	['nombre' => 'OESTE', 'almacen' => 'No'],
         	['nombre' => 'EEED', 'almacen' => 'No'],
         	['nombre' => 'NEX LOGÍSTICA', 'almacen' => 'Si'],

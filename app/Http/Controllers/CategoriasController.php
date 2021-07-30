@@ -70,8 +70,8 @@ class CategoriasController extends Controller
                 $categoria= new Categorias();
                 $categoria->categoria=$request->categoria;
                 $categoria->save();
-
-               return response()->json(['message' => "Categoría ".$request->categoria." registrada con éxito",'icono' => 'success', 'titulo' => 'Éxito']);
+                $categorias=Categorias::all();
+               return response()->json(['message' => "Categoría ".$request->categoria." registrada con éxito",'icono' => 'success', 'titulo' => 'Éxito','categorias' => $categorias]);
             
         }
     }

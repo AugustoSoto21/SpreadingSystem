@@ -219,7 +219,30 @@ class InventarioController extends Controller
         $historial->id_producto=$request->id_producto;
         $historial->cantidad=$cantidad;
         $historial->save();
-
+        $buscar=Inventario::where('id_producto',$request->id_producto)->count();
+        if($buscar > 0){
+            $inventario=where('id_producto',$request->id_producto)->first();
+            if($request->id_agencia==0){
+                switch ($request->locker) {
+                    case 'POR PROBAR':
+                        $inventario->stock_probar=$inventario->stock_probar+$request->cantidad;
+                        break;
+                    case 'STOCK':
+                        $inventario->stock=$inventario->stock+$request->cantidad;
+                        $inventario->stock_disponible=$inventario->stock_disponible+$request->cantidad;
+                        break;
+                    case 'FALLA':
+                        $inventario->stock_fallas=$inventario->stock_fallas+$request->cantidad;
+                        break;
+                    case 'CAMBIO':
+                        
+                        break;
+                    default:
+                        # code...
+                        break;
+                }
+            }
+        }
         return response()->json(['message'=>"Historial registrado con éxito",'icono'=>'success','titulo'=>'Éxito']);  
     }
 }

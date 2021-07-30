@@ -21,9 +21,9 @@
                       @endforeach
                     </select>
                     @if(search_permits('Categorias','Registrar')=="Si")
-                    <!-- <a class="btn btn-info btn-sm text-white" data-toggle="modal" data-target="#create_categorias" data-tooltip="tooltip" data-placement="top" title="Crear Categorias" id="createNewCategoria">
+                    <a class="btn btn-info btn-sm text-white" data-toggle="modal" data-target="#create_categorias" data-tooltip="tooltip" data-placement="top" title="Crear Categorias" id="createNewCategoria">
                       <i class="fa fa-plus"> &nbsp;Agregar</i>
-                    </a> -->
+                    </a>
                     @endif
                   </div>
                   @error('id_categoria')

@@ -20,6 +20,7 @@
   <div class="container-fluid">
     @include('agencias.partials.create')
     @include('productos.partials.create')
+    @include('categorias.partials.create')
     <div class="row">
       <div class="col-12">
         <div class="card card-primary card-outline card-tabs">
@@ -69,6 +70,7 @@
                     <div class="form-group">
                       
                       <select name="id_agencia_new" id="id_agencia_new" class="form-control form-control-sm select2">
+                          <option value="0">SPREADING</option>
                         @foreach($agencias as $a)
                           <option value="{{$a->id}}">{{$a->nombre}}</option>
                         @endforeach    
@@ -214,6 +216,7 @@ $('#SubmitCreateAgencia').click(function(e) {
         //console.log(result.agencias.length);
         if(result.agencias.length > 0){
             $("#id_agencia_new").empty();
+            $("#id_agencia_new").append("<option value='0'> SPREADING </option>");
             for(var i=0 ; i < result.agencias.length ; i++){
               console.log(result.agencias[i].nombre);
               $("#id_agencia_new").append("<option value='"+result.agencias[i].id+"'>"+result.agencias[i].nombre+" </option>");
@@ -283,6 +286,54 @@ $('#SubmitCreateProducto').click(function(e) {
     }
   });
 });
+//--CODIGO PARA CREAR CATEGORIAS (LEVANTAR EL MODAL) ---------------------//
+$('#createNewCategoria').click(function () {
+  $('#categoriaForm').trigger("reset");
+  $('#create_categorias').modal({backdrop: 'static', keyboard: true, show: true});
+  $('.alert-danger').hide();
+});
+//--CODIGO PARA CREAR CATEGORIAS (GUARDAR REGISTRO) ---------------------//
+$('#SubmitCreateCategoria').click(function(e) {
+  e.preventDefault();
+  $.ajaxSetup({
+    headers: {
+      'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    }
+  });
+  $.ajax({
+    url: "{{ route('categorias.store') }}",
+    method: 'post',
+    data: {
+      categoria: $('#categoria').val()
+    },
+    success: function(result) {
+      if(result.errors) {
+        $('.alert-danger').html('');
+        $.each(result.errors, function(key, value) {
+          $('.alert-danger').show();
+          $('.alert-danger').append('<strong><li>'+value+'</li></strong>');
+        });
+      } else {
+         console.log(result.categorias.length);
+        if(result.categorias.length > 0){
+            $("#id_categoria").empty();
+            for(var i=0 ; i < result.categorias.length ; i++){
+              //console.log(result.categorias[i]);
+              $("#id_categoria").append("<option value='"+result.categorias[i].id+"'>"+result.categorias[i].categoria+"</option>");
+            } 
+          }
+        $('.alert-danger').hide();
+        var oTable = $('#categorias_table').dataTable();
+        oTable.fnDraw(false);
+        Swal.fire ( result.titulo ,  result.message ,  result.icono );
+        if (result.icono=="success") {
+          $("#create_categorias").modal('hide');
+        }
+      }
+    }
+  });
+});
+
 
 </script>
 <script src="{{ asset('js/sweetalert2.min.js') }}"></script>

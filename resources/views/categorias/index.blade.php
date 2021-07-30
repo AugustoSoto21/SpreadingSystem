@@ -98,13 +98,13 @@
     order: [[0, 'desc']]
   });
 });
-//--CODIGO PARA CREAR ESTADOS (LEVANTAR EL MODAL) ---------------------//
+//--CODIGO PARA CREAR CATEGORIAS (LEVANTAR EL MODAL) ---------------------//
 $('#createNewCategoria').click(function () {
   $('#categoriaForm').trigger("reset");
   $('#create_categorias').modal({backdrop: 'static', keyboard: true, show: true});
   $('.alert-danger').hide();
 });
-//--CODIGO PARA CREAR ESTADOS (GUARDAR REGISTRO) ---------------------//
+//--CODIGO PARA CREAR CATEGORIAS (GUARDAR REGISTRO) ---------------------//
 $('#SubmitCreateCategoria').click(function(e) {
   e.preventDefault();
   $.ajaxSetup({
@@ -138,7 +138,7 @@ $('#SubmitCreateCategoria').click(function(e) {
   });
 });
 
-//--CODIGO PARA EDITAR ESTADO ---------------------//
+//--CODIGO PARA EDITAR CATEGORIA ---------------------//
 $('body').on('click', '#editCategoria', function () {
   var id = $(this).data('id');
   $.ajax({
@@ -154,7 +154,7 @@ $('body').on('click', '#editCategoria', function () {
     }
   });
 });
-//--CODIGO PARA UPDATE ESTADO ---------------------//
+//--CODIGO PARA UPDATE CATEGORIA ---------------------//
 $('#SubmitEditCategoria').click(function(e) {
   e.preventDefault();
   var id = $('#id_categoria_edit').val();
@@ -186,7 +186,7 @@ $('#SubmitEditCategoria').click(function(e) {
     }
   });
 });
-//--CODIGO PARA ELIMINAR ESTADO ---------------------//
+//--CODIGO PARA ELIMINAR CATEGORIA ---------------------//
 function deleteCategoria(id){
   var id = id;
   Swal.fire({
