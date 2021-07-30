@@ -114,11 +114,12 @@ class InventarioController extends Controller
 
         $agencias=Agencias::all();
         $productos=Productos::all();
+        $categorias=Categorias::all();
         if(request()->ajax()) {
             $productos=\DB::table('historial_stocks')
-            ->join('productos','productos.id','=','historial_stocks.id_producto')
+            /*->join('productos','productos.id','=','historial_stocks.id_producto')
             ->join('agencias','agencias.id','=','historial_stocks.id_agencia')
-            ->select('historial_stocks.*')
+            ->select('historial_stocks.*')*/
             ->get();
             return datatables()->of($productos)
                 ->addColumn('action', function ($row) {
@@ -189,6 +190,36 @@ class InventarioController extends Controller
                 ->make(true);
         }
 
-        return view('stocks.historial',compact('agencias','productos'));
+        return view('stocks.historial',compact('agencias','productos','categorias'));
+    }
+
+    public function registrar(Request $request)
+    {
+        $message =[
+            'id_agencia.required' => 'Debe seleccionar una agencia',
+            'locker.required' => 'Debe seleccionar un locker',
+            'id_producto.required' => 'Debe seleccionar un producto',
+            'cantidad.required' => 'Debe ingresar una cantidad',
+            'id_categoria.required' => 'Debe seleccionar una categoría'
+        ];
+        $validator = \Validator::make($request->all(), [
+            'id_agencia' => 'required',
+            'locker' => 'required',
+            'id_producto' => 'required',
+            'cantidad' => 'required'
+
+        ],$message);
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()->all()]);
+        }
+
+        $historial=new HistorialStocks();
+        $historial->id_agencia=$request->id_agencia;
+        $historial->locker=$request->locker;
+        $historial->id_producto=$request->id_producto;
+        $historial->cantidad=$cantidad;
+        $historial->save();
+
+        return response()->json(['message'=>"Historial registrado con éxito",'icono'=>'success','titulo'=>'Éxito']);  
     }
 }

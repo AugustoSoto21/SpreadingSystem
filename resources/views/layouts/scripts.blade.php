@@ -31,4 +31,13 @@
 <!-- Parsley -->
 <script src="{{ asset('vendor/parsleyjs/parsley.min.js') }}"></script>
 <script src="{{ asset('vendor/parsleyjs/i18n/es.js') }}"></script>
+<script src="{{ asset('vendor/select2/js/select2.full.min.js') }}"></script>
+<script type="text/javascript">
+$(function () {
+	$('.select2').select2()
+	$('.select2bs4').select2({
+      theme: 'bootstrap4'
+    })
+});
+</script>
 @yield('scripts')

@@ -461,4 +461,52 @@ class ProductosController extends Controller
         $categorias=Categorias::all();
         return Response()->json($categorias);
     }
+
+    public function registrar(Request $request)
+    {
+        $message =[
+            'detalles.required' => 'El campo nombres es obligatorio',
+            'modelo.required' => 'El campo modelo es obligatorio',
+            'color.required' => 'El campo color es obligatorio',
+            'id_categoria.required' => 'La Categoría es obligatoria',
+            'status.required' => 'El campo status es obligatorio',
+            //'imagenes.required' => 'El campo imagenes es obligatorio',
+        ];
+        $validator = \Validator::make($request->all(), [
+            'detalles' => 'required',
+            'modelo' => 'required',
+            'color' => 'required',
+            'id_categoria' => 'required'
+            //'imagenes' => 'required',
+        ],$message);
+
+        $buscar=Productos::where('detalles',$request->detalles)->where('marca',$request->marca)->where('modelo',$request->modelo)->where('color',$request->color)->count();
+        
+        if($buscar > 0){
+            return response()->json(['message'=>"Los detalles, modelo, marca y color ya han sido registrado.",'icono'=>'warning','titulo'=>'Alerta']);
+        }else{
+
+            //GENERANDO CODIGO DEL PRODUCTO
+                //fecha de primero
+                //$fecha=date('Ymd');
+                //3 primeras letras de la categoria
+                $categoria=Categorias::find($request->id_categoria);
+                $cat=substr($categoria->categoria, 0,3);
+                //codigo aleatorio de 4 digitos
+                $cod=$this->generarCodigo();
+                //$codigo=$fecha.$cat.$cod;
+                $codigo=$cat.$cod;
+            //------------------------------
+                $producto= new Productos();
+                $producto->codigo=$codigo;
+                $producto->detalles=$request->detalles;
+                $producto->marca=$request->marca;
+                $producto->modelo=$request->modelo;
+                $producto->color=$request->color;
+                $producto->id_categoria=$request->id_categoria;
+                $producto->save();
+            return response()->json(['message'=>"Producto registrado con éxito",'icono'=>'success','titulo'=>'Éxito']); 
+        }
+
+    }
 }

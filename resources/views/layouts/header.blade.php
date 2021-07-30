@@ -47,7 +47,7 @@
           <a href="#" class="dropdown-item">
             <!-- Message Start -->
             <div class="media">
-              <img src="{!! asset('img/avatar.png') !!}" alt="User Avatar" class="img-size-50 mr-3 img-circle">
+              <img src="{!! asset('img/avatar.jpg') !!}" alt="User Avatar" class="img-size-50 mr-3 img-circle">
               <div class="media-body">
                 <h3 class="dropdown-item-title">
                   Brad Diesel

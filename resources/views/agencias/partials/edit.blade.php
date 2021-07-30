@@ -21,7 +21,7 @@
             <div class="col-sm-6">
               <div class="form-group">
                 <label for="almacen">Tiene Alamacén <b style="color: red;">*</b></label>
-                <select name="almacen" id="almacen_edit" class="form-control select2">
+                <select name="almacen" id="almacen_edit" class="form-control">
                   <option value="No">No</option>
                   <option value="Si">Sí</option>
                 </select>

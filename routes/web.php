@@ -40,6 +40,7 @@ Route::group(['middleware' => ['web', 'auth']], function() {
 	Route::resource('/clientes',ClientesController::class);
 
 	Route::get('productos/imagenes',[ProductosController::class,'imagenes'])->name('productos.imagenes');
+	Route::post('/productos/registrar',[ProductosController::class,'registrar'])->name('productos.registrar');
 	Route::resource('/productos',ProductosController::class);
 	Route::post('/productos/eliminar_imagen',[ProductosController::class,'eliminar_imagen'])->name('eliminar_imagen');
 	Route::post('/productos/mostrar', [ProductosController::class,'mostrar'])->name('productos.mostrar_producto');
@@ -47,5 +48,6 @@ Route::group(['middleware' => ['web', 'auth']], function() {
 	Route::resource('/categorias',CategoriasController::class);
 
 	Route::get('/stocks/historial', [InventarioController::class, 'historial'])->name('stocks.historial');
+	Route::get('/stocks/registrar', [InventarioController::class, 'registrar'])->name('stocks.registrar');
 	Route::resource('/stocks',InventarioController::class);
 });

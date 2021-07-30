@@ -35,7 +35,9 @@ class HistorialStocksController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        
+
+
     }
 
     /**

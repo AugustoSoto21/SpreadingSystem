@@ -22,3 +22,6 @@
 <link rel="stylesheet" href="{{ asset('vendor/datatables-responsive/css/responsive.bootstrap4.min.css') }}">
 <!-- Parsley -->
 <link rel="stylesheet" href="{{ asset('vendor/parsleyjs/parsley.css') }}">
+<!-- Select2 -->
+<link rel="stylesheet" href="{{ asset('vendor/select2/css/select2.min.css') }}">
+<link rel="stylesheet" href="{{ asset('vendor/select2-bootstrap4-theme/select2-bootstrap4.min.css') }}">

@@ -18,7 +18,8 @@
 </div>
 <section class="content">
   <div class="container-fluid">
-    
+    @include('agencias.partials.create')
+    @include('productos.partials.create')
     <div class="row">
       <div class="col-12">
         <div class="card card-primary card-outline card-tabs">
@@ -60,13 +61,17 @@
                   <th>Cantidad</th>
                   <th>Acciones</th>
                 </tr>
+                <form name="historial" id="historial"  data-parsley-validate method="POST" >
                 <tr>
                   <th>
-                    <select name="id_agencia_new" name="id_agencia_new" class="form-control">
-                      @foreach($agencias as $a)
-                        <option value="{{$a->id}}">{{$a->nombre}}</option>
-                      @endforeach    
-                    </select>
+                    <div class="form-group">
+                      <button id="createNewAgencia" class="btn btn-info"><i class="fa fa-plus"></i></button>
+                      <select name="id_agencia_new" name="id_agencia_new" class="form-control">
+                        @foreach($agencias as $a)
+                          <option value="{{$a->id}}">{{$a->nombre}}</option>
+                        @endforeach    
+                      </select>
+                    </div>
                   </th>
                   <th>
                     <select name="locker_new" id="locker_new" class="form-control">
@@ -77,15 +82,19 @@
                     </select>
                   </th>
                   <th>
-                    <select name="id_producto_new" id="id_producto_new" class="form-control">
-                      @foreach($productos as $p)
-                        <option value="{{$a->id}}">{{$a->detalles}} {{$a->marca}} {{$a->modelo}} {{$a->color}}</option>
-                      @endforeach
-                    </select>
+                    <div class="form-group">
+                      <button id="createNewProducto" class="btn btn-info"><i class="fa fa-plus"></i></button>
+                      <select name="id_producto_new" id="id_producto_new" class="form-control select2">
+                        @foreach($productos as $p)
+                          <option value="{{$a->id}}">{{$p->detalles}} {{$p->marca}} {{$p->modelo}} {{$p->color}}</option>
+                        @endforeach
+                      </select>
+                    </div>
                   </th>
-                  <th><input type="number" name="cantidad_new" id="cantidad_new" class="form-control" value="0"></th>
-                  <th>Guardar</th>
+                  <th><input type="number" name="cantidad_new" id="cantidad_new" class="form-control" value="0" min="0"></th>
+                  <th><button type="submit" id="SubmitCreateHistorial" class="btn btn-info"><i class="fa fa-save"></i> Registrar</button></th>
                 </tr>
+              </form>
               </thead>
               <tbody>
                 
@@ -135,7 +144,126 @@ $(document).ready( function () {
     order: [[0, 'desc']]
   });
 });
-
+//--CODIGO PARA CREAR HISTORIAL (GUARDAR REGISTRO) ---------------------//
+$('#SubmitCreateHistorial').click(function(e) {
+  e.preventDefault();
+  $.ajaxSetup({
+    headers: {
+      'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    }
+  });
+  $.ajax({
+    url: "{{ route('stocks.registrar') }}",
+    method: 'post',
+    data: {
+      id_agencia: $('#id_agencia_new').val(),
+      locker: $('#locker_new').val(),
+      id_producto: $('#id_producto_new').val(),
+      cantidad: $('#cantidad_new').val(),
+    },
+    success: function(result) {
+      if(result.errors) {
+        $('.alert-danger').html('');
+        $.each(result.errors, function(key, value) {
+          $('.alert-danger').show();
+          $('.alert-danger').append('<strong><li>'+value+'</li></strong>');
+        });
+      } else {
+        $('.alert-danger').hide();
+        var oTable = $('#estados_table').dataTable();
+        oTable.fnDraw(false);
+        Swal.fire ( result.titulo ,  result.message ,  result.icono );
+        if (result.icono=="success") {
+          $("#create_estados").modal('hide');
+        }
+      }
+    }
+  });
+});
+//--CODIGO PARA CREAR AGENCIAS (LEVANTAR EL MODAL) ---------------------//
+$('#createNewAgencia').click(function () {
+  $('#agenciaForm').trigger("reset");
+  $('#create_agencias').modal({backdrop: 'static', keyboard: true, show: true});
+  $('.alert-danger').hide();
+});
+//--CODIGO PARA CREAR AGENCIAS (GUARDAR REGISTRO) ---------------------//
+$('#SubmitCreateAgencia').click(function(e) {
+  e.preventDefault();
+  $.ajaxSetup({
+    headers: {
+      'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    }
+  });
+  $.ajax({
+    url: "{{ route('agencias.store') }}",
+    method: 'post',
+    data: {
+      nombre: $('#nombre').val(),
+      almacen: $('#almacen').val()
+    },
+    success: function(result) {
+      if(result.errors) {
+        $('.alert-danger').html('');
+        $.each(result.errors, function(key, value) {
+          $('.alert-danger').show();
+          $('.alert-danger').append('<strong><li>'+value+'</li></strong>');
+        });
+      } else {
+        $('.alert-danger').hide();
+        var oTable = $('#historial_table').dataTable();
+        oTable.fnDraw(false);
+        Swal.fire ( result.titulo ,  result.message ,  result.icono );
+        if (result.icono=="success") {
+          $("#create_agencias").modal('hide');
+        }
+      }
+    }
+  });
+});
+//--CODIGO PARA CREAR PRODUCTOS (LEVANTAR EL MODAL) ---------------------//
+$('#createNewProducto').click(function () {
+  $('#agenciaForm').trigger("reset");
+  $('#create_productos').modal({backdrop: 'static', keyboard: true, show: true});
+  $('.alert-danger').hide();
+});
+//--CODIGO PARA CREAR PRODUCTOS (GUARDAR REGISTRO) ---------------------//
+$('#SubmitCreateProducto').click(function(e) {
+  e.preventDefault();
+  $.ajaxSetup({
+    headers: {
+      'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    }
+  });
+  $.ajax({
+    url: "{{ route('productos.registrar') }}",
+    method: 'post',
+    data: {
+      detalles: $('#detalles').val(),
+      modelo: $('#modelo').val(),
+      marca: $('#marca').val(),
+      color: $('#color').val(),
+      id_categoria: $('#id_categoria').val(),
+    },
+    success: function(result) {
+      console.log(result.errors);
+      if(result.errors) {
+        $('.alert-danger').html('');
+        $.each(result.errors, function(key, value) {
+          $('.alert-danger').show();
+          $('.alert-danger').append('<strong><li>'+value+'</li></strong>');
+        });
+      } else {
+        $('.alert-danger').hide();
+        var oTable = $('#historial_table').dataTable();
+        oTable.fnDraw(false);
+        Swal.fire ( result.titulo ,  result.message ,  result.icono );
+        if (result.icono=="success") {
+          $("#create_productos").modal('hide');
+        }
+      }
+    }
+  });
+});
 
 </script>
 <script src="{{ asset('js/sweetalert2.min.js') }}"></script>
