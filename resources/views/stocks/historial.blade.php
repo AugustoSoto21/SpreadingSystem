@@ -68,7 +68,7 @@
                   <th>
                     <div class="form-group">
                       
-                      <select name="id_agencia_new" name="id_agencia_new" class="form-control select2">
+                      <select name="id_agencia_new" id="id_agencia_new" class="form-control form-control-sm select2">
                         @foreach($agencias as $a)
                           <option value="{{$a->id}}">{{$a->nombre}}</option>
                         @endforeach    
@@ -76,7 +76,7 @@
                     </div>
                   </th>
                   <th>
-                    <select name="locker_new" id="locker_new" class="form-control">
+                    <select name="locker_new" id="locker_new" class="form-control form-control-sm">
                       <option value="SIN PROBAR">SIN PROBAR</option>
                       <option value="STOCK">STOCK</option>
                       <option value="FALLA">FALLA</option>
@@ -86,7 +86,7 @@
                   <th>
                     <div class="form-group">
                       
-                      <select name="id_producto_new" id="id_producto_new" class="form-control select2">
+                      <select name="id_producto_new" id="id_producto_new" class="form-control form-control-sm select2">
                         @foreach($productos as $p)
                           <option value="{{$a->id}}">{{$p->detalles}} {{$p->marca}} {{$p->modelo}} {{$p->color}}</option>
                         @endforeach
