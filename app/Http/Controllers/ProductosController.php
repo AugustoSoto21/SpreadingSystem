@@ -505,7 +505,9 @@ class ProductosController extends Controller
                 $producto->color=$request->color;
                 $producto->id_categoria=$request->id_categoria;
                 $producto->save();
-            return response()->json(['message'=>"Producto registrado con éxito",'icono'=>'success','titulo'=>'Éxito']); 
+
+            $productos=Productos::where('status','Activo')->get();
+            return response()->json(['message'=>"Producto registrado con éxito",'icono'=>'success','titulo'=>'Éxito','productos' => $productos]); 
         }
 
     }

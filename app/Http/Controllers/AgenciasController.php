@@ -70,7 +70,8 @@ class AgenciasController extends Controller
             $agencia->nombre=$request->nombre;
             $agencia->almacen=$request->almacen;
             $agencia->save();
-            return response()->json(['message'=>"Agencia ".$request->nombre." registrada con éxito",'icono'=>'success','titulo'=>'Éxito']);            
+            $agencias=Agencias::all();
+            return response()->json(['message'=>"Agencia ".$request->nombre." registrada con éxito",'icono'=>'success','titulo'=>'Éxito','agencias' => $agencias]);            
         }
     }
 

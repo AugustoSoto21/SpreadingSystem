@@ -47,6 +47,8 @@
                 <i class="fa fa-save"> &nbsp;Actualizar</i>
               </a>
               @endif
+              <button id="createNewProducto" class="btn btn-info btn-sm"><i class="fa fa-plus"></i> Producto</button>
+              <button id="createNewAgencia" class="btn btn-info btn-sm"><i class="fa fa-plus"></i> Agencia</button>
             </div>
           </div>
           @if(search_permits('Stocks','Ver mismo usuario')=="Si" || search_permits('Stocks','Ver todos los usuarios')=="Si" || search_permits('Stocks','Editar mismo usuario')=="Si" || search_permits('Stocks','Editar todos los usuarios')=="Si" || search_permits('Stocks','Eliminar mismo usuario')=="Si" || search_permits('Stocks','Eliminar todos los usuarios')=="Si")
@@ -65,8 +67,8 @@
                 <tr>
                   <th>
                     <div class="form-group">
-                      <button id="createNewAgencia" class="btn btn-info"><i class="fa fa-plus"></i></button>
-                      <select name="id_agencia_new" name="id_agencia_new" class="form-control">
+                      
+                      <select name="id_agencia_new" name="id_agencia_new" class="form-control select2">
                         @foreach($agencias as $a)
                           <option value="{{$a->id}}">{{$a->nombre}}</option>
                         @endforeach    
@@ -83,7 +85,7 @@
                   </th>
                   <th>
                     <div class="form-group">
-                      <button id="createNewProducto" class="btn btn-info"><i class="fa fa-plus"></i></button>
+                      
                       <select name="id_producto_new" id="id_producto_new" class="form-control select2">
                         @foreach($productos as $p)
                           <option value="{{$a->id}}">{{$p->detalles}} {{$p->marca}} {{$p->modelo}} {{$p->color}}</option>
@@ -209,6 +211,14 @@ $('#SubmitCreateAgencia').click(function(e) {
           $('.alert-danger').append('<strong><li>'+value+'</li></strong>');
         });
       } else {
+        //console.log(result.agencias.length);
+        if(result.agencias.length > 0){
+            $("#id_agencia_new").empty();
+            for(var i=0 ; i < result.agencias.length ; i++){
+              console.log(result.agencias[i].nombre);
+              $("#id_agencia_new").append("<option value='"+result.agencias[i].id+"'>"+result.agencias[i].nombre+" </option>");
+            } 
+          }
         $('.alert-danger').hide();
         var oTable = $('#historial_table').dataTable();
         oTable.fnDraw(false);
@@ -245,7 +255,7 @@ $('#SubmitCreateProducto').click(function(e) {
       id_categoria: $('#id_categoria').val(),
     },
     success: function(result) {
-      console.log(result.errors);
+      //console.log(result);
       if(result.errors) {
         $('.alert-danger').html('');
         $.each(result.errors, function(key, value) {
@@ -253,12 +263,21 @@ $('#SubmitCreateProducto').click(function(e) {
           $('.alert-danger').append('<strong><li>'+value+'</li></strong>');
         });
       } else {
+        //console.log(result.productos.length);
+        if(result.productos.length > 0){
+            $("#id_producto_new").empty();
+            for(var i=0 ; i < result.productos.length ; i++){
+              //console.log(result.productos[i]);
+              $("#id_producto_new").append("<option value='"+result.productos[i].id+"'>"+result.productos[i].detalles+" "+result.productos[i].modelo+" "+result.productos[i].marca+""+result.productos[i].color+"</option>");
+            } 
+          }
         $('.alert-danger').hide();
         var oTable = $('#historial_table').dataTable();
         oTable.fnDraw(false);
         Swal.fire ( result.titulo ,  result.message ,  result.icono );
         if (result.icono=="success") {
           $("#create_productos").modal('hide');
+          
         }
       }
     }
