@@ -128,8 +128,62 @@ class InventarioController extends Controller
                 })->rawColumns(['action'])
                 ->editColumn('id_agencia',function($row){
                     $select="<div class='form-group'>
-                                <select name='id_agencia' id></select>
-                            </div>"
+                                <select class='form-control' name='id_agencia' id='id_agencia".$row->id."'>";
+                                foreach ($agencias as $k) {
+                                    $select.="<option value='".$k->id."'";
+                                    if($k->id==$row->id_agencia){ 
+                                        $select.=" selected='selected' ";
+                                     }
+                                    $select.=" >".$k->nombre."</option>";
+                                }
+                            $select.="</select>
+                            </div>";
+                    return $select;
+                })
+                ->editColumn('locker',function($row){
+                    $select2="<div class='form-group'>
+                                <select class='form-control' name='id_agencia' id='id_agencia".$row->id."'>";
+                            $select2.="<option value='SIN PROBAR'";
+                            if($row->locker=="SIN PROBAR"){ 
+                                $select2.=" selected='selected' ";
+                             }
+                            $select2.=" >SIN PROBAR</option>";
+                            $select2.="<option value='STOCK'";
+                            if($row->locker=="STOCK"){ 
+                                $select2.=" selected='selected' ";
+                             }
+                            $select2.=" >STOCK</option>";
+                            $select2.="<option value='FALLA'";
+                            if($row->locker=="FALLA"){ 
+                                $select2.=" selected='selected' ";
+                             }
+                            $select2.=" >FALLA</option>";
+                            $select2.="<option value='CAMBIO'";
+                            if($row->locker=="CAMBIO"){ 
+                                $select2.=" selected='selected' ";
+                             }
+                            $select2.=" >CAMBIO</option>";
+                    $select2.="</select>
+                            </div>";
+                    return $select2;
+                })->editColumn('id_producto',function($row){
+                    $select3="<div class='form-group'>
+                                <select class='form-control' name='id_producto' id='id_producto".$row->id."'>";
+                        foreach ($productos as $k) {
+                            $select3.="<option value='".$k->id."'";
+                            if($k->id==$row->id_producto){ 
+                                $select3.=" selected='selected' ";
+                             }
+                            $select3.=" >".$k->detalles." ".$k->marca." ".$k->modelo." ".$k->color."</option>";
+                        }
+                    $select3.="</select>
+                    </div>";
+                    return $select3;
+                })
+                ->editColumn('cantidad',function($row){
+                    $campo="<div class='form-group'>
+                    <input name='cantidad' id='cantidad".$row->id."' class='form-control' value='".$row->id."'  />
+                    </div>";
                 })
                 ->addIndexColumn()
                 ->make(true);
