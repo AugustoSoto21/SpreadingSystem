@@ -21,6 +21,7 @@
     @include('agencias.partials.create')
     @include('productos.partials.create')
     @include('categorias.partials.create')
+    @include('stocks.partials.edit_historial')
     <div class="row">
       <div class="col-12">
         <div class="card card-primary card-outline card-tabs">
@@ -194,6 +195,56 @@ $('#SubmitCreateHistorial').click(function(e) {
           $("#create_estados").modal('hide');
         }
       }
+    }
+  });
+});
+//--CODIGO PARA EDITAR HISTORIAL ---------------------//
+$('body').on('click', '#editHistorials', function () {
+  var id = $(this).data('id');
+  $.ajax({
+    method:"GET",
+    url: "historial/"+id+"/editar",
+    dataType: 'json',
+    success: function(data){
+      $('#edit_historials').modal({backdrop: 'static', keyboard: true, show: true});
+      $('.alert-danger').hide();
+      $('#id_historial_edit').val(id);
+      $('#fecha_edit').val($('#fecha'+id).val());
+      $('#fecha_e').val($('#fecha'+id).val());
+      
+    }
+  });
+});
+//--CODIGO PARA UPDATE HISTORIAL ---------------------//
+$('#SubmitEditEstado').click(function(e) {
+  e.preventDefault();
+  var id = $('#id_estado_edit').val();
+  $.ajax({
+    method:'PUT',
+    url: "estados/"+id+"",
+    data: {
+      id_estado: $('#id_estado_edit').val(),
+      estado: $('#estado_edit').val(),
+      color: $('#color_edit').val()
+    },
+    success: (data) => {
+      if(data.errors) {
+        $('.alert-danger').html('');
+        $.each(data.errors, function(key, value) {
+          $('.alert-danger').show();
+          $('.alert-danger').append('<strong><li>'+value+'</li></strong>');
+        });
+      } else {
+        var oTable = $('#estados_table').dataTable();
+        oTable.fnDraw(false);
+        Swal.fire ( data.titulo ,  data.message ,  data.icono );
+        if (data.icono=="success") {
+          $("#edit_estados").modal('hide');
+        }
+      }
+    },
+    error: function(data){
+      console.log(data);
     }
   });
 });

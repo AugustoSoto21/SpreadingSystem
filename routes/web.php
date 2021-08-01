@@ -49,5 +49,6 @@ Route::group(['middleware' => ['web', 'auth']], function() {
 
 	Route::get('/stocks/historial', [InventarioController::class, 'historial'])->name('stocks.historial');
 	Route::post('/stocks/registrar', [InventarioController::class, 'registrar'])->name('stocks.registrar');
+	Route::get('stocks/historial/{id}/editar', [InventarioController::class, 'editar'])->name('historial.editar');
 	Route::resource('/stocks',InventarioController::class);
 });

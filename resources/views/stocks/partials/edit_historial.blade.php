@@ -1,0 +1,45 @@
+<div class="modal fade" id="edit_historials">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title"><i class="nav-icon fa fa-shopping-basket"></i> Editar Historial de Stocks</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form action="#" method="POST" data-parsley-validate>
+        <div class="modal-body">
+          <input type="hidden" name="id_historial" id="id_historial_edit" placeholder="">
+          <div class="row">
+            <div class="col-sm-12">
+              <p>Está seguro que desea actualizar el historial con la siguiente información:<br>
+                	Fecha: <span id="fecha_edit"></span><br>
+                	Agencia: <span id="historial_edit"></span>
+                	Locker: <span id="locker_edit"></span>
+                	Producto: <span id="producto"></span>
+                	Cantidad: <span id="cantidad_edit"></span>
+                </p>
+            </div>
+           </div>
+           <div class="row">
+            <div class="col-sm-6">
+              <input type="text" name="fecha" id="fecha_e">
+	          <input type="text" name="historial" id="historial_e">
+	          <input type="text" name="locker" id="locker_e">
+	          <input type="text" name="id_producto" id="id_producto_e">
+	          <input type="text" name="cantidad" id="cantidad_e">
+            </div>
+          </div>
+
+        </div>
+        <div class="modal-footer justify-content-between">
+          <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i> Cerrar</button>
+          <button type="submit" class="btn btn-info" id="SubmitEditHistorial"><i class="fa fa-save"></i> Guardar</button>
+        </div>
+      </form>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->

@@ -124,12 +124,19 @@ class InventarioController extends Controller
             ->get();
             return datatables()->of($productos)
                 ->addColumn('action', function ($row) {
-                    $edit = '<a href="productos/'.$row->id.'/edit" data-id="'.$row->id.'" class="btn btn-warning btn-xs" id="editStocks"><i class="fa fa-pencil-alt"></i></a>';
-                    $delete = ' <a href="javascript:void(0);" id="delete-estado" onClick="deleteStocks('.$row->id.')" class="delete btn btn-danger btn-xs"><i class="fa fa-trash"></i></a>';
+                    $edit = '<a href="historial/'.$row->id.'/editar" data-id="'.$row->id.'" class="btn btn-warning btn-xs" id="editHistorials"><i class="fa fa-pencil-alt"></i></a>';
+                    $delete = ' <a href="javascript:void(0);" id="delete-estado" onClick="deleteHistorials('.$row->id.')" class="delete btn btn-danger btn-xs"><i class="fa fa-trash"></i></a>';
                     return $edit . $delete;
-                })->rawColumns(['action','id_agencia','locker','id_producto','cantidad'])
+                })->rawColumns(['action','fecha','id_agencia','locker','id_producto','cantidad'])
+                ->editColumn('fecha',function($row){
+                    $hoy=date('Y-m-d');
+                    $fecha="<div class='form-group'> <input type='date' name='fecha' required='required' value='".$row->fecha."' class='form-control' id='fecha".$row->id."' max='".$hoy."' />
+                        </div>";
+                    return $fecha;
+                })
                 ->editColumn('id_agencia',function($row){
                     $agencias=Agencias::all();
+                    $a=Agencias::find($row->id_agencia);
                     $select="<div class='form-group'>
                                 <select class='form-control' name='id_agencia' id='id_agencia".$row->id."'>";
                                 foreach ($agencias as $k) {
@@ -140,12 +147,12 @@ class InventarioController extends Controller
                                     $select.=" >".$k->nombre."</option>";
                                 }
                             $select.="</select>
-                            </div>";
+                            ";
                     return $select;
                 })
                 ->editColumn('locker',function($row){
                     $select2="<div class='form-group'>
-                                <select class='form-control' name='id_agencia' id='id_agencia".$row->id."'>";
+                                <select class='form-control' name='locker' id='locker".$row->id."'>";
                             $select2.="<option value='SIN PROBAR'";
                             if($row->locker=="SIN PROBAR"){ 
                                 $select2.=" selected='selected' ";
@@ -171,6 +178,7 @@ class InventarioController extends Controller
                     return $select2;
                 })->editColumn('id_producto',function($row){
                     $productos=Productos::all();
+                    $p=Productos::find($row->id_producto);
                     $select3="<div class='form-group'>
                                 <select class='form-control' name='id_producto' id='id_producto".$row->id."'>";
                         foreach ($productos as $k) {
@@ -369,4 +377,11 @@ class InventarioController extends Controller
         }//FIN DEL ELSE DE CUANDO ES UNA AGENCIA DISTINTA A SPREADING
         
     }//FIN DE LA FUNCION REGISTRAR
+
+    public function editar($id){
+
+        $historial=HistorialStocks::where('id',$id)->get();
+
+        return Response()->json($historial);
+    }
 }

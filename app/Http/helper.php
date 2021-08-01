@@ -29,3 +29,4 @@ function productos_almacen($id_agencia,$id_producto){
     
     return $valores;
 }
+
