@@ -11,7 +11,7 @@ class HistorialStocks extends Model
 
     protected $table='historial_stocks';
 
-    protected $fillable=['id_agencia','locker','id_producto','cantidad'];
+    protected $fillable=['fecha','id_agencia','locker','id_producto','cantidad'];
 
     public function agencia(){
 

@@ -21,8 +21,12 @@ class AgenciasController extends Controller
             $agencias=Agencias::all();
             return datatables()->of($agencias)
                 ->addColumn('action', function ($row) {
+                    $edit="";
+                    $delete="";
+                    if($row->id > 1){
                     $edit = '<a href="javascript:void(0);" data-id="'.$row->id.'" class="btn btn-warning btn-xs" id="editAgencia"><i class="fa fa-pencil-alt"></i></a>';
                     $delete = ' <a href="javascript:void(0);" id="delete-estado" onClick="deleteAgencia('.$row->id.')" class="delete btn btn-danger btn-xs"><i class="fa fa-trash"></i></a>';
+                    }
                     return $edit . $delete;
                 })->rawColumns(['action'])
                 ->addIndexColumn()

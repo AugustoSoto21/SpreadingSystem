@@ -48,6 +48,6 @@ Route::group(['middleware' => ['web', 'auth']], function() {
 	Route::resource('/categorias',CategoriasController::class);
 
 	Route::get('/stocks/historial', [InventarioController::class, 'historial'])->name('stocks.historial');
-	Route::get('/stocks/registrar', [InventarioController::class, 'registrar'])->name('stocks.registrar');
+	Route::post('/stocks/registrar', [InventarioController::class, 'registrar'])->name('stocks.registrar');
 	Route::resource('/stocks',InventarioController::class);
 });

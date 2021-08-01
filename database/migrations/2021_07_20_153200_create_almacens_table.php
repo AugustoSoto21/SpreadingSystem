@@ -17,10 +17,11 @@ class CreateAlmacensTable extends Migration
             $table->id();
             $table->unsignedBigInteger('id_agencia');
             $table->unsignedBigInteger('id_producto');
-            $table->integer('stock');
-            $table->integer('stock_disponible');//son los que se descuentan cuando los pedidos aún no finalizan
+            $table->integer('stock')->nullable()->default(0);
+            $table->integer('stock_disponible')->nullable()->default(0);//son los que se descuentan cuando los pedidos aún no finalizan
             $table->integer('stock_min')->nullable()->default(0);
             $table->integer('stock_fallas')->nullable()->default(0);//son los que fueron reportados con fallas
+            $table->integer('stock_reclamos')->nullable()->default(0);//son los reclamos de pedidos
             $table->integer('stock_devueltos')->nullable()->default(0);//son los devueltos de pedidos
 
 

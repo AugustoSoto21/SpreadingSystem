@@ -15,8 +15,9 @@ class CreateHistorialStocksTable extends Migration
     {
         Schema::create('historial_stocks', function (Blueprint $table) {
             $table->id();
+            $table->timestamp('fecha');
             $table->unsignedBigInteger('id_agencia');
-            $table->enum('locker',['SIN PROBAR','STOCK','FALLA','CAMBIO']);
+            $table->enum('locker',['SIN PROBAR','STOCK','FALLA','RECLAMO','DEVUELTO']);
             $table->unsignedBigInteger('id_producto');
             $table->integer('cantidad');
             $table->timestamps();

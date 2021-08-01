@@ -58,6 +58,7 @@
             <table id="historial_table" class="table table-bordered table-striped table-sm" style="font-size: 12px;">
               <thead>
                 <tr>
+                  <th>Fecha</th>
                   <th>Agencia</th>
                   <th>Locker</th>
                   <th>Historial</th>
@@ -65,37 +66,46 @@
                   <th>Acciones</th>
                 </tr>
                 <form name="historial" id="historial"  data-parsley-validate method="POST" >
+
                 <tr>
                   <th>
                     <div class="form-group">
-                      
-                      <select name="id_agencia_new" id="id_agencia_new" class="form-control form-control-sm select2">
-                          <option value="0">SPREADING</option>
-                        @foreach($agencias as $a)
+                      <input type="date" name="fecha_new" required="required" value="{{date('Y-m-d')}}" class="form-control" id="fecha_new" max="{{date('Y-m-d')}}">
+                    </div>
+                  </th>
+                  <th>
+                    <div class="form-group">
+                      <select name="id_agencia_new" id="id_agencia_new" class="select2">
+                          @foreach($agencias as $a)
                           <option value="{{$a->id}}">{{$a->nombre}}</option>
-                        @endforeach    
+                          @endforeach    
                       </select>
                     </div>
                   </th>
                   <th>
-                    <select name="locker_new" id="locker_new" class="form-control form-control-sm">
-                      <option value="SIN PROBAR">SIN PROBAR</option>
-                      <option value="STOCK">STOCK</option>
-                      <option value="FALLA">FALLA</option>
-                      <option value="CAMBIO">CAMBIO</option>
-                    </select>
+                    <div class="form-group">
+                      <select name="locker_new" id="locker_new" class="form-control form-control-sm">
+                        <option value="SIN PROBAR">SIN PROBAR</option>
+                        <option value="STOCK">STOCK</option>
+                        <option value="FALLA">FALLA</option>
+                        <option value="CAMBIO">CAMBIO</option>
+                      </select>
+                    </div>
                   </th>
                   <th>
                     <div class="form-group">
-                      
                       <select name="id_producto_new" id="id_producto_new" class="form-control form-control-sm select2">
                         @foreach($productos as $p)
-                          <option value="{{$a->id}}">{{$p->detalles}} {{$p->marca}} {{$p->modelo}} {{$p->color}}</option>
+                          <option value="{{$p->id}}">{{$p->detalles}} {{$p->marca}} {{$p->modelo}} {{$p->color}}</option>
                         @endforeach
                       </select>
                     </div>
                   </th>
-                  <th><input type="number" name="cantidad_new" id="cantidad_new" class="form-control" value="0" min="0"></th>
+                  <th>
+                    <div class="form-group">
+                      <input type="number" name="cantidad_new" id="cantidad_new" class="form-control" value="0" min="0">
+                    </div>
+                  </th>
                   <th><button type="submit" id="SubmitCreateHistorial" class="btn btn-info"><i class="fa fa-save"></i> Registrar</button></th>
                 </tr>
               </form>
@@ -139,6 +149,7 @@ $(document).ready( function () {
       url:"{{ url('stocks/historial') }}"
    },
     columns: [
+      { data: 'fecha', name: 'fecha' },
       { data: 'id_agencia', name: 'id_agencia' },
       { data: 'locker', name: 'locker' },
       { data: 'id_producto', name: 'id_producto' },
@@ -160,12 +171,14 @@ $('#SubmitCreateHistorial').click(function(e) {
     url: "{{ route('stocks.registrar') }}",
     method: 'post',
     data: {
+      fecha: $('#fecha_new').val(),
       id_agencia: $('#id_agencia_new').val(),
       locker: $('#locker_new').val(),
       id_producto: $('#id_producto_new').val(),
       cantidad: $('#cantidad_new').val(),
     },
     success: function(result) {
+      console.log(result);
       if(result.errors) {
         $('.alert-danger').html('');
         $.each(result.errors, function(key, value) {
@@ -174,7 +187,7 @@ $('#SubmitCreateHistorial').click(function(e) {
         });
       } else {
         $('.alert-danger').hide();
-        var oTable = $('#estados_table').dataTable();
+        var oTable = $('#historial_table').dataTable();
         oTable.fnDraw(false);
         Swal.fire ( result.titulo ,  result.message ,  result.icono );
         if (result.icono=="success") {
@@ -216,9 +229,8 @@ $('#SubmitCreateAgencia').click(function(e) {
         //console.log(result.agencias.length);
         if(result.agencias.length > 0){
             $("#id_agencia_new").empty();
-            $("#id_agencia_new").append("<option value='0'> SPREADING </option>");
             for(var i=0 ; i < result.agencias.length ; i++){
-              console.log(result.agencias[i].nombre);
+              //console.log(result.agencias[i].nombre);
               $("#id_agencia_new").append("<option value='"+result.agencias[i].id+"'>"+result.agencias[i].nombre+" </option>");
             } 
           }

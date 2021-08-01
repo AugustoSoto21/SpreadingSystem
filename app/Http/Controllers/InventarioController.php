@@ -8,6 +8,7 @@ use App\Models\Productos;
 use App\Models\Categorias;
 use App\Models\Almacen;
 use App\Models\Agencias;
+use App\Models\HistorialStocks;
 class InventarioController extends Controller
 {
     /**
@@ -128,6 +129,7 @@ class InventarioController extends Controller
                     return $edit . $delete;
                 })->rawColumns(['action','id_agencia','locker','id_producto','cantidad'])
                 ->editColumn('id_agencia',function($row){
+                    $agencias=Agencias::all();
                     $select="<div class='form-group'>
                                 <select class='form-control' name='id_agencia' id='id_agencia".$row->id."'>";
                                 foreach ($agencias as $k) {
@@ -159,15 +161,16 @@ class InventarioController extends Controller
                                 $select2.=" selected='selected' ";
                              }
                             $select2.=" >FALLA</option>";
-                            $select2.="<option value='CAMBIO'";
-                            if($row->locker=="CAMBIO"){ 
+                            $select2.="<option value='RECLAMO'";
+                            if($row->locker=="RECLAMO"){ 
                                 $select2.=" selected='selected' ";
                              }
-                            $select2.=" >CAMBIO</option>";
+                            $select2.=" >RECLAMO</option>";
                     $select2.="</select>
                             </div>";
                     return $select2;
                 })->editColumn('id_producto',function($row){
+                    $productos=Productos::all();
                     $select3="<div class='form-group'>
                                 <select class='form-control' name='id_producto' id='id_producto".$row->id."'>";
                         foreach ($productos as $k) {
@@ -185,6 +188,7 @@ class InventarioController extends Controller
                     $campo="<div class='form-group'>
                     <input name='cantidad' id='cantidad".$row->id."' class='form-control' value='".$row->id."'  />
                     </div>";
+                    return $campo;
                 })
                 ->addIndexColumn()
                 ->make(true);
@@ -196,6 +200,7 @@ class InventarioController extends Controller
     public function registrar(Request $request)
     {
         $message =[
+            'fecha.required' => 'Debe seleccionar la fecha',
             'id_agencia.required' => 'Debe seleccionar una agencia',
             'locker.required' => 'Debe seleccionar un locker',
             'id_producto.required' => 'Debe seleccionar un producto',
@@ -203,6 +208,7 @@ class InventarioController extends Controller
             'id_categoria.required' => 'Debe seleccionar una categoría'
         ];
         $validator = \Validator::make($request->all(), [
+            'fecha' => 'required',
             'id_agencia' => 'required',
             'locker' => 'required',
             'id_producto' => 'required',
@@ -213,18 +219,15 @@ class InventarioController extends Controller
             return response()->json(['errors' => $validator->errors()->all()]);
         }
 
-        $historial=new HistorialStocks();
-        $historial->id_agencia=$request->id_agencia;
-        $historial->locker=$request->locker;
-        $historial->id_producto=$request->id_producto;
-        $historial->cantidad=$cantidad;
-        $historial->save();
-        $buscar=Inventario::where('id_producto',$request->id_producto)->count();
-        if($buscar > 0){
-            $inventario=where('id_producto',$request->id_producto)->first();
-            if($request->id_agencia==0){
+
+        //CUANDO ES LA AGENCIA SPREADING
+        if($request->id_agencia==1){
+            $buscar=Inventario::where('id_producto',$request->id_producto)->count();
+            if($buscar > 0){
+                //CUANDO EXISTE EL PRODUCTO REGISTRADO EN INVENTARIO Y LA AGENCIA ES SPREADING
+                $inventario=Inventario::where('id_producto',$request->id_producto)->first();
                 switch ($request->locker) {
-                    case 'POR PROBAR':
+                    case 'SIN PROBAR':
                         $inventario->stock_probar=$inventario->stock_probar+$request->cantidad;
                         break;
                     case 'STOCK':
@@ -234,15 +237,136 @@ class InventarioController extends Controller
                     case 'FALLA':
                         $inventario->stock_fallas=$inventario->stock_fallas+$request->cantidad;
                         break;
-                    case 'CAMBIO':
-                        
+                    case 'RECLAMO':
+                        $inventario->stock_reclamos=$inventario->stock_reclamos+$request->cantidad;
                         break;
-                    default:
-                        # code...
+                    case 'DEVUELTO':
+                        $inventario->stock_devueltos=$inventario->stock_devueltos+$request->cantidad;
+                        $inventario->stock=$inventario->stock+$request->cantidad;
+                        $inventario->stock_disponible=$inventario->stock_disponible+$request->cantidad;
                         break;
                 }
-            }
-        }
-        return response()->json(['message'=>"Historial registrado con éxito",'icono'=>'success','titulo'=>'Éxito']);  
-    }
+                $inventario->save();
+                $historial=new HistorialStocks();
+                $historial->fecha=$request->fecha;
+                $historial->id_agencia=$request->id_agencia;
+                $historial->locker=$request->locker;
+                $historial->id_producto=$request->id_producto;
+                $historial->cantidad=$request->cantidad;
+                $historial->save();
+                return response()->json(['message'=>"Historial registrado con éxito 1",'icono'=>'success','titulo'=>'Éxito']);  
+            }else{
+                //CUANDO NO EXISTE EL PRODUCTO EN INVENTARIO Y ES LA AGENCIA SPREADING
+                $inventario=new Inventario();
+                $inventario->id_producto=$request->id_producto;
+                switch ($request->locker) {
+                    case 'SIN PROBAR':
+                        $inventario->stock_probar=$request->cantidad;
+                        break;
+                    case 'STOCK':
+                        $inventario->stock=$request->cantidad;
+                        $inventario->stock_disponible=$request->cantidad;
+                        break;
+                    case 'FALLA':
+                        $inventario->stock_fallas=$request->cantidad;
+                        break;
+                    case 'RECLAMO':
+                        $inventario->stock_reclamos=$request->cantidad;
+                        break;
+                    case 'DEVUELTO':
+                        $inventario->stock_devueltos=$request->cantidad;
+                        $inventario->stock=$request->cantidad;
+                        $inventario->stock_disponible=$request->cantidad;
+                        break;
+                }//CIERRE DE SWITCH
+                $inventario->save();
+                $historial=new HistorialStocks();
+                $historial->fecha=$request->fecha;
+                $historial->id_agencia=$request->id_agencia;
+                $historial->locker=$request->locker;
+                $historial->id_producto=$request->id_producto;
+                $historial->cantidad=$request->cantidad;
+                $historial->save();
+                return response()->json(['message'=>"Historial registrado con éxito 2",'icono'=>'success','titulo'=>'Éxito']);  
+            }//CIERRE DE CONDICION DE EXISTENCIA DE PRODUCTO
+        }else{
+            //CUANDO LA AGENCIA NO ES SPREADING
+            if($request->id_agencia!=1 && $request->locker=="SIN PROBAR"){
+                //SI LA AGENCIA NO ES SPREADING Y EL LOCKER ES SIN PROBAR
+                return response()->json(['message'=>"Historial no registrado ya que solo la agencia SPREADING agrega productos a probar",'icono'=>'warning','titulo'=>'Alerta']);  
+            }else{
+                //BUSCANDO SI LA AGENCIA TIENE ALMACÉN
+                $agencia=Agencias::find($request->id_agencia);
+                if($agencia->almacen=="No"){
+                    return response()->json(['message'=>"Historial no registrado ya que la agencia ".$agencia->nombre." No posee Almacén",'icono'=>'warning','titulo'=>'Alerta']);
+                }else{
+                    $buscar=Almacen::where('id_producto',$request->id_producto)->where('id_agencia',$request->id_agencia)->count();
+                    if($buscar > 0){
+                        //CUANDO EXISTE EL PRODUCTO REGISTRADO EN INVENTARIO Y LA AGENCIA NO ES SPREADING
+                        $almacen=Almacen::where('id_producto',$request->id_producto)->where('id_agencia',$request->id_agencia)->first();
+                        switch ($request->locker) {
+                            case 'STOCK':
+                                $almacen->stock=$almacen->stock+$request->cantidad;
+                                $almacen->stock_disponible=$almacen->stock_disponible+$request->cantidad;
+                                break;
+                            case 'FALLA':
+                                $almacen->stock_fallas=$almacen->stock_fallas+$request->cantidad;
+                                break;
+                            case 'RECLAMO':
+                                $almacen->stock_reclamos=$almacen->stock_reclamos+$request->cantidad;
+                                break;
+                            case 'DEVUELTO':
+                                $almacen->stock_devueltos=$almacen->stock_devueltos+$request->cantidad;
+                                $almacen->stock=$almacen->stock+$request->cantidad;
+                                $almacen->stock_disponible=$almacen->stock_disponible+$request->cantidad;
+                                break;
+                        }//CIERRE DEL SWITCH
+                        $almacen->save();
+                        $historial=new HistorialStocks();
+                        $historial->fecha=$request->fecha;
+                        $historial->id_agencia=$request->id_agencia;
+                        $historial->locker=$request->locker;
+                        $historial->id_producto=$request->id_producto;
+                        $historial->cantidad=$request->cantidad;
+                        $historial->save();
+                        return response()->json(['message'=>"Historial registrado con éxito 3",'icono'=>'success','titulo'=>'Éxito']);  
+                    }else{
+                        //CUANDO NO EXISTE EL PRODUCTO EN INVENTARIO Y NO ES LA AGENCIA SPREADING
+                        $almacen=new Almacen();
+                        $almacen->id_agencia=$request->id_agencia;
+                        $almacen->id_producto=$request->id_producto;
+                        switch ($request->locker) {
+                            case 'STOCK':
+                                $almacen->stock=$request->cantidad;
+                                $almacen->stock_disponible=$request->cantidad;
+                                break;
+                            case 'FALLA':
+                                $almacen->stock_fallas=$request->cantidad;
+                                break;
+                            case 'RECLAMO':
+                                $almacen->stock_reclamos=$request->cantidad;
+                                break;
+                            case 'DEVUELTO':
+                                $almacen->stock_devueltos=$request->cantidad;
+                                $almacen->stock=$request->cantidad;
+                                $almacen->stock_disponible=$request->cantidad;
+                                break;
+                        }//CIERRE DE SWITCH
+                        $almacen->save();
+                        $historial=new HistorialStocks();
+                        $historial->fecha=$request->fecha;
+                        $historial->id_agencia=$request->id_agencia;
+                        $historial->locker=$request->locker;
+                        $historial->id_producto=$request->id_producto;
+                        $historial->cantidad=$request->cantidad;
+                        $historial->save();
+                    }//CIERRE DE CONDICION DE EXISTENCIA DE PRODUCTO
+                    return response()->json(['message'=>"Historial registrado con éxito 4",'icono'=>'success','titulo'=>'Éxito']);  
+                }//FIN DE LA CONDICION SI LA AGENCIA NO TIENE ALMACEN
+
+            }//FIN DE CONDICION SI LA AGENCIA NO ES SPREADING Y EL LOCKER ES SIN PROBAR
+
+        }//FIN DEL ELSE DE CUANDO ES UNA AGENCIA DISTINTA A SPREADING
+        
+    }//FIN DE LA FUNCION REGISTRAR
 }
