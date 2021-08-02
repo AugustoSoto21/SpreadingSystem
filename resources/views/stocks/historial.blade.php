@@ -70,44 +70,34 @@
 
                 <tr>
                   <th>
-                    <div class="form-group">
-                      <input type="date" name="fecha_new" required="required" value="{{date('Y-m-d')}}" class="form-control" id="fecha_new" max="{{date('Y-m-d')}}">
-                    </div>
+                    <input type="date" name="fecha_new" required="required" value="{{date('Y-m-d')}}" class="form-control form-control-sm" id="fecha_new" max="{{date('Y-m-d')}}">
                   </th>
                   <th>
-                    <div class="form-group">
-                      <select name="id_agencia_new" id="id_agencia_new" class="select2">
-                          @foreach($agencias as $a)
-                          <option value="{{$a->id}}">{{$a->nombre}}</option>
-                          @endforeach    
-                      </select>
-                    </div>
+                    <select name="id_agencia_new" id="id_agencia_new" class="select2 form-control form-control-sm" style="width: 100%;">
+                        @foreach($agencias as $a)
+                        <option value="{{$a->id}}">{{$a->nombre}}</option>
+                        @endforeach    
+                    </select>
                   </th>
                   <th>
-                    <div class="form-group">
-                      <select name="locker_new" id="locker_new" class="form-control form-control-sm">
-                        <option value="SIN PROBAR">SIN PROBAR</option>
-                        <option value="STOCK">STOCK</option>
-                        <option value="FALLA">FALLA</option>
-                        <option value="CAMBIO">CAMBIO</option>
-                      </select>
-                    </div>
+                    <select name="locker_new" id="locker_new" class="form-control form-control-sm">
+                      <option value="SIN PROBAR">SIN PROBAR</option>
+                      <option value="STOCK">STOCK</option>
+                      <option value="FALLA">FALLA</option>
+                      <option value="CAMBIO">CAMBIO</option>
+                    </select>
                   </th>
                   <th>
-                    <div class="form-group">
-                      <select name="id_producto_new" id="id_producto_new" class="form-control form-control-sm select2">
-                        @foreach($productos as $p)
-                          <option value="{{$p->id}}">{{$p->detalles}} {{$p->marca}} {{$p->modelo}} {{$p->color}}</option>
-                        @endforeach
-                      </select>
-                    </div>
+                    <select name="id_producto_new" id="id_producto_new" class="form-control form-control-sm select2" style="width: 100%;">
+                      @foreach($productos as $p)
+                        <option value="{{$p->id}}">{{$p->detalles}} {{$p->marca}} {{$p->modelo}} {{$p->color}}</option>
+                      @endforeach
+                    </select>
                   </th>
                   <th>
-                    <div class="form-group">
-                      <input type="number" name="cantidad_new" id="cantidad_new" class="form-control" value="0" min="0">
-                    </div>
+                    <input type="number" name="cantidad_new" id="cantidad_new" class="form-control form-control-sm" value="0" min="0">
                   </th>
-                  <th><button type="submit" id="SubmitCreateHistorial" class="btn btn-info"><i class="fa fa-save"></i> Registrar</button></th>
+                  <th><button type="submit" id="SubmitCreateHistorial" class="btn btn-info btn-sm"><i class="fa fa-save"></i> Registrar</button></th>
                 </tr>
               </form>
               </thead>
@@ -145,16 +135,16 @@ $(document).ready( function () {
     processing: true,
     serverSide: true,
     responsive: true,
-    autoWidth: false,
+    autoWidth: true,
     ajax: {
       url:"{{ url('stocks/historial') }}"
    },
     columns: [
-      { data: 'fecha', name: 'fecha' },
-      { data: 'id_agencia', name: 'id_agencia' },
-      { data: 'locker', name: 'locker' },
-      { data: 'id_producto', name: 'id_producto' },
-      { data: 'cantidad', name: 'cantidad' },
+      { data: 'fecha', name: 'fecha', orderable: false },
+      { data: 'id_agencia', name: 'id_agencia', orderable: false },
+      { data: 'locker', name: 'locker', orderable: false },
+      { data: 'id_producto', name: 'id_producto', orderable: false },
+      { data: 'cantidad', name: 'cantidad', orderable: false },
       {data: 'action', name: 'action', orderable: false},
     ],
     order: [[0, 'desc']]
@@ -209,16 +199,29 @@ $('body').on('click', '#editHistorials', function () {
       $('#edit_historials').modal({backdrop: 'static', keyboard: true, show: true});
       $('.alert-danger').hide();
       $('#id_historial_edit').val(id);
-      $('#fecha_edit').val($('#fecha'+id).val());
+
+      $('#fecha_edit').text($('#fecha'+id).val());
       $('#fecha_e').val($('#fecha'+id).val());
+
+      $('#agencia_edit').text($('#id_agencia'+id).val());
+      $('#id_agencia_e').val($('#id_agencia'+id).val());
+
+      $('#locker_edit').text($('#locker'+id).val());
+      $('#locker_e').val($('#locker'+id).val());
+
+      $('#producto_edit').text($('#id_producto'+id).val());
+      $('#id_producto_e').val($('#id_producto'+id).val());
+
+      $('#cantidad_edit').text($('#cantidad'+id).val());
+      $('#cantidad_e').val($('#cantidad'+id).val());
       
     }
   });
 });
 //--CODIGO PARA UPDATE HISTORIAL ---------------------//
-$('#SubmitEditEstado').click(function(e) {
+$('#SubmitEditHistorial').click(function(e) {
   e.preventDefault();
-  var id = $('#id_estado_edit').val();
+  var id = $('#id_historial_edit').val();
   $.ajax({
     method:'PUT',
     url: "estados/"+id+"",

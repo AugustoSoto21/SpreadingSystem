@@ -124,13 +124,13 @@ class InventarioController extends Controller
             ->get();
             return datatables()->of($productos)
                 ->addColumn('action', function ($row) {
-                    $edit = '<a href="historial/'.$row->id.'/editar" data-id="'.$row->id.'" class="btn btn-warning btn-xs" id="editHistorials"><i class="fa fa-pencil-alt"></i></a>';
+                    $edit = '<a href="javascript:void(0);" data-id="'.$row->id.'" class="btn btn-warning btn-xs" id="editHistorials"><i class="fa fa-pencil-alt"></i></a>';
                     $delete = ' <a href="javascript:void(0);" id="delete-estado" onClick="deleteHistorials('.$row->id.')" class="delete btn btn-danger btn-xs"><i class="fa fa-trash"></i></a>';
                     return $edit . $delete;
                 })->rawColumns(['action','fecha','id_agencia','locker','id_producto','cantidad'])
                 ->editColumn('fecha',function($row){
                     $hoy=date('Y-m-d');
-                    $fecha="<div class='form-group'> <input type='date' name='fecha' required='required' value='".$row->fecha."' class='form-control' id='fecha".$row->id."' max='".$hoy."' />
+                    $fecha="<div class='form-group'> <input type='date' name='fecha' required='required' value='".$row->fecha."' class='form-control form-control-sm' id='fecha".$row->id."' max='".$hoy."' />
                         </div>";
                     return $fecha;
                 })
@@ -138,7 +138,7 @@ class InventarioController extends Controller
                     $agencias=Agencias::all();
                     $a=Agencias::find($row->id_agencia);
                     $select="<div class='form-group'>
-                                <select class='form-control' name='id_agencia' id='id_agencia".$row->id."'>";
+                                <select class='form-control form-control-sm' name='id_agencia' id='id_agencia".$row->id."'>";
                                 foreach ($agencias as $k) {
                                     $select.="<option value='".$k->id."'";
                                     if($k->id==$row->id_agencia){ 
@@ -152,7 +152,7 @@ class InventarioController extends Controller
                 })
                 ->editColumn('locker',function($row){
                     $select2="<div class='form-group'>
-                                <select class='form-control' name='locker' id='locker".$row->id."'>";
+                                <select class='form-control form-control-sm' name='locker' id='locker".$row->id."'>";
                             $select2.="<option value='SIN PROBAR'";
                             if($row->locker=="SIN PROBAR"){ 
                                 $select2.=" selected='selected' ";
@@ -180,7 +180,7 @@ class InventarioController extends Controller
                     $productos=Productos::all();
                     $p=Productos::find($row->id_producto);
                     $select3="<div class='form-group'>
-                                <select class='form-control' name='id_producto' id='id_producto".$row->id."'>";
+                                <select class='form-control form-control-sm' name='id_producto' id='id_producto".$row->id."'>";
                         foreach ($productos as $k) {
                             $select3.="<option value='".$k->id."'";
                             if($k->id==$row->id_producto){ 
@@ -194,7 +194,7 @@ class InventarioController extends Controller
                 })
                 ->editColumn('cantidad',function($row){
                     $campo="<div class='form-group'>
-                    <input name='cantidad' id='cantidad".$row->id."' class='form-control' value='".$row->id."'  />
+                    <input name='cantidad' id='cantidad".$row->id."' class='form-control form-control-sm' value='".$row->id."'  />
                     </div>";
                     return $campo;
                 })
@@ -379,9 +379,7 @@ class InventarioController extends Controller
     }//FIN DE LA FUNCION REGISTRAR
 
     public function editar($id){
-
         $historial=HistorialStocks::where('id',$id)->get();
-
         return Response()->json($historial);
     }
 }

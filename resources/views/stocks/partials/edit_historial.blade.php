@@ -9,28 +9,38 @@
       </div>
       <form action="#" method="POST" data-parsley-validate>
         <div class="modal-body">
-          <input type="hidden" name="id_historial" id="id_historial_edit" placeholder="">
+          <input type="text" name="id_historial" id="id_historial_edit" placeholder="">
+          <p align="center" style="font-weight: bold;">¿Está seguro que desea actualizar el historial con la siguiente información?</p>
           <div class="row">
-            <div class="col-sm-12">
-              <p>Está seguro que desea actualizar el historial con la siguiente información:<br>
-                	Fecha: <span id="fecha_edit"></span><br>
-                	Agencia: <span id="historial_edit"></span>
-                	Locker: <span id="locker_edit"></span>
-                	Producto: <span id="producto"></span>
-                	Cantidad: <span id="cantidad_edit"></span>
-                </p>
-            </div>
-           </div>
-           <div class="row">
             <div class="col-sm-6">
-              <input type="text" name="fecha" id="fecha_e">
-	          <input type="text" name="historial" id="historial_e">
-	          <input type="text" name="locker" id="locker_e">
-	          <input type="text" name="id_producto" id="id_producto_e">
-	          <input type="text" name="cantidad" id="cantidad_e">
+              <b>Fecha:</b> <span id="fecha_edit"></span>              
+            </div>
+            <div class="col-sm-6">
+              <b>Agencia:</b> <span id="agencia_edit"></span>              
             </div>
           </div>
-
+          <div class="row">
+            <div class="col-sm-6">
+              <b>Locker:</b> <span id="locker_edit"></span>              
+            </div>
+            <div class="col-sm-6">
+              <b>Producto:</b> <span id="producto_edit"></span>              
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-12">
+              <b>Cantidad:</b> <span id="cantidad_edit"></span>
+            </div>            
+          </div>
+          <div class="row">
+            <div class="col-sm-6">
+              <input type="text" name="fecha" id="fecha_e">
+              <input type="text" name="id_agencia" id="id_agencia_e">
+              <input type="text" name="locker" id="locker_e">
+              <input type="text" name="id_producto" id="id_producto_e">
+              <input type="text" name="cantidad" id="cantidad_e">
+            </div>
+          </div>
         </div>
         <div class="modal-footer justify-content-between">
           <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i> Cerrar</button>
