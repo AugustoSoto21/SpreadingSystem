@@ -188,9 +188,11 @@ class ProductosController extends Controller
      * @param  \App\Models\Productos  $productos
      * @return \Illuminate\Http\Response
      */
-    public function show(Productos $productos)
+    public function show($id)
     {
-        //
+        $producto=Productos::where('id',$id)->get();
+
+        return response()->json($producto);
     }
 
     /**

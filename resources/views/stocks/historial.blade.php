@@ -212,14 +212,15 @@ $('body').on('click', '#editHistorials', function () {
 
       $('#fecha_edit').text($('#fecha'+id).val());
       $('#fecha_e').val($('#fecha'+id).val());
-
-      $('#agencia_edit').text($('#id_agencia'+id).val());
+      agencia($('#id_agencia'+id).val());
+      //$('#agencia_edit').text($('#id_agencia'+id).val());
       $('#id_agencia_e').val($('#id_agencia'+id).val());
 
       $('#locker_edit').text($('#locker'+id).val());
       $('#locker_e').val($('#locker'+id).val());
 
-      $('#producto_edit').text($('#id_producto'+id).val());
+      producto($('#id_producto'+id).val());
+      //$('#producto_edit').text($('#id_producto'+id).val());
       $('#id_producto_e').val($('#id_producto'+id).val());
 
       $('#cantidad_edit').text($('#cantidad'+id).val());
@@ -233,12 +234,15 @@ $('#SubmitEditHistorial').click(function(e) {
   e.preventDefault();
   var id = $('#id_historial_edit').val();
   $.ajax({
-    method:'PUT',
-    url: "estados/"+id+"",
+    method:'POST',
+    url: "{{ route('categorias.store') }}",
     data: {
-      id_estado: $('#id_estado_edit').val(),
-      estado: $('#estado_edit').val(),
-      color: $('#color_edit').val()
+      id_historial: $('#id_estado_edit').val(),
+      fecha: $('#fecha_e').val(),
+      id_agencia: $('#id_agencia_e').val(),
+      locker: $('#locker_e').val(),
+      id_producto: $('#id_producto_e').val(),
+      cantidad: $('#cantidad_e').val(),
     },
     success: (data) => {
       if(data.errors) {
@@ -410,7 +414,30 @@ $('#SubmitCreateCategoria').click(function(e) {
   });
 });
 
+function agencia(id){
 
+  $.ajax({
+    method:"GET",
+    url: "../agencias/"+id+"show",
+    dataType: 'json',
+    data: id,
+    success: function(data){
+        $("#agencia_edit").text(data[0].nombre);
+    }
+    });
+}
+function producto(id){
+
+  $.ajax({
+    method:"GET",
+    url: "../productos/"+id+"show",
+    dataType: 'json',
+    data: id,
+    success: function(data){
+        $("#producto_edit").text(data[0].detalles+" "+data[0].modelo+" "+data[0].marca+" "+data[0].color);
+    }
+    });
+}
 </script>
 <script src="{{ asset('js/sweetalert2.min.js') }}"></script>
 @endsection

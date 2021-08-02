@@ -9,7 +9,7 @@
       </div>
       <form action="#" method="POST" data-parsley-validate>
         <div class="modal-body">
-          <input type="text" name="id_historial" id="id_historial_edit" placeholder="">
+          <input type="hidden" name="id_historial" id="id_historial_edit" placeholder="">
           <p align="center" style="font-weight: bold;">¿Está seguro que desea actualizar el historial con la siguiente información?</p>
           <div class="row">
             <div class="col-sm-6">
@@ -34,11 +34,11 @@
           </div>
           <div class="row">
             <div class="col-sm-6">
-              <input type="text" name="fecha" id="fecha_e">
-              <input type="text" name="id_agencia" id="id_agencia_e">
-              <input type="text" name="locker" id="locker_e">
-              <input type="text" name="id_producto" id="id_producto_e">
-              <input type="text" name="cantidad" id="cantidad_e">
+              <input type="hidden" name="fecha" id="fecha_e">
+              <input type="hidden" name="id_agencia" id="id_agencia_e">
+              <input type="hidden" name="locker" id="locker_e">
+              <input type="hidden" name="id_producto" id="id_producto_e">
+              <input type="hidden" name="cantidad" id="cantidad_e">
             </div>
           </div>
         </div>

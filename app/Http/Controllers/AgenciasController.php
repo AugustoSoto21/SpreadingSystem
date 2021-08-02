@@ -85,9 +85,11 @@ class AgenciasController extends Controller
      * @param  \App\Models\Agencias  $agencias
      * @return \Illuminate\Http\Response
      */
-    public function show(Agencias $agencias)
+    public function show($id)
     {
-        //
+        $agencia = Agencias::where('id',$id)->get();
+
+        return response()->json($agencia);
     }
 
     /**
