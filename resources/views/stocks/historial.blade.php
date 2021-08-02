@@ -56,7 +56,7 @@
           @if(search_permits('Stocks','Ver mismo usuario')=="Si" || search_permits('Stocks','Ver todos los usuarios')=="Si" || search_permits('Stocks','Editar mismo usuario')=="Si" || search_permits('Stocks','Editar todos los usuarios')=="Si" || search_permits('Stocks','Eliminar mismo usuario')=="Si" || search_permits('Stocks','Eliminar todos los usuarios')=="Si")
 
           <div class="card-body">
-            <table id="historial_table" class="table table-bordered table-striped table-sm" style="font-size: 12px;">
+            <table id="historial_table" class="table-responsive table table-bordered table-striped table-sm" style="font-size: 12px;">
               <thead>
                 <tr>
                   <th>Fecha</th>
@@ -97,7 +97,9 @@
                   <th>
                     <input type="number" name="cantidad_new" id="cantidad_new" class="form-control form-control-sm" value="0" min="0">
                   </th>
-                  <th><button type="submit" id="SubmitCreateHistorial" class="btn btn-info btn-sm"><i class="fa fa-save"></i> Registrar</button></th>
+                  <th>
+                    <button type="submit" id="SubmitCreateHistorial" class="btn btn-info btn-sm"><i class="fa fa-save"></i> Registrar</button>
+                  </th>
                 </tr>
               </form>
               </thead>
