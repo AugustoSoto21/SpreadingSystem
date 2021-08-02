@@ -54,46 +54,50 @@
             </div>
           </div>
           @if(search_permits('Stocks','Ver mismo usuario')=="Si" || search_permits('Stocks','Ver todos los usuarios')=="Si" || search_permits('Stocks','Editar mismo usuario')=="Si" || search_permits('Stocks','Editar todos los usuarios')=="Si" || search_permits('Stocks','Eliminar mismo usuario')=="Si" || search_permits('Stocks','Eliminar todos los usuarios')=="Si")
-          <div class="table-responsive">
-            <table width="100%">
-                <form name="historial" id="historial"  data-parsley-validate method="POST" >
-                  <tr>
-                    <th>
-                      <input type="date" name="fecha_new" required="required" value="{{date('Y-m-d')}}" class="form-control form-control-sm" id="fecha_new" max="{{date('Y-m-d')}}">
-                    </th>
-                    <th>
-                      <select name="id_agencia_new" id="id_agencia_new" class="select2 form-control form-control-sm" style="width: 100%;">
-                          @foreach($agencias as $a)
-                          <option value="{{$a->id}}">{{$a->nombre}}</option>
-                          @endforeach    
-                      </select>
-                    </th>
-                    <th>
-                      <select name="locker_new" id="locker_new" class="form-control form-control-sm">
-                        <option value="SIN PROBAR">SIN PROBAR</option>
-                        <option value="STOCK">STOCK</option>
-                        <option value="FALLA">FALLA</option>
-                        <option value="CAMBIO">CAMBIO</option>
-                      </select>
-                    </th>
-                    <th>
-                      <select name="id_producto_new" id="id_producto_new" class="form-control form-control-sm select2" style="width: 100%;">
-                        @foreach($productos as $p)
-                          <option value="{{$p->id}}">{{$p->detalles}} {{$p->marca}} {{$p->modelo}} {{$p->color}}</option>
-                        @endforeach
-                      </select>
-                    </th>
-                    <th>
-                      <input type="number" name="cantidad_new" id="cantidad_new" class="form-control form-control-sm" value="0" min="0">
-                    </th>
-                    <th>
-                      <button type="submit" id="SubmitCreateHistorial" class="btn btn-info btn-sm"><i class="fa fa-save"></i> Registrar</button>
-                    </th>
-                  </tr>
-                </form>
-              
-            </table>
-            
+          <div class="row">
+            <div class="col-sm-2">
+              <div class="form-group">
+                <input type="date" name="fecha_new" required="required" value="{{date('Y-m-d')}}" class="form-control form-control-sm" id="fecha_new" max="{{date('Y-m-d')}}">
+              </div>
+            </div>
+            <div class="col-sm-2">
+              <div class="form-group">
+                <select name="id_agencia_new" id="id_agencia_new" class="select2 form-control form-control-sm" style="width: 100%;">
+                  @foreach($agencias as $a)
+                    <option value="{{$a->id}}">{{$a->nombre}}</option>
+                  @endforeach    
+                </select>
+              </div>
+            </div>
+            <div class="col-sm-2">
+              <div class="form-group">
+                <select name="locker_new" id="locker_new" class="form-control form-control-sm">
+                  <option value="SIN PROBAR">SIN PROBAR</option>
+                  <option value="STOCK">STOCK</option>
+                  <option value="FALLA">FALLA</option>
+                  <option value="CAMBIO">CAMBIO</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-sm-2">
+              <div class="form-group">
+                <select name="id_producto_new" id="id_producto_new" class="form-control form-control-sm select2" style="width: 100%;">
+                  @foreach($productos as $p)
+                    <option value="{{$p->id}}">{{$p->detalles}} {{$p->marca}} {{$p->modelo}} {{$p->color}}</option>
+                  @endforeach
+                </select>
+              </div>
+            </div>
+            <div class="col-sm-2">
+              <div class="form-group">
+                <input type="number" name="cantidad_new" id="cantidad_new" class="form-control form-control-sm" value="0" min="0">
+              </div>
+            </div>
+            <div class="col-sm-2">
+              <div class="form-group">
+                <button type="submit" id="SubmitCreateHistorial" class="btn btn-info btn-sm btn-block"><i class="fa fa-save"></i> Registrar</button>
+              </div>
+            </div>
           </div>
           <div class="card-body">
             <table id="historial_table" class="table table-bordered table-striped table-sm" style="font-size: 12px;">
