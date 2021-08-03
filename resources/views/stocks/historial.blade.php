@@ -235,9 +235,9 @@ $('#SubmitEditHistorial').click(function(e) {
   var id = $('#id_historial_edit').val();
   $.ajax({
     method:'POST',
-    url: "{{ route('categorias.store') }}",
+    url: "{{ route('stocks.store') }}",
     data: {
-      id_historial: $('#id_estado_edit').val(),
+      id_historial: $('#id_historial_edit').val(),
       fecha: $('#fecha_e').val(),
       id_agencia: $('#id_agencia_e').val(),
       locker: $('#locker_e').val(),
@@ -252,11 +252,11 @@ $('#SubmitEditHistorial').click(function(e) {
           $('.alert-danger').append('<strong><li>'+value+'</li></strong>');
         });
       } else {
-        var oTable = $('#estados_table').dataTable();
+        var oTable = $('#historial_table').dataTable();
         oTable.fnDraw(false);
         Swal.fire ( data.titulo ,  data.message ,  data.icono );
         if (data.icono=="success") {
-          $("#edit_estados").modal('hide');
+          $("#edit_historials").modal('hide');
         }
       }
     },
@@ -437,6 +437,38 @@ function producto(id){
         $("#producto_edit").text(data[0].detalles+" "+data[0].modelo+" "+data[0].marca+" "+data[0].color);
     }
     });
+}
+//--CODIGO PARA ELIMINAR ESTADO ---------------------//
+function deleteHistorials(id){
+  var id = id;
+  Swal.fire({
+    title: '¿Estás seguro que desea eliminar a este historial de stock?',
+    text: "¡Esta opción no podrá deshacerse en el futuro!",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: '¡Si, Eliminar!',
+    cancelButtonText: 'No, Cancelar!'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      // ajax
+      $.ajax({
+        type:"DELETE",
+        url: "../stocks/"+id+"",
+        data: { id: id },
+        dataType: 'json',
+        success: function(response){
+          Swal.fire ( response.titulo ,  response.message ,  response.icono );
+          var oTable = $('#historial_table').dataTable();
+          oTable.fnDraw(false);
+        },
+        error: function (data) {
+          Swal.fire({title: "Error del servidor", text:  "Historial no eliminado", icon:  "error"});
+        }
+      });
+    }
+  })
 }
 </script>
 <script src="{{ asset('js/sweetalert2.min.js') }}"></script>
