@@ -201,6 +201,7 @@ $('#SubmitCreateHistorial').click(function(e) {
 //--CODIGO PARA EDITAR HISTORIAL ---------------------//
 $('body').on('click', '#editHistorials', function () {
   var id = $(this).data('id');
+  console.log('entra 1');
   $.ajax({
     method:"GET",
     url: "historial/"+id+"/editar",
@@ -209,6 +210,7 @@ $('body').on('click', '#editHistorials', function () {
       $('#edit_historials').modal({backdrop: 'static', keyboard: true, show: true});
       $('.alert-danger').hide();
       $('#id_historial_edit').val(id);
+      console.log('despues del modal');
 
       $('#fecha_edit').text($('#fecha'+id).val());
       $('#fecha_e').val($('#fecha'+id).val());
@@ -223,6 +225,7 @@ $('body').on('click', '#editHistorials', function () {
       //$('#producto_edit').text($('#id_producto'+id).val());
       $('#id_producto_e').val($('#id_producto'+id).val());
       //mostrando cantidad a actualizar
+      console.log($('#cantidad'+id).val()+'-----');
       $('#cantidad_edit').text($('#cantidad'+id).val());
       $('#cantidad_e').val($('#cantidad'+id).val());
       
@@ -470,6 +473,10 @@ function deleteHistorials(id){
     }
   })
 }
+function cambiar_cantidad(valor){
+
+}
+$("#cantidad")
 </script>
 <script src="{{ asset('js/sweetalert2.min.js') }}"></script>
 @endsection

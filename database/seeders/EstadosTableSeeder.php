@@ -23,12 +23,14 @@ class EstadosTableSeeder extends Seeder
         	['estado' => 'LLEGÓ Y NO ENTREGÓ', 'color' => '#666666', 'status_stock' => 'MANTIENE'],
         	['estado' => 'EN CAMINO', 'color' => '#d9d9d9', 'status_stock' => 'MANTENER'],
         	['estado' => 'ENVIADO', 'color' => '#3fdf96', 'status_stock' => 'MANTENER'],
-        	['estado' => 'CANCELADO ALMACENADO', 'color' => '#d31212', 'status_stock' => 'MANTIENE'],
-        	['estado' => 'LLEGADO ALMACENADO', 'color' => '#d31212', 'status_stock' => 'MANTIENE'],//LO TIENE UNA AGENCIA EN SU DEPÓSITO----
-        	//['estado' => 'REPROGRAMADO CONFIRMADO', 'color' => ''],
+        	['estado' => 'CANCELADO ALMACENADO', 'color' => '#d31212', 'status_stock' => 'MANTIENE'],//P
+        	['estado' => 'LLAMAR', 'color' => '#00ff00', 'status_stock' => 'MANTIENE'],
+        	['estado' => 'LLEGADO ALMACENADO', 'color' => '#d31212', 'status_stock' => 'MANTIENE'],//LO TIENE UNA AGENCIA EN SU DEPÓSITO----P
+            //NADA EN PERU
+        	['estado' => 'REPROGRAMADO CONFIRMADO', 'color' => '', 'status_stock' => 'MANTIENE'],
         	['estado' => 'REPROGRAMADO AFIRMADO', 'color' => '#3fdf96','status_stock' => 'MANTENER'],
         	['estado' => 'REPROGRAMADO ENVIADO', 'color' => '#3fdf96','status_stock' => 'MANTENER'],
-        	
+        	//----
         	['estado' => 'RECLAMO', 'color' => '#ff9900', 'status_stock' => 'MANTIENE'],
         	['estado' => 'RECLAMO A RECOLECTAR', 'color' => '#ff9900', 'status_stock' => 'MANTIENE'],
         	['estado' => 'RECLAMO RECOLECTADO', 'color' => '#00ffff','status_stock' => 'MANTENER'],
@@ -37,29 +39,29 @@ class EstadosTableSeeder extends Seeder
             ['estado' => 'R/FALLA REPARABLE', 'color' => '#00ffff','status_stock' => 'MANTIENE'],
             ['estado' => 'R/FALLA REPARABLE CAMBIO', 'color' => '#00ffff','status_stock' => 'DECREMENTA'],
 
-            ['estado' => 'R-CAMBIO MODELO', 'color' => '#00ffff','status_stock' => 'DECREMENTA'],
+            ['estado' => 'R-CAMBIO PRODUCTO', 'color' => '#00ffff','status_stock' => 'DECREMENTA'],
 
         	['estado' => 'R/CONFIRMADO', 'color' => '#ff9900', 'status_stock' => 'MANTIENE'],
         	['estado' => 'R/AFIRMADO', 'color' => '#ff9900', 'status_stock' => 'MANTIENE'],
-        	['estado' => 'RECLAMO SOLUCIONADO', 'color' => '#00ffff','status_stock' => 'MANTENER'],
         	['estado' => 'R/CANCELADO', 'color' => '#666666', 'status_stock' => 'MANTIENE'],
         	['estado' => 'R/LLEGÓ Y NO ENTREGÓ', 'color' => '#666666', 'status_stock' => 'MANTIENE'],
         	['estado' => 'R/EN CAMINO', 'color' => '#ff9900','status_stock' => 'DECREMENTA'],
         	['estado' => 'R/ENVIADO', 'color' => '#e69138','status_stock' => 'DECREMENTA'],
         	['estado' => 'R/CANCELADO ALMACENADO', 'color' => '#d31212', 'status_stock' => 'MANTIENE'],
-        	/*['estado' => 'R/LLEGADO ALMACENADO', 'color' => ''],
-        	['estado' => 'R/REPROGRAMADO CONFIRMADO', 'color' => ''],
-        	['estado' => 'R/REPROGRAMADO AFIRMADO', 'color' => ''],
-        	['estado' => 'R/REPROGRAMADO ENVIADO', 'color' => ''],*/
-        	['estado' => 'RECLAMO CANCELADO', 'color' => '#666666', 'status_stock' => 'MANTIENE'],
-        	['estado' => 'LLAMAR', 'color' => '#00ff00', 'status_stock' => 'MANTIENE'],
-        	//['estado' => 'RECORDADO Y SIN RESPUESTA', 'color' => ''],
+
+        	['estado' => 'R/LLEGADO ALMACENADO', 'color' => '', 'status_stock' => 'MANTIENE'],
+        	['estado' => 'R/REPROGRAMADO CONFIRMADO', 'color' => '', 'status_stock' => 'MANTIENE'],
+        	['estado' => 'R/REPROGRAMADO AFIRMADO', 'color' => '', 'status_stock' => 'MANTIENE'],
+        	['estado' => 'R/REPROGRAMADO ENVIADO', 'color' => '', 'status_stock' => 'MANTIENE'],
+        	
         	['estado' => 'PROVINCIA CONFIRMADO', 'color' => '#9900ff','status_stock' => 'DECREMENTA'],
         	['estado' => 'PROVINCIA PAGADO', 'color' => '#d9d9d9','status_stock' => 'DECREMENTA'],
-        	//['estado' => 'PAGADO', 'color' => ''],
+        	['estado' => 'PAGADO', 'color' => '', 'status_stock' => 'MANTIENE'],
         	['estado' => 'RECLAMO A ENVIAR', 'color' => '#ff9900', 'status_stock' => 'DECREMENTA'],
             ['estado' => 'RECLAMO ENTREGADO ', 'color' => '#00ffff','status_stock' => 'MANTIENE'],
             ['estado' => 'ENTREGADO', 'color' => '#00ffff', 'status_stock' => 'DECREMENTA' ],
+        	['estado' => 'RECLAMO SOLUCIONADO', 'color' => '#00ffff','status_stock' => 'MANTENER'],
+        	['estado' => 'RECLAMO CANCELADO', 'color' => '#666666', 'status_stock' => 'MANTIENE'],
 
         ]);
     }
