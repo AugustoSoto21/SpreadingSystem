@@ -222,7 +222,7 @@ $('body').on('click', '#editHistorials', function () {
       producto($('#id_producto'+id).val());
       //$('#producto_edit').text($('#id_producto'+id).val());
       $('#id_producto_e').val($('#id_producto'+id).val());
-
+      //mostrando cantidad a actualizar
       $('#cantidad_edit').text($('#cantidad'+id).val());
       $('#cantidad_e').val($('#cantidad'+id).val());
       
