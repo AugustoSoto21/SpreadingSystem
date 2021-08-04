@@ -179,7 +179,7 @@ $('#SubmitCreateHistorial').click(function(e) {
       cantidad: $('#cantidad_new').val(),
     },
     success: function(result) {
-      console.log(result);
+      
       if(result.errors) {
         $('.alert-danger').html('');
         $.each(result.errors, function(key, value) {
@@ -201,7 +201,7 @@ $('#SubmitCreateHistorial').click(function(e) {
 //--CODIGO PARA EDITAR HISTORIAL ---------------------//
 $('body').on('click', '#editHistorials', function () {
   var id = $(this).data('id');
-  console.log('entra 1');
+  
   $.ajax({
     method:"GET",
     url: "historial/"+id+"/editar",
@@ -210,24 +210,20 @@ $('body').on('click', '#editHistorials', function () {
       $('#edit_historials').modal({backdrop: 'static', keyboard: true, show: true});
       $('.alert-danger').hide();
       $('#id_historial_edit').val(id);
-      console.log('despues del modal');
-
+      
       $('#fecha_edit').text($('#fecha'+id).val());
       $('#fecha_e').val($('#fecha'+id).val());
       agencia($('#id_agencia'+id).val());
-      //$('#agencia_edit').text($('#id_agencia'+id).val());
       $('#id_agencia_e').val($('#id_agencia'+id).val());
 
       $('#locker_edit').text($('#locker'+id).val());
       $('#locker_e').val($('#locker'+id).val());
-
-      producto($('#id_producto'+id).val());
-      //$('#producto_edit').text($('#id_producto'+id).val());
-      $('#id_producto_e').val($('#id_producto'+id).val());
-      //mostrando cantidad a actualizar
-      console.log($('#cantidad'+id).val()+'-----');
+      
+      producto2($('#id_producto'+id).val());
+      
       $('#cantidad_edit').text($('#cantidad'+id).val());
       $('#cantidad_e').val($('#cantidad'+id).val());
+      
       
     }
   });
@@ -264,7 +260,7 @@ $('#SubmitEditHistorial').click(function(e) {
       }
     },
     error: function(data){
-      console.log(data);
+      //console.log(data);
     }
   });
 });
@@ -397,7 +393,7 @@ $('#SubmitCreateCategoria').click(function(e) {
           $('.alert-danger').append('<strong><li>'+value+'</li></strong>');
         });
       } else {
-         console.log(result.categorias.length);
+         //console.log(result.categorias.length);
         if(result.categorias.length > 0){
             $("#id_categoria").empty();
             for(var i=0 ; i < result.categorias.length ; i++){
@@ -429,8 +425,7 @@ function agencia(id){
     }
     });
 }
-function producto(id){
-
+function producto2(id){
   $.ajax({
     method:"GET",
     url: "../productos/"+id+"show",
@@ -438,8 +433,13 @@ function producto(id){
     data: id,
     success: function(data){
         $("#producto_edit").text(data[0].detalles+" "+data[0].modelo+" "+data[0].marca+" "+data[0].color);
+        $("#id_producto").val(id.value); 
     }
     });
+}
+function producto(id,i){
+  
+    $("#id_producto"+i).val(id.value);
 }
 //--CODIGO PARA ELIMINAR ESTADO ---------------------//
 function deleteHistorials(id){
@@ -473,9 +473,14 @@ function deleteHistorials(id){
     }
   })
 }
-function cambiar_cantidad(valor){
+function cambiar_cantidad(valor,i){
 
+    $('#cantidad'+i).val(valor.value);
 }
+function cambiar_locker(valor,i){
+
+    $("#locker"+i).val(valor.value);
+} 
 $("#cantidad")
 </script>
 <script src="{{ asset('js/sweetalert2.min.js') }}"></script>

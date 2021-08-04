@@ -376,7 +376,7 @@ class InventarioController extends Controller
                 })
                 ->editColumn('locker',function($row){
                     $select2="<div class='form-group'>
-                                <select class='form-control form-control-sm' name='locker' id='locker".$row->id."'>";
+                                <select class='form-control form-control-sm' name='locker' id='locker".$row->id."' onchange='cambiar_locker(this,".$row->id.")'>";
                             $select2.="<option value='SIN PROBAR'";
                             if($row->locker=="SIN PROBAR"){ 
                                 $select2.=" selected='selected' ";
@@ -404,7 +404,7 @@ class InventarioController extends Controller
                     $productos=Productos::all();
                     $p=Productos::find($row->id_producto);
                     $select3="<div class='form-group'>
-                                <select class='form-control form-control-sm' name='id_producto' id='id_producto".$row->id."'>";
+                                <select class='form-control form-control-sm' name='id_producto' id='id_producto".$row->id."' onchange='producto(this,".$row->id.")'>";
                         foreach ($productos as $k) {
                             $select3.="<option value='".$k->id."'";
                             if($k->id==$row->id_producto){ 
@@ -418,7 +418,7 @@ class InventarioController extends Controller
                 })
                 ->editColumn('cantidad',function($row){
                     $campo="<div class='form-group'>
-                    <input type='number' name='cantidad' id='cantidad".$row->id."' class='form-control form-control-sm' value='".$row->cantidad."'  />
+                    <input type='number' name='cantidad' id='cantidad".$row->id."' class='form-control form-control-sm' onkeyup='cambiar_cantidad(this,".$row->id.")' value='".$row->cantidad."'  />
                     </div>";
                     return $campo;
                 })

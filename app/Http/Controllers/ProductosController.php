@@ -192,7 +192,7 @@ class ProductosController extends Controller
     {
         $producto=Productos::where('id',$id)->get();
 
-        return response()->json($producto);
+        return $producto;
     }
 
     /**
