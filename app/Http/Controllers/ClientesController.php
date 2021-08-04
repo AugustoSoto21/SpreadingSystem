@@ -181,4 +181,11 @@ class ClientesController extends Controller
         }
         return redirect()->back();
     }
+
+    public function buscar_clientes()
+    {
+        $clientes=Clientes::all();
+
+        return response()->json($clientes);
+    }
 }

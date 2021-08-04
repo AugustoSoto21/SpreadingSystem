@@ -11,6 +11,7 @@ use App\Http\Controllers\ClientesController;
 use App\Http\Controllers\ProductosController;
 use App\Http\Controllers\CategoriasController;
 use App\Http\Controllers\InventarioController;
+use App\Http\Controllers\PedidosController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -51,4 +52,10 @@ Route::group(['middleware' => ['web', 'auth']], function() {
 	Route::post('/stocks/registrar', [InventarioController::class, 'registrar'])->name('stocks.registrar');
 	Route::get('stocks/historial/{id}/editar', [InventarioController::class, 'editar'])->name('historial.editar');
 	Route::resource('/stocks',InventarioController::class);
+
+	Route::resource('/pedidos',PedidosController::class);
+	Route::get('/buscar_clientes',[ClientesController::class, 'buscar_clientes']);
+	Route::get('/buscar_productos',[ProductosController::class, 'buscar_productos']);
+	Route::get('/buscar_stock/{id_producto}/producto',[ProductosController::class, 'buscar_stock_producto']);
+
 });

@@ -30,3 +30,22 @@ function productos_almacen($id_agencia,$id_producto){
     return $valores;
 }
 
+function producto_stock($id_producto)
+{
+    $buscar_i=\App\Models\Inventario::where('id_producto',$id_producto)->count();
+    $buscar_a=\App\Models\Almacen::where('id_producto',$id_producto)->count();
+    $total=0;
+    if($buscar_i > 0){
+        $buscar_i=\App\Models\Inventario::where('id_producto',$id_producto)->first();
+        $total+=$buscar_i->stock;
+    }
+    if($buscar_a > 0){
+        $buscar_a=\App\Models\Almacen::where('id_producto',$id_producto)->get();
+        foreach ($buscar_a as $key) {
+            $total+=$key->stock;
+        }
+        
+    }
+
+    return $id_producto;
+}

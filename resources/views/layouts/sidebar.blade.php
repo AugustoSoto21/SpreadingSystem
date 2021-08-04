@@ -39,6 +39,20 @@
               <p>Home <span class="right badge badge-danger">New</span></p>
             </a>
           </li>
+          <li class="nav-item has-treeview {{ Request::is('Pedidos*') ? 'menu-open':'' }}">
+          <a href="#" class="nav-link {{ Request::is('Pedidos*') ? 'active':'' }}">
+            <i class="nav-icon fas fa-money-check-alt"></i>
+            <p> Pedidos <i class="fas fa-angle-left right"></i></p>
+          </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+              <a href="{{ route('pedidos.create') }}" class="nav-link {{ Request::is('pedidos/create*') ? 'active':'' }}">
+                <i class="nav-icon far fa-circle nav-icon"></i>
+                <p>Registrar</p>
+              </a>
+              </li>
+            </ul>
+          </li>
           <li class="nav-item">
             <a href="{!!route('estados.index')!!}" class="nav-link">
               <i class="nav-icon fas fa-info-circle"></i>
@@ -105,6 +119,8 @@
               <p>Historial de Stocks</p>
             </a>
           </li>
+          
+
         </ul>
 
       </nav>
