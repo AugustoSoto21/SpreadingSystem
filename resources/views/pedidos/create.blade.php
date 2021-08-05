@@ -130,10 +130,8 @@ function producto_data() {
       $('#id_producto').empty();
 
       $.each(response, function(key, registro) {
-        console.log(registro.id);
-           producto_stock(registro.id);
-          /*$('#id_producto').append("<option value='"+registro.id+"'>"+registro.detalles+" "+registro.modelo+" "+registro.marca+" "+registro.color+" Stock: <span id='stock"+registro.id+"' ></span> - Disponible:  </option>");*/
-        
+        producto_stock(registro.id);
+          
       });
     },
     error: function (data) {
@@ -175,8 +173,6 @@ $('#SubmitCreateCliente').click(function(e) {
         });
       } else {
         $('.alert-danger').hide();
-        /*var oTable = $('#clientes_table').dataTable();
-        oTable.fnDraw(false);*/
         Swal.fire ( result.titulo ,  result.message ,  result.icono );
         if (result.icono=="success") {
           $("#create_clientes").modal('hide');
@@ -193,23 +189,19 @@ function producto_stock(id) {
     url: "../buscar_stock/"+id+"/producto",
     dataType: 'json',
     success: function(response){
-      $('#id_producto').empty();
-
       $.each(response, function(key, registro) {
         var total_stock;
         var total_disponible;
 
            if(!registro.total_stock){
-              /*total_stock="No Disponible";
-              total_disponible="No Disponible";*/
-              console.log(registro.total_stock);
+              total_stock="No Disponible";
+              total_disponible="No Disponible";
+              
            }else{
-              /*total_stock=registro.total_stock;
-              total_disponible="No Disponible";*/
-              console.log('no nulo');
+              total_stock=registro.total_stock;
+              total_disponible=registro.total_disponible;
+              $('#id_producto').append("<option value='"+registro.id+"'>"+registro.detalles+" "+registro.modelo+" "+registro.marca+" "+registro.color+" Stock: "+total_stock+" - Disponible: "+total_disponible+" </option>");
            }
-           /* $('#id_producto').append("<option value='"+registro.id+"'>"+registro.detalles+" "+registro.modelo+" "+registro.marca+" "+registro.color+" Stock: "+total_stock+" - Disponible: "+total_disponible+" </option>");*/
-
       });
     },
     error: function (data) {

@@ -465,35 +465,29 @@ class ProductosController extends Controller
     }
     public function buscar_productos()
     {
-        //$productos=Productos::where('status','Activo')->get();
+        $productos=Productos::where('status','Activo')->get();
         //$productos=Productos::all();
-        $productos=Productos::where('id',2)->get();
+        //$productos=Productos::where('id',2)->get();
         return Response()->json($productos);
     }
 
     public function buscar_stock_producto($id_producto)
     {
         $productos=Productos::find($id_producto);
-        /*if(count($productos->inventario) > 0){
-        $producto=\DB::table('productos')
-            ->join('inventarios','inventarios.id_producto','=','productos.id')
-            ->where('productos.id',$id_producto)
-            ->select('productos.*','inventarios.stock AS total_stock','inventarios.stock_disponible AS total_disponible')->get();
-        }*/
+        
         if (count($productos->inventario) > 0 && count($productos->almacen) > 0) {
            $producto=\DB::table('productos')
             ->join('inventarios','inventarios.id_producto','=','productos.id')
             ->join('almacens','almacens.id_producto','=','productos.id')
             ->where('productos.id',$id_producto)
-            ->select('productos.*','(inventarios.stock + almacens.stock) AS total_stock','(inventarios.stock_disponible + almacens.stock_disponible) AS total_disponible')->get();
+            ->select('productos.*',\DB::raw('(inventarios.stock + almacens.stock) AS total_stock'),\DB::raw('(inventarios.stock_disponible + almacens.stock_disponible) AS total_disponible'))->get();
         }else{
              if(count($productos->inventario) > 0 && count($productos->almacen) == 0){
             $producto=\DB::table('productos')
             ->join('inventarios','inventarios.id_producto','=','productos.id')
             ->where('productos.id',$id_producto)
             ->select('productos.*','inventarios.stock AS total_stock','inventarios.stock_disponible AS total_disponible')->get();
-            //$producto=Productos::where('id',$id_producto)->get();
-
+            
             }else{
                  if (count($productos->inventario) == 0 && count($productos->almacen) > 0) {
                     $producto=\DB::table('productos')
