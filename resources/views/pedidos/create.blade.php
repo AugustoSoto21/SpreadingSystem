@@ -193,11 +193,7 @@ function producto_stock(id) {
         var total_stock;
         var total_disponible;
 
-           if(!registro.total_stock){
-              total_stock="No Disponible";
-              total_disponible="No Disponible";
-              
-           }else{
+           if(registro.total_stock){
               total_stock=registro.total_stock;
               total_disponible=registro.total_disponible;
               $('#id_producto').append("<option value='"+registro.id+"'>"+registro.detalles+" "+registro.modelo+" "+registro.marca+" "+registro.color+" Stock: "+total_stock+" - Disponible: "+total_disponible+" </option>");
