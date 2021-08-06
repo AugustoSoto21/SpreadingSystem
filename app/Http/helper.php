@@ -49,3 +49,15 @@ function producto_stock($id_producto)
 
     return $id_producto;
 }
+function exit_product2($id_producto){
+
+    $cart_all=App\Models\CarritoPedido::join('productos','productos.id','=','carrito_pedido.id_product')
+        ->where('carrito_pedido.id_user',\Auth::getUser()->id)
+        ->select('products.*')->get();
+        $i=0;
+        foreach($cart_all as $key){
+            if($key->id==$id_producto) $i++;
+        }
+
+        return $i;
+}

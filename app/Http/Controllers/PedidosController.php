@@ -10,6 +10,8 @@ use App\Models\Clientes;
 use App\Models\Zonas;
 use App\Models\Estados;
 use App\Models\Agencias;
+use App\Models\CarritoPedido;
+date_default_timezone_set("America/Argentina/Buenos_Aires");
 class PedidosController extends Controller
 {
     /**
@@ -35,6 +37,7 @@ class PedidosController extends Controller
         $zonas=Zonas::all();
         $estados=Estados::all();
         $agencias=Agencias::all();
+        $cart_all=CarritoPedido::where('id_user',\Auth::getUser()->id)->get();
         return view('pedidos.create',compact('productos','categorias','clientes','zonas','estados','agencias'));
        
     }

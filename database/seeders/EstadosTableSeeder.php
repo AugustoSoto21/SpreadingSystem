@@ -15,30 +15,30 @@ class EstadosTableSeeder extends Seeder
     {
         \DB::table('estados')->insert([
         	
-        	['estado' => 'CONFIRMADO', 'color' => '#d9d9d9', 'status_stock' => 'MANTENER'],
+        	['estado' => 'CONFIRMADO', 'color' => '#d9d9d9', 'status_stock' => 'MANTIENE'],
         	['estado' => 'AFIRMADO', 'color' => '#b6d7a8', 'status_stock' => 'DECREMENTA'],
         	['estado' => 'POR CONFIRMAR', 'color' => '#ffe599', 'status_stock' => 'MANTIENE'],
         	['estado' => 'NO CONTESTA', 'color' => '#ea9999', 'status_stock' => 'MANTIENE'],
         	['estado' => 'CANCELADO', 'color' => '#666666', 'status_stock' => 'INCREMENTA'],
         	['estado' => 'LLEGÓ Y NO ENTREGÓ', 'color' => '#666666', 'status_stock' => 'MANTIENE'],
-        	['estado' => 'EN CAMINO', 'color' => '#d9d9d9', 'status_stock' => 'MANTENER'],
-        	['estado' => 'ENVIADO', 'color' => '#3fdf96', 'status_stock' => 'MANTENER'],
+        	['estado' => 'EN CAMINO', 'color' => '#d9d9d9', 'status_stock' => 'MANTIENE'],
+        	['estado' => 'ENVIADO', 'color' => '#3fdf96', 'status_stock' => 'MANTIENE'],
         	['estado' => 'CANCELADO ALMACENADO', 'color' => '#d31212', 'status_stock' => 'MANTIENE'],//P
         	['estado' => 'LLAMAR', 'color' => '#00ff00', 'status_stock' => 'MANTIENE'],
         	['estado' => 'LLEGADO ALMACENADO', 'color' => '#d31212', 'status_stock' => 'MANTIENE'],//LO TIENE UNA AGENCIA EN SU DEPÓSITO----P
             //NADA EN PERU
         	['estado' => 'REPROGRAMADO CONFIRMADO', 'color' => '', 'status_stock' => 'MANTIENE'],
-        	['estado' => 'REPROGRAMADO AFIRMADO', 'color' => '#3fdf96','status_stock' => 'MANTENER'],
-        	['estado' => 'REPROGRAMADO ENVIADO', 'color' => '#3fdf96','status_stock' => 'MANTENER'],
+        	['estado' => 'REPROGRAMADO AFIRMADO', 'color' => '#3fdf96','status_stock' => 'MANTIENE'],
+        	['estado' => 'REPROGRAMADO ENVIADO', 'color' => '#3fdf96','status_stock' => 'MANTIENE'],
         	//----
         	['estado' => 'RECLAMO', 'color' => '#ff9900', 'status_stock' => 'MANTIENE'],
         	['estado' => 'RECLAMO A RECOLECTAR', 'color' => '#ff9900', 'status_stock' => 'MANTIENE'],
-        	['estado' => 'RECLAMO RECOLECTADO', 'color' => '#00ffff','status_stock' => 'MANTENER'],
+        	['estado' => 'RECLAMO RECOLECTADO', 'color' => '#00ffff','status_stock' => 'MANTIENE'],
+            
             ['estado' => 'R/FALLA NO REPARABLE', 'color' => '#00ffff','status_stock' => 'DECREMENTA'],
             ['estado' => 'R/FALLA NO REPARABLE CAMBIO', 'color' => '#00ffff','status_stock' => 'DECREMENTA'],
             ['estado' => 'R/FALLA REPARABLE', 'color' => '#00ffff','status_stock' => 'MANTIENE'],
             ['estado' => 'R/FALLA REPARABLE CAMBIO', 'color' => '#00ffff','status_stock' => 'DECREMENTA'],
-
             ['estado' => 'R-CAMBIO PRODUCTO', 'color' => '#00ffff','status_stock' => 'DECREMENTA'],
 
         	['estado' => 'R/CONFIRMADO', 'color' => '#ff9900', 'status_stock' => 'MANTIENE'],
@@ -60,7 +60,7 @@ class EstadosTableSeeder extends Seeder
         	['estado' => 'RECLAMO A ENVIAR', 'color' => '#ff9900', 'status_stock' => 'DECREMENTA'],
             ['estado' => 'RECLAMO ENTREGADO ', 'color' => '#00ffff','status_stock' => 'MANTIENE'],
             ['estado' => 'ENTREGADO', 'color' => '#00ffff', 'status_stock' => 'DECREMENTA' ],
-        	['estado' => 'RECLAMO SOLUCIONADO', 'color' => '#00ffff','status_stock' => 'MANTENER'],
+        	['estado' => 'RECLAMO SOLUCIONADO', 'color' => '#00ffff','status_stock' => 'MANTIENE'],
         	['estado' => 'RECLAMO CANCELADO', 'color' => '#666666', 'status_stock' => 'MANTIENE'],
 
         ]);

@@ -45,4 +45,9 @@ class Productos extends Model
 
         return $this->hasMany('App\Models\HistorialStocks','id_producto','id');
     }
+
+    public function carrito()
+    {
+        return $this->hasMany('App\Models\CarritoPedido','id_producto','id');
+    }
 }

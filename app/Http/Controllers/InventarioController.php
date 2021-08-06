@@ -9,6 +9,7 @@ use App\Models\Categorias;
 use App\Models\Almacen;
 use App\Models\Agencias;
 use App\Models\HistorialStocks;
+date_default_timezone_set("America/Araguaina");
 class InventarioController extends Controller
 {
     /**

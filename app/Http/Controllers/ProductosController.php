@@ -11,6 +11,7 @@ use App\Models\Inventario;
 use App\Models\Almacen;
 use App\Models\Categorias;
 use App\Models\Agencias;
+use App\Models\CarritoPedido;
 class ProductosController extends Controller
 {
     /**
@@ -474,28 +475,30 @@ class ProductosController extends Controller
     public function buscar_stock_producto($id_producto)
     {
         $productos=Productos::find($id_producto);
-        
-        if (count($productos->inventario) > 0 && count($productos->almacen) > 0) {
-           $producto=\DB::table('productos')
-            ->join('inventarios','inventarios.id_producto','=','productos.id')
-            ->join('almacens','almacens.id_producto','=','productos.id')
-            ->where('productos.id',$id_producto)
-            ->select('productos.*',\DB::raw('(inventarios.stock + almacens.stock) AS total_stock'),\DB::raw('(inventarios.stock_disponible + almacens.stock_disponible) AS total_disponible'))->get();
-        }else{
-             if(count($productos->inventario) > 0 && count($productos->almacen) == 0){
-            $producto=\DB::table('productos')
-            ->join('inventarios','inventarios.id_producto','=','productos.id')
-            ->where('productos.id',$id_producto)
-            ->select('productos.*','inventarios.stock AS total_stock','inventarios.stock_disponible AS total_disponible')->get();
-            
+        $en_carrito=CarritoPedido::where('id_producto',$id_producto)->where('id_user',\Auth::getUser()->id)->count();
+        if($en_carrito == 0){
+            if (count($productos->inventario) > 0 && count($productos->almacen) > 0) {
+               $producto=\DB::table('productos')
+                ->join('inventarios','inventarios.id_producto','=','productos.id')
+                ->join('almacens','almacens.id_producto','=','productos.id')
+                ->where('productos.id',$id_producto)
+                ->select('productos.*',\DB::raw('(inventarios.stock + almacens.stock) AS total_stock'),\DB::raw('(inventarios.stock_disponible + almacens.stock_disponible) AS total_disponible'))->get();
             }else{
-                 if (count($productos->inventario) == 0 && count($productos->almacen) > 0) {
-                    $producto=\DB::table('productos')
-                    ->join('almacens','almacens.id_producto','=','productos.id')
-                    ->where('productos.id',$id_producto)
-                    ->select('productos.*','almacens.stock AS total_stock','almacens.stock_disponible AS total_disponible')->get();
+                 if(count($productos->inventario) > 0 && count($productos->almacen) == 0){
+                $producto=\DB::table('productos')
+                ->join('inventarios','inventarios.id_producto','=','productos.id')
+                ->where('productos.id',$id_producto)
+                ->select('productos.*','inventarios.stock AS total_stock','inventarios.stock_disponible AS total_disponible')->get();
+                
                 }else{
-                    $producto=Productos::where('id',$id_producto)->get();
+                     if (count($productos->inventario) == 0 && count($productos->almacen) > 0) {
+                        $producto=\DB::table('productos')
+                        ->join('almacens','almacens.id_producto','=','productos.id')
+                        ->where('productos.id',$id_producto)
+                        ->select('productos.*','almacens.stock AS total_stock','almacens.stock_disponible AS total_disponible')->get();
+                    }else{
+                        $producto=Productos::where('id',$id_producto)->get();
+                    }
                 }
             }
         }
@@ -504,7 +507,18 @@ class ProductosController extends Controller
 
         return Response()->json($producto);
     }
+public function exit_product($id_producto){
 
+    $cart_all=App\Models\CarritoPedido::join('productos','productos.id','=','carrito_pedido.id_product')
+        ->where('carrito_pedido.id_user',\Auth::getUser()->id)
+        ->select('products.*')->get();
+        $i=0;
+        foreach($cart_all as $key){
+            if($key->id==$id_producto) $i++;
+        }
+
+        return $i;
+}
     public function registrar(Request $request)
     {
         $message =[

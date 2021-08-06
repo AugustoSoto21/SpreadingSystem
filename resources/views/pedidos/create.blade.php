@@ -23,7 +23,6 @@
   <div class="container-fluid">
     @include('categorias.partials.create')
     @include('clientes.partials.create')
-    @include('productos.partials.create')
     <div class="row">
       <div class="col-md-12">
         <!-- Horizontal Form -->
@@ -67,15 +66,46 @@
                     <label for="id_producto">Productos <b style="color: red;">*</b></label>
                     <select name="id_producto" id="id_producto" class="form-control select2">
                     </select>
-                    <!-- @if(search_permits('Productos','Registrar')=="Si")
-                    <a class="btn btn-info btn-sm text-white" data-toggle="modal" data-target="#create_productos" data-tooltip="tooltip" data-placement="top" title="Reistrar Producto" id="createNewProducto">
-                      <i class="fa fa-plus"> &nbsp;Agregar</i>
-                    </a>
-                    @endif -->
                   </div>
                   @error('id_producto')
                     <div class="alert alert-danger">{{ $message }}</div>
                   @enderror
+                  </div>
+                </div>
+                <!-- Table row -->
+              <div class="row">
+                <div class="col-md-12 table-responsive">
+                    <table class="table table-striped table-sm" style="text-align: center; font-size: 14px;">
+                      <thead>
+                      <tr>
+                        <th></th>
+                        <th>Cantidad</th>
+                        <th>Producto</th>
+                        <th>Valor unitario</th>
+                        <th>% Iva</th>
+                        <th>Descuento</th>
+                        <th>Descuento %</th>
+                        <th>Total</th>
+                        <th></th>
+                      </tr>
+                      </thead>
+                      <tbody id="invoice">
+                        @foreach($cart_all as $key)
+                        <tr>
+                          <td>
+                              <a href="#" class="btn btn-primary btn-xs" onclick="cant_disponible('{{ $key->disponible }}','{{ $key->producto->detalle }}','{{ $key->producto->marca }}','{{ $key->producto->modelo }}','{{ $key->producto->color }}')"><i class="fa fa-list-ol"></i></a>
+                            </td>
+                        </tr>
+                        @endforeach
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                <!-- fin de la tabla y row -->
+                <div class="row">
+                  <div class="col-sm-4">
+                    <label for="horarios">Horarios{{date('H:i')}} <b style="color: red;">*</b></label>
+                    <input type="datetime-local" value="{{date('Y-m-d\TH:i')}}" min="{{date('Y-m-d\TH:i')}}" name="horarios[]" id="horarios" class="form-control">
                   </div>
                 </div>  
               </div>
@@ -147,6 +177,7 @@ $('#createNewCliente').click(function () {
 });
 //--CODIGO PARA CREAR PBX (GUARDAR REGISTRO) ---------------------//
 $('#SubmitCreateCliente').click(function(e) {
+  console.log('asas');
   e.preventDefault();
   $.ajaxSetup({
     headers: {
@@ -205,6 +236,13 @@ function producto_stock(id) {
     }
   });
 }
+function cant_disponible(disponible, detalle, marca, modelo, color){
+    swal({
+        title: ""+detalle+" "+marca+" "+modelo+" "+color+"",
+        text:  "Cantidad disponible: "+disponible+"",
+        icon:  "warning",
+    });
+  }
 </script>
 <script src="{{ asset('js/sweetalert2.min.js') }}"></script>
 @endsection
