@@ -47,7 +47,26 @@ function producto_stock($id_producto)
         
     }
 
-    return $id_producto;
+    return $total;
+}
+function producto_disponible($id_producto)
+{
+    $buscar_i=\App\Models\Inventario::where('id_producto',$id_producto)->count();
+    $buscar_a=\App\Models\Almacen::where('id_producto',$id_producto)->count();
+    $total=0;
+    if($buscar_i > 0){
+        $buscar_i=\App\Models\Inventario::where('id_producto',$id_producto)->first();
+        $total+=$buscar_i->stock_disponible;
+    }
+    if($buscar_a > 0){
+        $buscar_a=\App\Models\Almacen::where('id_producto',$id_producto)->get();
+        foreach ($buscar_a as $key) {
+            $total+=$key->stock_disponible;
+        }
+        
+    }
+
+    return $total;
 }
 function exit_product2($id_producto){
 

@@ -52,7 +52,7 @@
                     <select name="id_cliente" id="id_cliente" class="form-control select2">
                     </select>
                     @if(search_permits('Clientes','Registrar')=="Si")
-                    <a class="btn btn-info btn-sm text-white" data-toggle="modal" data-target="#create_clientes" data-tooltip="tooltip" data-placement="top" title="Reistrar Cliente" id="createNewCliente">
+                    <a class="btn btn-info btn-sm text-white" data-toggle="modal" data-target="#create_clientes" data-tooltip="tooltip" data-placement="top" title="Registrar Cliente" id="createNewCliente">
                       <i class="fa fa-plus"> &nbsp;Agregar</i>
                     </a>
                     @endif
@@ -102,6 +102,7 @@
                           <td><input type="hidden" name="total_pp[]" id="total_pp" value="{{$key->total_pp}}" min="0" class="form-control">
                             <span>{{$key->total_pp}}</span>
                           </td>
+                          <td><a href="#" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#remove_products" onclick="remove('{{$key->id}}')"><i class="fa fa-trash"></i></a></td>
                         </tr>
                         @endforeach
                       </tbody>
@@ -110,11 +111,45 @@
                 </div>
                 <!-- fin de la tabla y row -->
                 <div class="row">
-                  <div class="col-sm-4">
-                    <label for="horarios">Horarios{{date('H:i')}} <b style="color: red;">*</b></label>
-                    <input type="datetime-local" value="{{date('Y-m-d\TH:i')}}" min="{{date('Y-m-d\TH:i')}}" name="horarios[]" id="horarios" class="form-control">
+                  <div class="col-sm-2">
+                    <label for="descuento_m">Descuento($)</label>
+                    <input type="number" name="mont_descuento" min="0" value="0" title="Ingrese el monto del descuento" class="form-control">
                   </div>
-                </div>  
+                  <div class="col-sm-2">
+                    <label for="descuento_p">Descuento(%)</label>
+                    <input type="number" name="porcentaje_descuento" min="0" value="0" max="100" title="Ingrese el porcentaje del descuento" class="form-control">
+                  </div>
+                  <div class="col-8">
+                  <div class="col-md-12">
+                    <div class="table-responsive">
+                      <table class="table table-sm">
+                          <tr>
+                            <th style="width:50%">Descuento:</th>
+                            <td>$<span id="discount_total">{{ number_format(0,2,",",".") }}</span>
+                              <input type="hidden" name="discount_total" id="discount_total_ip" value="0"></td>
+                          </tr>
+                          
+                          <tr>
+                            <th>Total:</th>
+                            <td>$<span id="total">{{ number_format(0,2,",",".") }}</span>
+                            <input type="hidden" name="total_ip" id="total_ip" value="0"></td>
+                          </tr>
+                        </table>
+                    </div>
+                  </div>
+                  
+                </div>
+                </div>
+                <div class="row">
+                  <div class="col-sm-4">
+                    <label for="horarios">Horarios <b style="color: red;">*</b></label>
+                    <input type="datetime-local" value="{{date('Y-m-d\TH:i')}}" min="{{date('Y-m-d\TH:i')}}" name="horarios[]" id="horarios" class="form-control">
+                    <a class="btn btn-info btn-sm text-white" data-toggle="modal" data-target="#" data-tooltip="tooltip" data-placement="top" title="Agregar Horario" id="createNewHorario">
+                      <i class="fa fa-plus"></i>
+                    </a>
+                  </div>
+                </div>
+                  
               </div>
               
             </div>
@@ -165,7 +200,7 @@ function producto_data() {
     dataType: 'json',
     success: function(response){
       $('#id_producto').empty();
-
+      $('#id_producto').append("<option value='0'>Seleccione un producto</option>");
       $.each(response, function(key, registro) {
         producto_stock(registro.id);
           
@@ -270,10 +305,76 @@ $.ajax({
     error: function (data) {
       Swal.fire({title: "Error del servidor", text: "Consulta de Disponible.", icon:  "error"});
     }
-  });
-
-    
+  });   
   }
+//---SELECCIONANDO PRODUCTO PARA CARRITO
+$("#id_producto").on('select2:select',function (event) {
+    var id_producto=event.target.value;
+    var id_cliente=document.getElementById("id_cliente").value;
+    console.log(id_producto+"--"+id_cliente);
+    if (id_producto!="" && id_cliente!="") {
+      $.get('/pedidos/'+id_producto+'/'+id_cliente+'/llenar_carrito',function (data) {})
+        .done(function(data) {
+          console.log(data);        
+          /*if($("#general_discount").is(':disabled')){
+            $("#general_discount").removeAttr('disabled');
+          }*/
+          $('#invoice').empty();
+          
+            //console.log(formatNumber(111102665));
+            for(var i=0; i < data.length; i++){
+            $('#invoice').append(
+              '<tr>'+
+                '<td><a href="#" class="btn btn-primary btn-xs"'+
+                ' onclick="cant_disponible('+data[i].id_producto+')">'+
+                '<i class="fa fa-list-ol"></i></a></td>'+
+                '<td><input type="number" class="form-control" onchange="change_amount(this,'+data[i].id_product+')" value="'+data[i].cantidad+'" name="amount[]" style="border: 0px; text-align: center;" min="1" max="'+data[i].disponible+'" ></td>'+
+                '<td>'+data[i].detalles+' '+data[i].marca+' '+data[i].modelo+' '+data[i].color+'</td>'+
+                '<td><input type="number" name="monto_und[]" id="monto_und" value="'+data[i].monto_und+'" min="0" class="form-control"></td>'+
+                '<td><td><input type="hidden" name="total_pp[]" id="total_pp" value="'+data[i].total_pp+'" min="0" class="form-control"><span>'+data[i].total_pp+'</span></td>'+
+                '<td><a href="#" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#remove_products" onclick="remove('+data[i].id+')"><i class="fa fa-trash"></i></a></td>'+
+              +'</tr>'
+            );
+            
+            /*sub_total= parseFloat(sub_total) + parseFloat(total_product);
+            tax= parseFloat(tax) + parseFloat(data[i].tax_total);
+            total=parseFloat(total) + parseFloat(total_product);
+            discount2=parseFloat(data[i].general_discount);
+            
+            sub_total=sub_total.toFixed(2);
+            tax=tax.toFixed(2);
+            total=total;
+            discount2 = discount2.toFixed(2);*/
+            //console.log(sub_total);
+          }
+          //console.log(data[i].amount);
+          /*$("#sub_total_ip").val(sub_total);
+          $("#tax_total_ip").val(tax);
+          $("#total_ip").val(total);
+          $("#sub_total").text(String(sub_total));
+          $("#tax_total").text(String(tax));
+          $("#total").text(String(total));
+          if(discount2 > 0){
+            var resta= discount2;
+            total=total-resta;
+            $("#discount_total").text(String(resta));
+            $("#discount_total_ip").val(resta);
+            $("#total").text(String(total));
+            $("#total_ip").val(total);
+          }*/
+          producto_data();
+        });
+        /*$("#id_product").find("option[value='"+id_product+"']").remove();
+        document.getElementById("id_product").value = "";*/
+    } else {
+      swal({
+        title: "Error",
+        text:  "Debe seleccionar un cliente",
+        icon:  "error",
+      });
+      document.getElementById("id_producto").value = "";
+    }
+  });
 </script>
 <script src="{{ asset('js/sweetalert2.min.js') }}"></script>
 @endsection

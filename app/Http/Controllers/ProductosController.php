@@ -466,9 +466,9 @@ class ProductosController extends Controller
     }
     public function buscar_productos()
     {
-        //$productos=Productos::where('status','Activo')->get();
+        $productos=Productos::where('status','Activo')->get();
         //$productos=Productos::all();
-        $productos=Productos::where('id',2)->get();
+        //$productos=Productos::where('id',2)->get();
         return Response()->json($productos);
     }
 
@@ -502,7 +502,7 @@ class ProductosController extends Controller
                 }
             }
         }else{
-            if($en_carrito==0 and $opcion==1){
+            if($en_carrito > 0 and $opcion==1){
                  $producto=Productos::where('id',$id_producto)->get();
             }
         }
@@ -531,6 +531,10 @@ class ProductosController extends Controller
                             $producto=Productos::where('id',$id_producto)->get();
                             }
                         }
+                    }
+                }else{
+                    if($en_carrito ==0 && $opcion==2){
+                        $producto=Productos::where('id',$id_producto)->get();
                     }
                 }
 

@@ -53,6 +53,7 @@ Route::group(['middleware' => ['web', 'auth']], function() {
 	Route::get('stocks/historial/{id}/editar', [InventarioController::class, 'editar'])->name('historial.editar');
 	Route::resource('/stocks',InventarioController::class);
 
+	Route::get('/pedidos/{id_producto}/{id_cliente}/llenar_carrito',[PedidosController::class,'llenar_carrito']);
 	Route::resource('/pedidos',PedidosController::class);
 	Route::get('/buscar_clientes',[ClientesController::class, 'buscar_clientes']);
 	Route::get('/buscar_productos',[ProductosController::class, 'buscar_productos']);
