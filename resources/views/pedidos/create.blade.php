@@ -82,19 +82,26 @@
                         <th>Cantidad</th>
                         <th>Producto</th>
                         <th>Valor unitario</th>
-                        <th>% Iva</th>
-                        <th>Descuento</th>
-                        <th>Descuento %</th>
-                        <th>Total</th>
+                        <th title="Total Por Producto">Total P/P</th>
                         <th></th>
                       </tr>
                       </thead>
                       <tbody id="invoice">
-                        @foreach($cart_all as $key)
+                        @foreach($carrito as $key)
                         <tr>
                           <td>
-                              <a href="#" class="btn btn-primary btn-xs" onclick="cant_disponible('{{ $key->disponible }}','{{ $key->producto->detalle }}','{{ $key->producto->marca }}','{{ $key->producto->modelo }}','{{ $key->producto->color }}')"><i class="fa fa-list-ol"></i></a>
-                            </td>
+                              <a href="#" title="Consultar Disponibilidad" class="btn btn-primary btn-xs" onclick="cant_disponible('{{ $key->id_producto }}')"><i class="fa fa-list-ol"></i></a>
+                          </td>
+                          <td><input type="number" name="cantidad[]" id="cantidad" value="{{$key->cantidad}}" max="{{$key->cantidad}}" min="0" class="form-control">
+                          </td>
+                          <td>
+                            {{$key->producto->detalles}} {{$key->producto->marca}} {{$key->producto->modelo}} {{$key->producto->color}}
+                          </td>
+                          <td><input type="number" name="monto_und[]" id="monto_und" value="{{$key->monto_und}}" min="0" class="form-control">
+                          </td>
+                          <td><input type="hidden" name="total_pp[]" id="total_pp" value="{{$key->total_pp}}" min="0" class="form-control">
+                            <span>{{$key->total_pp}}</span>
+                          </td>
                         </tr>
                         @endforeach
                       </tbody>
@@ -217,7 +224,7 @@ $('#SubmitCreateCliente').click(function(e) {
 function producto_stock(id) {
   $.ajax({
     type:"GET",
-    url: "../buscar_stock/"+id+"/producto",
+    url: "../buscar_stock/"+id+"/1/producto",
     dataType: 'json',
     success: function(response){
       $.each(response, function(key, registro) {
@@ -236,12 +243,36 @@ function producto_stock(id) {
     }
   });
 }
-function cant_disponible(disponible, detalle, marca, modelo, color){
-    swal({
-        title: ""+detalle+" "+marca+" "+modelo+" "+color+"",
-        text:  "Cantidad disponible: "+disponible+"",
-        icon:  "warning",
-    });
+function cant_disponible(id){
+
+$.ajax({
+    type:"GET",
+    url: "../buscar_stock/"+id+"/2/producto",
+    dataType: 'json',
+    success: function(response){
+      $.each(response, function(key, registro) {
+        console.log(registro)
+
+           if(registro.total_stock){
+            if(registro.marca){
+              var marca=registro.marca;
+            }else{
+              var marca="";
+            }
+              Swal.fire({
+                  title: ""+registro.detalles+" "+registro.marca+" "+registro.modelo+" "+registro.color+"",
+                  text:  "Cantidad disponible: "+registro.total_disponible+"",
+                  icon:  "success",
+              });
+           }
+      });
+    },
+    error: function (data) {
+      Swal.fire({title: "Error del servidor", text: "Consulta de Disponible.", icon:  "error"});
+    }
+  });
+
+    
   }
 </script>
 <script src="{{ asset('js/sweetalert2.min.js') }}"></script>

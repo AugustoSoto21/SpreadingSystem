@@ -56,6 +56,6 @@ Route::group(['middleware' => ['web', 'auth']], function() {
 	Route::resource('/pedidos',PedidosController::class);
 	Route::get('/buscar_clientes',[ClientesController::class, 'buscar_clientes']);
 	Route::get('/buscar_productos',[ProductosController::class, 'buscar_productos']);
-	Route::get('/buscar_stock/{id_producto}/producto',[ProductosController::class, 'buscar_stock_producto']);
+	Route::get('/buscar_stock/{id_producto}/{opcion}/producto',[ProductosController::class, 'buscar_stock_producto']);
 
 });

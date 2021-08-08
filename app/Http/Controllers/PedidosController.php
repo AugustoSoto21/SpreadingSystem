@@ -37,8 +37,9 @@ class PedidosController extends Controller
         $zonas=Zonas::all();
         $estados=Estados::all();
         $agencias=Agencias::all();
-        $cart_all=CarritoPedido::where('id_user',\Auth::getUser()->id)->get();
-        return view('pedidos.create',compact('productos','categorias','clientes','zonas','estados','agencias'));
+        $carrito=CarritoPedido::where('id_user',\Auth::getUser()->id)->get();
+        
+        return view('pedidos.create',compact('productos','categorias','clientes','zonas','estados','agencias','carrito'));
        
     }
 

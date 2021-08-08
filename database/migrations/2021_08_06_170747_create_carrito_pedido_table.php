@@ -18,14 +18,14 @@ class CreateCarritoPedidoTable extends Migration
             $table->unsignedBigInteger('id_cliente');
             $table->unsignedBigInteger('id_user');
             $table->unsignedBigInteger('id_producto');
-            $table->float('monto');
-            $table->float('costo_sin_tax');
-            $table->float('costo_con_tax');
-            $table->float('tax_total');
-            $table->float('monto_descuento');
-            $table->float('porcentaje_descuento');
+            $table->integer('cantidad');
+            $table->float('monto_und');
+            $table->float('total_pp');//total por producto
+            $table->float('monto_descuento');//de la factura
+            $table->float('porcentaje_descuento');//de la factura
             $table->integer('stock');
             $table->integer('disponible');
+            $table->float('total_fact');
 
             $table->foreign('id_cliente')->references('id')->on('clientes')->onDelete('cascade');
             $table->foreign('id_user')->references('id')->on('users')->onDelete('cascade');

@@ -11,7 +11,7 @@ class CarritoPedido extends Model
 
     protected $table='carrito_pedido';
 
-    protected $fillable=['id_cliente','id_user','id_producto','monto','costo_sin_tax','costo_con_tax','tax_total','monto_descuento','porcentaje_descuento','stock','disponible'];
+    protected $fillable=['id_cliente','id_user','id_producto','cantidad','monto_und','total_pp','monto_descuento','porcentaje_descuento','stock','disponible','total_fact'];
 
     public function cliente()
     {
