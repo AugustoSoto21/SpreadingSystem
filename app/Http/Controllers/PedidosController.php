@@ -38,8 +38,21 @@ class PedidosController extends Controller
         $estados=Estados::all();
         $agencias=Agencias::all();
         $carrito=CarritoPedido::where('id_user',\Auth::getUser()->id)->get();
+        $c=CarritoPedido::where('id_user',\Auth::getUser()->id)->first();
+        if(count($carrito) > 0){
+            $monto_descuento=$c->monto_descuento;
+            $porcentaje_descuento=$c->porcentaje_descuento;
+            $descuento_total=$c->descuento_total;
+            $total_fact=$c->total_fact;
+        }else{
+            $monto_descuento=0;
+            $porcentaje_descuento=0;
+            $descuento_total=0;
+            $total_fact=0;
+        }
 
-        return view('pedidos.create',compact('productos','categorias','clientes','zonas','estados','agencias','carrito'));
+        return view('pedidos.create',compact('productos','categorias','clientes','zonas','estados','agencias','carrito','monto_descuento','porcentaje_descuento','descuento_total','total_fact'));
+        
        
     }
 
@@ -105,9 +118,7 @@ class PedidosController extends Controller
         if($carrito > 0){
             //el usuario ya tiene un pedido en proceso
             $previo=CarritoPedido::where('id_user',\Auth::getUser()->id)->first();
-            $monto_descuento=$previo->monto_descuento;
-            $porcentaje_descuento=$previo->porcentaje_descuento;
-            $total_fact=$previo->total_fact;
+
             
             $carrito=new CarritoPedido();
             $carrito->id_cliente=$id_cliente;
@@ -116,11 +127,12 @@ class PedidosController extends Controller
             $carrito->cantidad=1;
             $carrito->monto_und=0;
             $carrito->total_pp=0;
-            $carrito->monto_descuento=$monto_descuento;
-            $carrito->porcentaje_descuento=$porcentaje_descuento;
+            $carrito->monto_descuento=$previo->monto_descuento;
+            $carrito->porcentaje_descuento=$previo->porcentaje_descuento;
+            $carrito->descuento_total=$previo->descuento_total;
             $carrito->stock=producto_stock($id_producto);
             $carrito->disponible=producto_disponible($id_producto);
-            $carrito->total_fact=$total_fact;
+            $carrito->total_fact=$previo->total_fact;
             $carrito->save();
             $actual=CarritoPedido::join('productos','productos.id','=','carrito_pedido.id_producto')
             ->where('id_user',\Auth::getUser()->id)
@@ -138,6 +150,7 @@ class PedidosController extends Controller
             $carrito->total_pp=0;
             $carrito->monto_descuento=0;
             $carrito->porcentaje_descuento=0;
+            $carrito->descuento_total=0;
             $carrito->stock=producto_stock($id_producto);
             $carrito->disponible=producto_disponible($id_producto);
             $carrito->total_fact=0;
@@ -147,6 +160,102 @@ class PedidosController extends Controller
             ->select('carrito_pedido.*','productos.detalles','productos.marca','productos.modelo','productos.color')->get();
 
             return response()->json($actual);
+        }
+    }
+
+    public function remove(Request $request)
+    {
+        $carrito=CarritoPedido::where('id_user',\Auth::getUser()->id)->count();
+        if ($carrito > 0) {
+            //se busca el producto en el carrito
+            $previo=CarritoPedido::where('id_user',\Auth::getUser()->id)->where('id_producto',$request->id_product_remove)->first();
+            $previo2=CarritoPedido::where('id_user',\Auth::getUser()->id)->get();
+            $porcentaje_descuento=$previo->porcentaje_descuento;
+            $monto_descuento=$previo->monto_descuento;
+            $sub_total=0;
+            foreach ($previo2 as $key) {
+                if($key->id_producto!=$request->id_product_remove){
+                $sub_total+=$key->cantidad*$key->monto_und;
+                }
+            }
+            //realizando descuento
+            $total=$sub_total;
+            if ($porcentaje_descuento > 0) {
+                $total-=($porcentaje_descuento*$sub_total)/100;
+            }
+            if ($monto_descuento > 0) {
+                $total-=$monto_descuento;
+            }
+            $descuento_total=$monto_descuento+(($porcentaje_descuento*$sub_total)/100);
+
+
+
+            //actualizando totales
+            foreach ($previo2 as $key) {
+                if($key->id_producto!=$request->id_product_remove){
+                    $key->total_fact=$total;
+                    $key->porcentaje_descuento=$porcentaje_descuento;
+                    $key->descuento_total=$descuento_total;
+                    $key->save();
+                }
+            }
+
+            $eliminar=CarritoPedido::where('id_user',\Auth::getUser()->id)->where('id_producto',$request->id_product_remove)->delete();
+
+            return redirect()->back();
+        }
+                        
+    }
+
+    public function actualizar_cantidad_producto($nueva_cantidad,$id_producto)
+    {
+        $carrito=CarritoPedido::where('id_user',\Auth::getUser()->id)->count();
+        if ($carrito > 0) {
+
+            $previo=CarritoPedido::where('id_user',\Auth::getUser()->id)->where('id_producto',$id_producto)->first();
+            $previo->cantidad=$nueva_cantidad;
+            $previo->total_pp=$nueva_cantidad*$previo->monto_und;
+            $previo->save();
+            
+            $previo2=CarritoPedido::where('id_user',\Auth::getUser()->id)->get();
+
+            $porcentaje_descuento=$previo->porcentaje_descuento;
+            $monto_descuento=$previo->monto_descuento;
+            $sub_total=0;
+            foreach ($previo2 as $key) {
+                if($key->id_producto!=$id_producto){
+                $sub_total+=$key->cantidad*$key->monto_und;
+                }else{
+                $sub_total+=$nueva_cantidad*$key->monto_und;
+
+                }
+            }
+            //realizando descuento
+            $total=$sub_total;
+            if ($porcentaje_descuento > 0) {
+                $total-=($porcentaje_descuento*$sub_total)/100;
+            }
+            if ($monto_descuento > 0) {
+                $total-=$monto_descuento;
+            }
+            $descuento_total=$monto_descuento+(($porcentaje_descuento*$sub_total)/100);
+
+
+
+            //actualizando totales
+            foreach ($previo2 as $key) {
+                
+                $key->total_fact=$total;
+                $key->porcentaje_descuento=$porcentaje_descuento;
+                $key->descuento_total=$descuento_total;
+                $key->save();
+                
+            }
+
+            $carrito=CarritoPedido::where('id_user',\Auth::getUser()->id)->where('id_producto',$id_producto)->get();
+
+            return response()->json($carrito);
+
         }
     }
 }

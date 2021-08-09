@@ -21,6 +21,7 @@
   <div class="container-fluid">
     @include('categorias.partials.create')
     @include('clientes.partials.create')
+    @include('pedidos.partials.remove')
     <div class="row">
       <div class="col-md-12">
         <div class="card card-primary card-outline">
@@ -83,22 +84,23 @@
                     </thead>
                     <tbody id="invoice">
                       @foreach($carrito as $key)
+                      
                       <tr>
                         <td>
                             <a href="#" title="Consultar Disponibilidad" class="btn btn-primary btn-xs" onclick="cant_disponible('{{ $key->id_producto }}')"><i class="fa fa-list-ol"></i></a>
                         </td>
                         <td>
-                          <input type="number" name="cantidad[]" id="cantidad" value="{{$key->cantidad}}" max="{{$key->cantidad}}" min="0" class="form-control">
+                          <input type="number" onchange="change_amount(this,{!! $key->id_producto !!})" name="cantidad[]" id="cantidad" value="{{$key->cantidad}}" max="{{$key->disponible}}" min="0" class="form-control">
                         </td>
                         <td>
                           {{$key->producto->detalles}} {{$key->producto->marca}} {{$key->producto->modelo}} {{$key->producto->color}}
                         </td>
                         <td>
-                          <input type="number" name="monto_und[]" id="monto_und" value="{{$key->monto_und}}" min="0" class="form-control">
+                          <input type="number" name="monto_und[]" id="monto_und" step="0.01" value="{{$key->monto_und}}" min="0" class="form-control">
                         </td>
                         <td>
-                          <input type="hidden" name="total_pp[]" id="total_pp" value="{{$key->total_pp}}" min="0" class="form-control">
-                          <span>{{$key->total_pp}}</span>
+                          <input type="hidden" name="total_pp[]" id="total_pp<?=$key->id_producto?>" value="{{$key->total_pp}}" min="0" class="form-control">
+                          <span id="total_pp_span<?=$key->id_producto?>">{{ number_format($key->total_pp,2,",",".") }}</span>
                         </td>
                         <td>
                           <a href="#" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#remove_products" onclick="remove('{{$key->id}}')"><i class="fa fa-trash"></i></a>
@@ -114,11 +116,11 @@
                   <div class="row">
                     <div class="col-md-4">
                       <label for="descuento_m">Descuento($)</label>
-                      <input type="number" name="mont_descuento" min="0" value="0" title="Ingrese el monto del descuento" class="form-control form-control-sm">
+                      <input type="number" name="monto_descuento" min="0" title="Ingrese el monto del descuento" class="form-control form-control-sm" value="{{$monto_descuento}}">
                     </div>
                     <div class="col-md-4">
                       <label for="descuento_p">Descuento(%)</label>
-                      <input type="number" name="porcentaje_descuento" min="0" value="0" max="100" title="Ingrese el porcentaje del descuento" class="form-control form-control-sm">
+                      <input type="number" name="porcentaje_descuento" min="0" max="100" title="Ingrese el porcentaje del descuento" class="form-control form-control-sm" value="{{$porcentaje_descuento}}">
                     </div>                    
                     <div class="col-md-4">
                       <label for="horarios">Horarios <b style="color: red;">*</b></label>
@@ -137,14 +139,14 @@
                       <div class="table-responsive">
                         <table class="table table-sm">
                           <tr>
-                            <th style="width:50%">Descuento:</th>
-                            <td>$<span id="discount_total">{{ number_format(0,2,",",".") }}</span>
-                            <input type="hidden" name="discount_total" id="discount_total_ip" value="0"></td>
+                            <th style="width:50%">Descuento($):</th>
+                            <td>$<span id="descuento_total">{{ number_format($descuento_total,2,",",".") }}</span>
+                            <input type="hidden" name="descuento_total" id="descuento_total_ip" value="{{$descuento_total}}"></td>
                           </tr>                            
                           <tr>
                             <th>Total:</th>
-                            <td>$<span id="total">{{ number_format(0,2,",",".") }}</span>
-                            <input type="hidden" name="total_ip" id="total_ip" value="0"></td>
+                            <td>$<span id="total">{{ number_format($total_fact,2,",",".") }}</span>
+                            <input type="hidden" name="total_ip" id="total_ip" value="{{$total_fact}}"></td>
                           </tr>
                         </table>
                       </div>
@@ -319,52 +321,43 @@ $("#id_producto").on('select2:select',function (event) {
             $("#general_discount").removeAttr('disabled');
           }*/
           $('#invoice').empty();
-          
-            //console.log(formatNumber(111102665));
+            
+            var porcentaje_descuento;
+            var monto_descuento;
+            var total_fact;
+            var descuento_total;
+
             for(var i=0; i < data.length; i++){
+              var total_pp=parseFloat(data[i].total_pp.toFixed(2));
+              porcentaje_descuento=parseFloat(data[i].porcentaje_descuento.toFixed(2));
+              monto_descuento=parseFloat(data[i].monto_descuento.toFixed(2));
+              total_fact=parseFloat(data[i].total_fact.toFixed(2));
+              descuento_total=parseFloat(data[i].descuento_total.toFixed(2));
             $('#invoice').append(
               '<tr>'+
                 '<td><a href="#" class="btn btn-primary btn-xs"'+
                 ' onclick="cant_disponible('+data[i].id_producto+')">'+
                 '<i class="fa fa-list-ol"></i></a></td>'+
-                '<td><input type="number" class="form-control" onchange="change_amount(this,'+data[i].id_product+')" value="'+data[i].cantidad+'" name="amount[]" style="border: 0px; text-align: center;" min="1" max="'+data[i].disponible+'" ></td>'+
+                '<td><input type="number" class="form-control" onchange="change_amount(this,'+data[i].id_producto+')" value="'+data[i].cantidad+'" name="amount[]" style="border: 0px; text-align: center;" min="1" max="'+data[i].disponible+'" ></td>'+
                 '<td>'+data[i].detalles+' '+data[i].marca+' '+data[i].modelo+' '+data[i].color+'</td>'+
                 '<td><input type="number" name="monto_und[]" id="monto_und" value="'+data[i].monto_und+'" min="0" class="form-control"></td>'+
-                '<td><td><input type="hidden" name="total_pp[]" id="total_pp" value="'+data[i].total_pp+'" min="0" class="form-control"><span>'+data[i].total_pp+'</span></td>'+
+                '<td><td><input type="hidden" name="total_pp[]" id="total_pp'+data[i].id_producto+'" value="'+data[i].total_pp+'" min="0" class="form-control"><span id="total_pp_span'+data[i].id_producto+'">'+total_pp+'</span></td>'+
                 '<td><a href="#" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#remove_products" onclick="remove('+data[i].id+')"><i class="fa fa-trash"></i></a></td>'+
               +'</tr>'
             );
             
-            /*sub_total= parseFloat(sub_total) + parseFloat(total_product);
-            tax= parseFloat(tax) + parseFloat(data[i].tax_total);
-            total=parseFloat(total) + parseFloat(total_product);
-            discount2=parseFloat(data[i].general_discount);
             
-            sub_total=sub_total.toFixed(2);
-            tax=tax.toFixed(2);
-            total=total;
-            discount2 = discount2.toFixed(2);*/
-            //console.log(sub_total);
           }
-          //console.log(data[i].amount);
-          /*$("#sub_total_ip").val(sub_total);
-          $("#tax_total_ip").val(tax);
-          $("#total_ip").val(total);
-          $("#sub_total").text(String(sub_total));
-          $("#tax_total").text(String(tax));
-          $("#total").text(String(total));
-          if(discount2 > 0){
-            var resta= discount2;
-            total=total-resta;
-            $("#discount_total").text(String(resta));
-            $("#discount_total_ip").val(resta);
-            $("#total").text(String(total));
-            $("#total_ip").val(total);
-          }*/
+          $("#monto_descuento").val(monto_descuento);
+          $("#porcentaje_descuento").val(porcentaje_descuento);
+          $("#descuento_total_ip").val(descuento_total);
+          $("#descuento_total").text(descuento_total);
+          $("#total").text(total_fact);
+          $("#total_ip").val(total_fact);
+         
           producto_data();
         });
-        /*$("#id_product").find("option[value='"+id_product+"']").remove();
-        document.getElementById("id_product").value = "";*/
+        
     } else {
       swal({
         title: "Error",
@@ -374,6 +367,34 @@ $("#id_producto").on('select2:select',function (event) {
       document.getElementById("id_producto").value = "";
     }
   });
+function change_amount(cantidad, id_producto){
+    var nueva_cantidad=cantidad.value;
+    //console.log('llego'+new_amount+'---'+id_product)
+    $.get('/pedidos/'+nueva_cantidad+'/'+id_producto+'/actualizar_cantidad_producto',function (data) {})
+    .done(function(data) {
+      var porcentaje_descuento;
+      var monto_descuento;
+      var total_fact;
+      var descuento_total;
+
+      for(var i=0; i < data.length; i++){
+        var total_pp=parseFloat(data[i].total_pp.toFixed(2));
+         
+          total_fact=parseFloat(data[i].total_fact.toFixed(2));
+          descuento_total=parseFloat(data[i].descuento_total.toFixed(2));
+        $('#total_pp_span'+data[i].id_producto).text(total_pp);
+      }
+
+      $("#descuento_total_ip").val(descuento_total);
+      $("#descuento_total").text(descuento_total.toFixed(2));
+      $("#total").text(total_fact.toFixed(2));
+      $("#total_ip").val(total_fact);
+            
+    });
+  }
+function remove(id_product){
+    $("#remove_id").val(id_product);
+  }
 </script>
 <script src="{{ asset('js/sweetalert2.min.js') }}"></script>
 @endsection

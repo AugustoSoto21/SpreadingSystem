@@ -54,9 +54,13 @@ Route::group(['middleware' => ['web', 'auth']], function() {
 	Route::resource('/stocks',InventarioController::class);
 
 	Route::get('/pedidos/{id_producto}/{id_cliente}/llenar_carrito',[PedidosController::class,'llenar_carrito']);
+	Route::get('/pedidos/{nueva_cantidad}/{id_producto}/actualizar_cantidad_producto',[PedidosController::class,'actualizar_cantidad_producto']);
+
+	Route::post('/pedidos/remove',[PedidosController::class,'remove'])->name('pedidos.remove');
 	Route::resource('/pedidos',PedidosController::class);
 	Route::get('/buscar_clientes',[ClientesController::class, 'buscar_clientes']);
 	Route::get('/buscar_productos',[ProductosController::class, 'buscar_productos']);
 	Route::get('/buscar_stock/{id_producto}/{opcion}/producto',[ProductosController::class, 'buscar_stock_producto']);
+
 
 });

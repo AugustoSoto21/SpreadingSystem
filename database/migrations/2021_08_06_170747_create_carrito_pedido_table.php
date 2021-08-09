@@ -21,11 +21,12 @@ class CreateCarritoPedidoTable extends Migration
             $table->integer('cantidad');
             $table->float('monto_und');
             $table->float('total_pp');//total por producto
-            $table->float('monto_descuento');//de la factura
-            $table->float('porcentaje_descuento');//de la factura
+            $table->float('monto_descuento')->default(0);//de la factura
+            $table->float('porcentaje_descuento')->default(0);//de la factura
+            $table->float('descuento_total')->default(0);
             $table->integer('stock');
             $table->integer('disponible');
-            $table->float('total_fact');
+            $table->float('total_fact')->default(0);
 
             $table->foreign('id_cliente')->references('id')->on('clientes')->onDelete('cascade');
             $table->foreign('id_user')->references('id')->on('users')->onDelete('cascade');
