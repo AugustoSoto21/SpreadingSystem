@@ -17,15 +17,12 @@
     </div><!-- /.row -->
   </div><!-- /.container-fluid -->
 </div>
-<!-- /.content-header -->
-<!-- Main content -->
 <section class="content">
   <div class="container-fluid">
     @include('categorias.partials.create')
     @include('clientes.partials.create')
     <div class="row">
       <div class="col-md-12">
-        <!-- Horizontal Form -->
         <div class="card card-primary card-outline">
           <form action="{{ route('productos.store') }}" class="form-horizontal" method="POST" autocomplete="off" name="productoForm" id="productoForm" enctype="Multipart/form-data" data-parsley-validate>
             @csrf
@@ -36,8 +33,6 @@
                 <button type="submit" class="btn btn-primary btn-sm"><i class="fa fa-save"></i> Guardar registro</button>
               </div>
             </div>
-            <!-- /.card-header -->
-            <!-- form start -->
             <div class="card-body">
               <p align="center"><small>Todos los campos <b style="color: red;">*</b> son requeridos.</small></p>
               <div class="alert alert-danger alert-dismissible fade show" role="alert" style="display: none;" id="message_error">
@@ -46,114 +41,118 @@
                   </button>
               </div>
               <div class="row">
-                <div class="col-sm-4">
-                  <div class="form-group">
-                    <label for="id_cliente">Cliente <b style="color: red;">*</b></label>
-                    <select name="id_cliente" id="id_cliente" class="form-control select2">
+                <div class="col-md-4">
+                  <label for="id_cliente">Cliente <b style="color: red;">*</b></label>
+                  <div class="input-group input-group-sm">
+                    <select name="id_cliente" id="id_cliente" class="form-control select2bs4 form-control-sm">
                     </select>
                     @if(search_permits('Clientes','Registrar')=="Si")
-                    <a class="btn btn-info btn-sm text-white" data-toggle="modal" data-target="#create_clientes" data-tooltip="tooltip" data-placement="top" title="Registrar Cliente" id="createNewCliente">
-                      <i class="fa fa-plus"> &nbsp;Agregar</i>
-                    </a>
+                    <span class="input-group-append">
+                      <button type="button" class="btn btn-info btn-flat" data-toggle="modal" data-target="#create_clientes" data-tooltip="tooltip" data-placement="top" title="Registrar Cliente" id="createNewCliente"><i class="fa fa-plus"> Agregar!</i></button>
+                    </span>
                     @endif
                   </div>
                   @error('id_cliente')
                     <div class="alert alert-danger">{{ $message }}</div>
                   @enderror
                 </div>
-                <div class="col-sm-8">
+                <div class="col-md-8">
                   <div class="form-group">
                     <label for="id_producto">Productos <b style="color: red;">*</b></label>
-                    <select name="id_producto" id="id_producto" class="form-control select2">
+                    <select name="id_producto" id="id_producto" class="form-control select2bs4 form-control-sm">
                     </select>
                   </div>
                   @error('id_producto')
                     <div class="alert alert-danger">{{ $message }}</div>
                   @enderror
-                  </div>
                 </div>
+              </div>
                 <!-- Table row -->
               <div class="row">
                 <div class="col-md-12 table-responsive">
-                    <table class="table table-striped table-sm" style="text-align: center; font-size: 14px;">
-                      <thead>
+                  <table class="table table-striped table-sm" style="text-align: center; font-size: 14px;">
+                    <thead>
+                    <tr>
+                      <th></th>
+                      <th>Cantidad</th>
+                      <th>Producto</th>
+                      <th>Valor unitario</th>
+                      <th title="Total Por Producto">Total P/P</th>
+                      <th></th>
+                    </tr>
+                    </thead>
+                    <tbody id="invoice">
+                      @foreach($carrito as $key)
                       <tr>
-                        <th></th>
-                        <th>Cantidad</th>
-                        <th>Producto</th>
-                        <th>Valor unitario</th>
-                        <th title="Total Por Producto">Total P/P</th>
-                        <th></th>
+                        <td>
+                            <a href="#" title="Consultar Disponibilidad" class="btn btn-primary btn-xs" onclick="cant_disponible('{{ $key->id_producto }}')"><i class="fa fa-list-ol"></i></a>
+                        </td>
+                        <td>
+                          <input type="number" name="cantidad[]" id="cantidad" value="{{$key->cantidad}}" max="{{$key->cantidad}}" min="0" class="form-control">
+                        </td>
+                        <td>
+                          {{$key->producto->detalles}} {{$key->producto->marca}} {{$key->producto->modelo}} {{$key->producto->color}}
+                        </td>
+                        <td>
+                          <input type="number" name="monto_und[]" id="monto_und" value="{{$key->monto_und}}" min="0" class="form-control">
+                        </td>
+                        <td>
+                          <input type="hidden" name="total_pp[]" id="total_pp" value="{{$key->total_pp}}" min="0" class="form-control">
+                          <span>{{$key->total_pp}}</span>
+                        </td>
+                        <td>
+                          <a href="#" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#remove_products" onclick="remove('{{$key->id}}')"><i class="fa fa-trash"></i></a>
+                        </td>
                       </tr>
-                      </thead>
-                      <tbody id="invoice">
-                        @foreach($carrito as $key)
-                        <tr>
-                          <td>
-                              <a href="#" title="Consultar Disponibilidad" class="btn btn-primary btn-xs" onclick="cant_disponible('{{ $key->id_producto }}')"><i class="fa fa-list-ol"></i></a>
-                          </td>
-                          <td><input type="number" name="cantidad[]" id="cantidad" value="{{$key->cantidad}}" max="{{$key->cantidad}}" min="0" class="form-control">
-                          </td>
-                          <td>
-                            {{$key->producto->detalles}} {{$key->producto->marca}} {{$key->producto->modelo}} {{$key->producto->color}}
-                          </td>
-                          <td><input type="number" name="monto_und[]" id="monto_und" value="{{$key->monto_und}}" min="0" class="form-control">
-                          </td>
-                          <td><input type="hidden" name="total_pp[]" id="total_pp" value="{{$key->total_pp}}" min="0" class="form-control">
-                            <span>{{$key->total_pp}}</span>
-                          </td>
-                          <td><a href="#" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#remove_products" onclick="remove('{{$key->id}}')"><i class="fa fa-trash"></i></a></td>
-                        </tr>
-                        @endforeach
-                      </tbody>
-                    </table>
+                      @endforeach
+                    </tbody>
+                  </table>
+                </div>
+              </div><hr>
+              <div class="row">
+                <div class="col-7">
+                  <div class="row">
+                    <div class="col-md-4">
+                      <label for="descuento_m">Descuento($)</label>
+                      <input type="number" name="mont_descuento" min="0" value="0" title="Ingrese el monto del descuento" class="form-control form-control-sm">
+                    </div>
+                    <div class="col-md-4">
+                      <label for="descuento_p">Descuento(%)</label>
+                      <input type="number" name="porcentaje_descuento" min="0" value="0" max="100" title="Ingrese el porcentaje del descuento" class="form-control form-control-sm">
+                    </div>                    
+                    <div class="col-md-4">
+                      <label for="horarios">Horarios <b style="color: red;">*</b></label>
+                      <div class="input-group input-group-sm">
+                        <input type="datetime-local" value="{{date('Y-m-d\TH:i')}}" min="{{date('Y-m-d\TH:i')}}" name="horarios[]" id="horarios" class="form-control">
+                        <span class="input-group-append">
+                          <button type="button" class="btn btn-info btn-flat" data-toggle="modal" data-target="#" data-tooltip="tooltip" data-placement="top" title="Agregar Horario" id="createNewHorario"><i class="fa fa-plus"></i></button>
+                        </span>
+                      </div>
+                    </div>
                   </div>
                 </div>
-                <!-- fin de la tabla y row -->
-                <div class="row">
-                  <div class="col-sm-2">
-                    <label for="descuento_m">Descuento($)</label>
-                    <input type="number" name="mont_descuento" min="0" value="0" title="Ingrese el monto del descuento" class="form-control">
-                  </div>
-                  <div class="col-sm-2">
-                    <label for="descuento_p">Descuento(%)</label>
-                    <input type="number" name="porcentaje_descuento" min="0" value="0" max="100" title="Ingrese el porcentaje del descuento" class="form-control">
-                  </div>
-                  <div class="col-8">
-                  <div class="col-md-12">
-                    <div class="table-responsive">
-                      <table class="table table-sm">
+                <div class="col-5">
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div class="table-responsive">
+                        <table class="table table-sm">
                           <tr>
                             <th style="width:50%">Descuento:</th>
                             <td>$<span id="discount_total">{{ number_format(0,2,",",".") }}</span>
-                              <input type="hidden" name="discount_total" id="discount_total_ip" value="0"></td>
-                          </tr>
-                          
+                            <input type="hidden" name="discount_total" id="discount_total_ip" value="0"></td>
+                          </tr>                            
                           <tr>
                             <th>Total:</th>
                             <td>$<span id="total">{{ number_format(0,2,",",".") }}</span>
                             <input type="hidden" name="total_ip" id="total_ip" value="0"></td>
                           </tr>
                         </table>
-                    </div>
-                  </div>
-                  
+                      </div>
+                    </div>                    
+                  </div>                  
                 </div>
-                </div>
-                <div class="row">
-                  <div class="col-sm-4">
-                    <label for="horarios">Horarios <b style="color: red;">*</b></label>
-                    <input type="datetime-local" value="{{date('Y-m-d\TH:i')}}" min="{{date('Y-m-d\TH:i')}}" name="horarios[]" id="horarios" class="form-control">
-                    <a class="btn btn-info btn-sm text-white" data-toggle="modal" data-target="#" data-tooltip="tooltip" data-placement="top" title="Agregar Horario" id="createNewHorario">
-                      <i class="fa fa-plus"></i>
-                    </a>
-                  </div>
-                </div>
-                  
-              </div>
-              
+              </div>                  
             </div>
-            <!-- /.card-body -->
           </form>
         </div>
         <!-- /.card -->
