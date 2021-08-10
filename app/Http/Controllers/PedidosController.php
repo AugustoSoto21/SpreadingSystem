@@ -231,10 +231,10 @@ class PedidosController extends Controller
             }
             //realizando descuento
             $total=$sub_total;
-            if ($porcentaje_descuento > 0) {
+            if ($porcentaje_descuento >= 0) {
                 $total-=($porcentaje_descuento*$sub_total)/100;
             }
-            if ($monto_descuento > 0) {
+            if ($monto_descuento >= 0) {
                 $total-=$monto_descuento;
             }
             $descuento_total=$monto_descuento+(($porcentaje_descuento*$sub_total)/100);
@@ -282,10 +282,10 @@ class PedidosController extends Controller
             }
             //realizando descuento
             $total=$sub_total;
-            if ($porcentaje_descuento > 0) {
+            if ($porcentaje_descuento >= 0) {
                 $total-=($porcentaje_descuento*$sub_total)/100;
             }
-            if ($monto_descuento > 0) {
+            if ($monto_descuento >= 0) {
                 $total-=$monto_descuento;
             }
             $descuento_total=$monto_descuento+(($porcentaje_descuento*$sub_total)/100);
@@ -306,6 +306,89 @@ class PedidosController extends Controller
 
             return response()->json($carrito);
 
+        }
+    }
+
+    public function actualizar_monto_descuento($nuevo_monto)
+    {
+        $carrito=CarritoPedido::where('id_user',\Auth::getUser()->id)->count();
+        if ($carrito > 0) {
+
+            $previo=CarritoPedido::where('id_user',\Auth::getUser()->id)->first();
+            
+            $previo2=CarritoPedido::where('id_user',\Auth::getUser()->id)->get();
+
+            $porcentaje_descuento=$previo->porcentaje_descuento;
+            $monto_descuento=$nuevo_monto;
+            $sub_total=0;
+            foreach ($previo2 as $key) {
+                $sub_total+=$key->cantidad*$key->monto_und;
+            }
+            //realizando descuento
+            $total=$sub_total;
+            if ($porcentaje_descuento >= 0) {
+                $total-=($porcentaje_descuento*$sub_total)/100;
+            }
+            if ($monto_descuento >= 0) {
+                $total-=$monto_descuento;
+            }
+            $descuento_total=$monto_descuento+(($porcentaje_descuento*$sub_total)/100);
+
+            //actualizando totales
+            foreach ($previo2 as $key) {
+                
+                $key->total_fact=$total;
+                $key->monto_descuento=$nuevo_monto;
+                $key->descuento_total=$descuento_total;
+                $key->save();
+                
+            }
+
+            $carrito=CarritoPedido::where('id_user',\Auth::getUser()->id)->get();
+
+            return response()->json($carrito);        
+        }
+    }
+    public function actualizar_porcentaje_descuento($nuevo_monto)
+    {
+        $carrito=CarritoPedido::where('id_user',\Auth::getUser()->id)->count();
+        if ($carrito > 0) {
+
+            $previo=CarritoPedido::where('id_user',\Auth::getUser()->id)->first();
+            
+            $previo2=CarritoPedido::where('id_user',\Auth::getUser()->id)->get();
+
+            $porcentaje_descuento=$nuevo_monto;
+            $monto_descuento=$previo->monto_descuento;
+            $sub_total=0;
+            foreach ($previo2 as $key) {
+                $sub_total+=$key->cantidad*$key->monto_und;
+            }
+            //realizando descuento
+            $total=$sub_total;
+            if ($porcentaje_descuento >= 0) {
+                $total-=($porcentaje_descuento*$sub_total)/100;
+            }
+            if ($monto_descuento >= 0) {
+                $total-=$monto_descuento;
+            }
+            $descuento_total=$monto_descuento+(($porcentaje_descuento*$sub_total)/100);
+
+
+
+            //actualizando totales
+            foreach ($previo2 as $key) {
+                
+                $key->total_fact=$total;
+                $key->porcentaje_descuento=$nuevo_monto;
+                $key->descuento_total=$descuento_total;
+                $key->save();
+                
+            }
+
+            $carrito=CarritoPedido::where('id_user',\Auth::getUser()->id)->get();
+
+            return response()->json($carrito);        
         }
     }
 }

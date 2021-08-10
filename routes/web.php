@@ -56,6 +56,8 @@ Route::group(['middleware' => ['web', 'auth']], function() {
 	Route::get('/pedidos/{id_producto}/{id_cliente}/llenar_carrito',[PedidosController::class,'llenar_carrito']);
 	Route::get('/pedidos/{nueva_cantidad}/{id_producto}/actualizar_cantidad_producto',[PedidosController::class,'actualizar_cantidad_producto']);
 	Route::get('/pedidos/{nuevo_costo}/{id_producto}/actualizar_costo_producto',[PedidosController::class,'actualizar_costo_producto']);
+	Route::get('/pedidos/{nuevo_monto}/actualizar_monto_descuento',[PedidosController::class,'actualizar_monto_descuento']);
+	Route::get('/pedidos/{nuevo_monto}/actualizar_porcentaje_descuento',[PedidosController::class,'actualizar_porcentaje_descuento']);
 
 	Route::post('/pedidos/remove',[PedidosController::class,'remove'])->name('pedidos.remove');
 	Route::resource('/pedidos',PedidosController::class);

@@ -116,21 +116,13 @@
                   <div class="row">
                     <div class="col-md-4">
                       <label for="descuento_m">Descuento($)</label>
-                      <input type="number" name="monto_descuento" min="0" title="Ingrese el monto del descuento" class="form-control form-control-sm" value="{{$monto_descuento}}"  pattern="[0-9]+([,\.][0-9]+)?" formnovalidate="formnovalidate">
+                      <input type="number" name="monto_descuento" min="0" title="Ingrese el monto del descuento" class="form-control form-control-sm" value="{{$monto_descuento}}"  pattern="[0-9]+([,\.][0-9]+)?" formnovalidate="formnovalidate" onchange="change_monto_descuento(this)">
                     </div>
                     <div class="col-md-4">
                       <label for="descuento_p">Descuento(%)</label>
-                      <input type="number" name="porcentaje_descuento" min="0" max="100" title="Ingrese el porcentaje del descuento" class="form-control form-control-sm" value="{{$porcentaje_descuento}}"  pattern="[0-9]+([,\.][0-9]+)?" formnovalidate="formnovalidate">
+                      <input type="number" name="porcentaje_descuento" min="0" max="100" title="Ingrese el porcentaje del descuento" class="form-control form-control-sm" value="{{$porcentaje_descuento}}"  pattern="[0-9]+([,\.][0-9]+)?" formnovalidate="formnovalidate" onchange="change_porcentaje_descuento(this)">
                     </div>                    
-                    <div class="col-md-4">
-                      <label for="horarios">Horarios <b style="color: red;">*</b></label>
-                      <div class="input-group input-group-sm">
-                        <input type="datetime-local" value="{{date('Y-m-d\TH:i')}}" min="{{date('Y-m-d\TH:i')}}" name="horarios[]" id="horarios" class="form-control">
-                        <span class="input-group-append">
-                          <button type="button" class="btn btn-info btn-flat" data-toggle="modal" data-target="#" data-tooltip="tooltip" data-placement="top" title="Agregar Horario" id="createNewHorario"><i class="fa fa-plus"></i></button>
-                        </span>
-                      </div>
-                    </div>
+                    
                   </div>
                 </div>
                 <div class="col-5">
@@ -152,6 +144,21 @@
                       </div>
                     </div>                    
                   </div>                  
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-4">
+                  <label for="horarios">Horarios <b style="color: red;">*</b></label>
+                  <div class="input-group input-group-sm">
+                    <input type="datetime-local" value="{{date('Y-m-d\TH:i')}}" min="{{date('Y-m-d\TH:i')}}" name="horarios[]" id="horarios" class="form-control">
+                    <span class="input-group-append">
+                      <button type="button" class="btn btn-info btn-flat" data-toggle="modal" data-target="#" data-tooltip="tooltip" data-placement="top" title="Agregar Horario" id="createNewHorario"><i class="fa fa-plus"></i></button>
+                    </span>
+                  </div>
+                </div>
+                <div class="row-md-8">
+                  <label for="horarios">Dirección: <b style="color: red;">*</b></label>
+                  <input type="text" name="direccion[]" id="direccion" class="form-control form-control-md" title="Ingrese la dirección en la cual se encuentra en el horario a la izquierda">
                 </div>
               </div>                  
             </div>
@@ -383,12 +390,12 @@ function change_amount(cantidad, id_producto){
          
           total_fact=parseFloat(data[i].total_fact.toFixed(2));
           descuento_total=parseFloat(data[i].descuento_total.toFixed(2));
-        $('#total_pp_span'+data[i].id_producto).text(total_pp);
+        $('#total_pp_span'+data[i].id_producto).text(formatNumber(total_pp));
       }
 
       $("#descuento_total_ip").val(descuento_total);
-      $("#descuento_total").text(descuento_total.toFixed(2));
-      $("#total").text(total_fact.toFixed(2));
+      $("#descuento_total").text(formatNumber(descuento_total.toFixed(2)));
+      $("#total").text(formatNumber(total_fact.toFixed(2)));
       $("#total_ip").val(total_fact);
             
     });
@@ -412,15 +419,47 @@ function change_cost(costo, id_producto){
          
           total_fact=parseFloat(data[i].total_fact.toFixed(2));
           descuento_total=parseFloat(data[i].descuento_total.toFixed(2));
-        $('#total_pp_span'+data[i].id_producto).text(total_pp.toFixed(2,'.',','));
+        $('#total_pp_span'+data[i].id_producto).text(formatNumber(total_pp.toFixed(2)));
       }
 
       $("#descuento_total_ip").val(descuento_total);
-      $("#descuento_total").text(descuento_total.toFixed(2));
-      $("#total").text(total_fact.toFixed(2));
+      $("#descuento_total").text(formatNumber(descuento_total.toFixed(2)));
+      $("#total").text(formatNumber(total_fact.toFixed(2)));
       $("#total_ip").val(total_fact);
             
     });
+  }
+  function change_monto_descuento(monto){
+    var nuevo_monto=monto.value;
+    
+    $.get('/pedidos/'+nuevo_monto+'/actualizar_monto_descuento',function (data) {})
+    .done(function(data) {
+
+      $("#descuento_total_ip").val(data[0].descuento_total);
+      $("#descuento_total").text(formatNumber(data[0].descuento_total.toFixed(2)));
+      $("#total").text(formatNumber(data[0].total_fact.toFixed(2)));
+      $("#total_ip").val(data[0].total_fact);
+            
+    });
+  }
+
+  function change_porcentaje_descuento(monto){
+    var nuevo_monto=monto.value;
+
+    $.get('/pedidos/'+nuevo_monto+'/actualizar_porcentaje_descuento',function (data) {})
+    .done(function(data) {
+
+      $("#descuento_total_ip").val(data[0].descuento_total);
+      $("#descuento_total").text(formatNumber(data[0].descuento_total.toFixed(2)));
+      $("#total").text(formatNumber(data[0].total_fact.toFixed(2)));
+      $("#total_ip").val(data[0].total_fact);
+            
+    });
+  }
+
+  function formatNumber(num) {
+    xnum= num.toString().replace(/\./g,',');
+    return xnum.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
   }
 </script>
 <script src="{{ asset('js/sweetalert2.min.js') }}"></script>
