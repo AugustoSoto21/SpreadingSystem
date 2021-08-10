@@ -96,7 +96,7 @@
                           {{$key->producto->detalles}} {{$key->producto->marca}} {{$key->producto->modelo}} {{$key->producto->color}}
                         </td>
                         <td>
-                          <input type="number" name="monto_und[]" id="monto_und" step="0.01" value="{{$key->monto_und}}" min="0" class="form-control">
+                          <input type="number" name="monto_und[]" id="monto_und" step="0.01" value="{{$key->monto_und}}" onchange="change_cost(this,{!! $key->id_producto !!})" min="0" class="form-control" pattern="[0-9]+([,\.][0-9]+)?" formnovalidate="formnovalidate">
                         </td>
                         <td>
                           <input type="hidden" name="total_pp[]" id="total_pp<?=$key->id_producto?>" value="{{$key->total_pp}}" min="0" class="form-control">
@@ -116,11 +116,11 @@
                   <div class="row">
                     <div class="col-md-4">
                       <label for="descuento_m">Descuento($)</label>
-                      <input type="number" name="monto_descuento" min="0" title="Ingrese el monto del descuento" class="form-control form-control-sm" value="{{$monto_descuento}}">
+                      <input type="number" name="monto_descuento" min="0" title="Ingrese el monto del descuento" class="form-control form-control-sm" value="{{$monto_descuento}}"  pattern="[0-9]+([,\.][0-9]+)?" formnovalidate="formnovalidate">
                     </div>
                     <div class="col-md-4">
                       <label for="descuento_p">Descuento(%)</label>
-                      <input type="number" name="porcentaje_descuento" min="0" max="100" title="Ingrese el porcentaje del descuento" class="form-control form-control-sm" value="{{$porcentaje_descuento}}">
+                      <input type="number" name="porcentaje_descuento" min="0" max="100" title="Ingrese el porcentaje del descuento" class="form-control form-control-sm" value="{{$porcentaje_descuento}}"  pattern="[0-9]+([,\.][0-9]+)?" formnovalidate="formnovalidate">
                     </div>                    
                     <div class="col-md-4">
                       <label for="horarios">Horarios <b style="color: red;">*</b></label>
@@ -340,7 +340,7 @@ $("#id_producto").on('select2:select',function (event) {
                 '<i class="fa fa-list-ol"></i></a></td>'+
                 '<td><input type="number" class="form-control" onchange="change_amount(this,'+data[i].id_producto+')" value="'+data[i].cantidad+'" name="amount[]" style="border: 0px; text-align: center;" min="1" max="'+data[i].disponible+'" ></td>'+
                 '<td>'+data[i].detalles+' '+data[i].marca+' '+data[i].modelo+' '+data[i].color+'</td>'+
-                '<td><input type="number" name="monto_und[]" id="monto_und" value="'+data[i].monto_und+'" min="0" class="form-control"></td>'+
+                '<td><input type="number" name="monto_und[]" id="monto_und" value="'+data[i].monto_und+'" min="0" class="form-control"  pattern="[0-9]+([,\.][0-9]+)?" formnovalidate="formnovalidate"></td>'+
                 '<td><td><input type="hidden" name="total_pp[]" id="total_pp'+data[i].id_producto+'" value="'+data[i].total_pp+'" min="0" class="form-control"><span id="total_pp_span'+data[i].id_producto+'">'+total_pp+'</span></td>'+
                 '<td><a href="#" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#remove_products" onclick="remove('+data[i].id+')"><i class="fa fa-trash"></i></a></td>'+
               +'</tr>'
@@ -367,6 +367,7 @@ $("#id_producto").on('select2:select',function (event) {
       document.getElementById("id_producto").value = "";
     }
   });
+//CAMBIANDO LA CANTIDAD DEL PRODUCTO
 function change_amount(cantidad, id_producto){
     var nueva_cantidad=cantidad.value;
     //console.log('llego'+new_amount+'---'+id_product)
@@ -394,6 +395,32 @@ function change_amount(cantidad, id_producto){
   }
 function remove(id_product){
     $("#remove_id").val(id_product);
+  }
+//CAMBIANDO EL COSTO DEL PRODUCTO
+function change_cost(costo, id_producto){
+    var nuevo_costo=costo.value;
+    //console.log('llego'+new_amount+'---'+id_product)
+    $.get('/pedidos/'+nuevo_costo+'/'+id_producto+'/actualizar_costo_producto',function (data) {})
+    .done(function(data) {
+      var porcentaje_descuento;
+      var monto_descuento;
+      var total_fact;
+      var descuento_total;
+      console.log('asajs');
+      for(var i=0; i < data.length; i++){
+        var total_pp=parseFloat(data[i].total_pp);
+         
+          total_fact=parseFloat(data[i].total_fact.toFixed(2));
+          descuento_total=parseFloat(data[i].descuento_total.toFixed(2));
+        $('#total_pp_span'+data[i].id_producto).text(total_pp.toFixed(2,'.',','));
+      }
+
+      $("#descuento_total_ip").val(descuento_total);
+      $("#descuento_total").text(descuento_total.toFixed(2));
+      $("#total").text(total_fact.toFixed(2));
+      $("#total_ip").val(total_fact);
+            
+    });
   }
 </script>
 <script src="{{ asset('js/sweetalert2.min.js') }}"></script>

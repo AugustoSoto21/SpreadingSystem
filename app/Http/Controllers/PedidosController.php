@@ -53,7 +53,6 @@ class PedidosController extends Controller
 
         return view('pedidos.create',compact('productos','categorias','clientes','zonas','estados','agencias','carrito','monto_descuento','porcentaje_descuento','descuento_total','total_fact'));
         
-       
     }
 
     /**
@@ -227,6 +226,57 @@ class PedidosController extends Controller
                 $sub_total+=$key->cantidad*$key->monto_und;
                 }else{
                 $sub_total+=$nueva_cantidad*$key->monto_und;
+
+                }
+            }
+            //realizando descuento
+            $total=$sub_total;
+            if ($porcentaje_descuento > 0) {
+                $total-=($porcentaje_descuento*$sub_total)/100;
+            }
+            if ($monto_descuento > 0) {
+                $total-=$monto_descuento;
+            }
+            $descuento_total=$monto_descuento+(($porcentaje_descuento*$sub_total)/100);
+
+
+
+            //actualizando totales
+            foreach ($previo2 as $key) {
+                
+                $key->total_fact=$total;
+                $key->porcentaje_descuento=$porcentaje_descuento;
+                $key->descuento_total=$descuento_total;
+                $key->save();
+                
+            }
+
+            $carrito=CarritoPedido::where('id_user',\Auth::getUser()->id)->where('id_producto',$id_producto)->get();
+
+            return response()->json($carrito);
+
+        }
+    }
+    public function actualizar_costo_producto($nuevo_costo,$id_producto)
+    {
+        $carrito=CarritoPedido::where('id_user',\Auth::getUser()->id)->count();
+        if ($carrito > 0) {
+
+            $previo=CarritoPedido::where('id_user',\Auth::getUser()->id)->where('id_producto',$id_producto)->first();
+            $previo->monto_und=$nuevo_costo;
+            $previo->total_pp=$nuevo_costo*$previo->cantidad;
+            $previo->save();
+            
+            $previo2=CarritoPedido::where('id_user',\Auth::getUser()->id)->get();
+
+            $porcentaje_descuento=$previo->porcentaje_descuento;
+            $monto_descuento=$previo->monto_descuento;
+            $sub_total=0;
+            foreach ($previo2 as $key) {
+                if($key->id_producto!=$id_producto){
+                $sub_total+=$key->cantidad*$key->monto_und;
+                }else{
+                $sub_total+=$nuevo_costo*$key->cantidad;
 
                 }
             }
