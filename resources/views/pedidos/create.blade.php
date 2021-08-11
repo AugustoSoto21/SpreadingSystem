@@ -90,13 +90,13 @@
                             <a href="#" title="Consultar Disponibilidad" class="btn btn-primary btn-xs" onclick="cant_disponible('{{ $key->id_producto }}')"><i class="fa fa-list-ol"></i></a>
                         </td>
                         <td>
-                          <input type="number" onchange="change_amount(this,{!! $key->id_producto !!})" name="cantidad[]" id="cantidad" value="{{$key->cantidad}}" max="{{$key->disponible}}" min="0" class="form-control">
+                          <input type="number" onchange="change_amount(this,{!! $key->id_producto !!})" name="cantidad[]" id="cantidad<?=$key->id_producto?>" value="{{$key->cantidad}}" max="{{$key->disponible}}" min="0" class="form-control">
                         </td>
                         <td>
                           {{$key->producto->detalles}} {{$key->producto->marca}} {{$key->producto->modelo}} {{$key->producto->color}}
                         </td>
                         <td>
-                          <input type="number" name="monto_und[]" id="monto_und" step="0.01" value="{{$key->monto_und}}" onchange="change_cost(this,{!! $key->id_producto !!})" min="0" class="form-control" pattern="[0-9]+([,\.][0-9]+)?" formnovalidate="formnovalidate">
+                          <input type="number" name="monto_und[]" id="monto_und<?=$key->id_producto?>" step="0.01" value="{{$key->monto_und}}" onchange="change_cost(this,{!! $key->id_producto !!})" min="0" class="form-control" pattern="[0-9]+([,\.][0-9]+)?" formnovalidate="formnovalidate">
                         </td>
                         <td>
                           <input type="hidden" name="total_pp[]" id="total_pp<?=$key->id_producto?>" value="{{$key->total_pp}}" min="0" class="form-control">
@@ -146,21 +146,77 @@
                   </div>                  
                 </div>
               </div>
+              <hr>
               <div class="row">
-                <div class="col-md-4">
-                  <label for="horarios">Horarios <b style="color: red;">*</b></label>
-                  <div class="input-group input-group-sm">
-                    <input type="datetime-local" value="{{date('Y-m-d\TH:i')}}" min="{{date('Y-m-d\TH:i')}}" name="horarios[]" id="horarios" class="form-control">
-                    <span class="input-group-append">
-                      <button type="button" class="btn btn-info btn-flat" data-toggle="modal" data-target="#" data-tooltip="tooltip" data-placement="top" title="Agregar Horario" id="createNewHorario"><i class="fa fa-plus"></i></button>
-                    </span>
-                  </div>
+                <div class="col-4">
+                  <label for="fuente">Fuente:<b style="color: red;">*</b></label>
+                  <select name="id_fuente" id="id_fuente" class="form-control" required="required">
+                    @foreach($fuentes as $f)
+                      <option value="{{$f->id}}">{{$f->fuente}}</option>
+                    @endforeach
+                  </select>
                 </div>
-                <div class="row-md-8">
-                  <label for="horarios">Dirección: <b style="color: red;">*</b></label>
-                  <input type="text" name="direccion[]" id="direccion" class="form-control form-control-md" title="Ingrese la dirección en la cual se encuentra en el horario a la izquierda">
+                <div class="col-4">
+                  <label for="fuente">Pagó:</label>
+                  <input type="checkbox" name="pago_realizado" id="pago_realizado">
+                  <select name="metodo_pago" disabled="disabled" id="metodo_pago" class="form-control">
+                    <option value="">Seleccione forma de pago...</option>
+                    <option value="Efectivo">Efectivo</option>
+                    <option value="Transferencia">Transferencia</option>
+                    <option value="Tarjeta">Tarjeta</option>
+                    <option value="MercadoPago">MercadoPago</option>
+                    <option value="Efectivo/Transferencia">Efectivo/Transferencia</option>
+                    <option value="Transferencia/MercadoPago">Transferencia/MercadoPago</option>
+                    <option value="Efectivo/MercadoPago">Efectivo/MercadoPago</option>
+                  </select>
                 </div>
-              </div>                  
+                <div class="col-2" id="col_transferencia"  style="display: none;">
+                  <label for="Transferencia">Cód. Transf.:<b style="color: red;">*</b></label>
+                  <input type="number" min="0" value="0" placeholder="123456789" title="ingrese el código de la Transferencia" name="codigo_transferencia" id="codigo_transferencia" class="form-control">
+                </div>
+                <div class="col-2" id="col_mercadop" style="display: none;">
+                  <label for="Transferencia">Cód. MercadoP.:<b style="color: red;">*</b></label>
+                  <input type="number" min="0" value="0" placeholder="123456789" title="ingrese el código de la Transacción por Mercado Pago" name="codigo_mercadopago" id="codigo_mercadopago" class="form-control">
+                </div>
+              </div>
+              <div class="row" id="condiciones" style="display: none">
+                <div class="col-4">
+                  <label for="Recargo">Recargo:<b style="color: red;">*</b></label>
+                  <input type="number" min="0" value="0" placeholder="2000" title="ingrese el monto de recargo" name="recargo" id="recargo" class="form-control">
+                </div>
+                <div class="col-4">
+                  <label for="interes">Interés:<b style="color: red;">*</b></label>
+                  <input type="number" min="0" max="100" value="0" placeholder="2000" title="ingrese el porcentaje de Interés" name="interes" id="interes" class="form-control">
+                </div>
+                <div class="col-4">
+                  <label for="cuotas">Cuotas:<b style="color: red;">*</b></label>
+                  <input type="number" min="0" value="0" placeholder="2000" title="ingrese el monto de recargo" name="cuotas" id="cuotas" class="form-control">
+                </div>
+              </div>
+              <br>
+              <div class="table-responsive">
+                <table class="table table-bordered" id="horarios_pedidos">
+                  <tr>
+                    <td>
+                      <div class="row">
+                        <div class="col-4">
+                          <label for="horarios">Horario:<b style="color: red;">*</b></label>
+                          <div class="input-group input-group-sm">
+                            <input type="datetime-local" value="{{date('Y-m-d\TH:i')}}" min="{{date('Y-m-d\TH:i')}}" name="horarios[]" id="horarios" class="form-control">
+                            <span class="input-group-append">
+                              <button type="button" class="btn btn-info btn-flat" data-toggle="modal" data-target="#" data-tooltip="tooltip" data-placement="top" title="Agregar Horario" id="addHorario"><i class="fa fa-plus"></i></button>
+                            </span>
+                          </div>
+                        </div>
+                        <div class="col-8">
+                          <label for="horarios">Dirección:<b style="color: red;">*</b></label>
+                          <input type="text" name="direccion[]" id="direccion" class="form-control form-control-md" title="Ingrese la dirección en la cual se encuentra en el horario a la izquierda">
+                        </div>
+                      </div>    
+                    </td>
+                  </tr>
+                </table>
+              </div>
             </div>
           </form>
         </div>
@@ -175,7 +231,9 @@
 <script type="text/javascript">
 $(document).ready(function () {
   bsCustomFileInput.init();
+
 });
+var add=0;
 cliente_data();
 producto_data();
 //--CODIGO PARA CREAR CATEGORIAS (LEVANTAR EL MODAL) ---------------------//
@@ -388,9 +446,9 @@ function change_amount(cantidad, id_producto){
       for(var i=0; i < data.length; i++){
         var total_pp=parseFloat(data[i].total_pp.toFixed(2));
          
-          total_fact=parseFloat(data[i].total_fact.toFixed(2));
-          descuento_total=parseFloat(data[i].descuento_total.toFixed(2));
-        $('#total_pp_span'+data[i].id_producto).text(formatNumber(total_pp));
+          total_fact=parseFloat(data[i].total_fact);
+          descuento_total=parseFloat(data[i].descuento_total);
+        $('#total_pp_span'+data[i].id_producto).text(formatNumber(total_pp.toFixed(2)));
       }
 
       $("#descuento_total_ip").val(descuento_total);
@@ -461,6 +519,59 @@ function change_cost(costo, id_producto){
     xnum= num.toString().replace(/\./g,',');
     return xnum.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
   }
+  
+    $("#addHorario").on('click',function (event) {
+      add++;
+      console.log(add);
+      $("#horarios_pedidos").append('<tr id="add'+add+'"><td><div class="row"><div class="col-4"><label for="horarios">Horario:<b style="color: red;">*</b></label><div class="input-group input-group-sm"><input type="datetime-local" value="<?=date('Y-m-d\TH:i')?>" min="<?=date('Y-m-d\TH:i')?>" name="horarios[]" id="horarios'+add+'" class="form-control"><span class="input-group-append"> <button type="button" class="btn btn-danger btn-flat" data-toggle="modal" data-target="#" data-tooltip="tooltip" data-placement="top" title="Remover Horario" id="remove'+add+'" onclick="remover_horario('+add+')"><i class="fa fa-ban"></i></button></span></div></div><div class="col-8"><label for="horarios">Dirección:<b style="color: red;">*</b></label><input type="text" name="direccion[]" id="direccion'+add+'" class="form-control form-control-md" title="Ingrese la dirección en la cual se encuentra en el horario a la izquierda"></div></div></td></tr>');
+
+    }); 
+  function remover_horario(fila) {
+    $("#add"+fila).remove();
+  }
+  $("#pago_realizado").on('change',function (event) {
+    if($(this).is(':checked')){
+      $("#metodo_pago").removeAttr('disabled');
+    }else{
+      $("#metodo_pago").attr('disabled',true);
+    }
+  });
+  $("#metodo_pago").on('change',function (event) {
+    var opcion=event.target.value;
+    switch(opcion){
+      case 'Transferencia':
+        $("#col_transferencia").css('display','block');
+        $("#col_mercadop").css('display','none');
+        $("#condiciones").css('display','block');
+      break;
+      case 'Transferencia/MercadoPago':
+        $("#col_transferencia").css('display','block');
+        $("#col_mercadop").css('display','block');
+        $("#condiciones").css('display','block');
+      break;
+      case 'MercadoPago':
+        $("#col_mercadop").css('display','block');
+        $("#col_transferencia").css('display','none');
+        $("#condiciones").css('display','block');
+      break;
+      case 'Efectivo/Transferencia':
+        $("#col_transferencia").css('display','block');
+        $("#col_mercadop").css('display','none');
+        $("#condiciones").css('display','block');
+      break;
+      case 'Efectivo/MercadoPago':
+        $("#col_mercadop").css('display','block');
+        $("#col_transferencia").css('display','none');
+        $("#condiciones").css('display','block');
+      break;
+      default:
+        $("#col_transferencia").css('display','none');
+        $("#col_mercadop").css('display','none');
+        $("#condiciones").css('display','none');
+      break;
+
+    }
+  });  
 </script>
 <script src="{{ asset('js/sweetalert2.min.js') }}"></script>
 @endsection

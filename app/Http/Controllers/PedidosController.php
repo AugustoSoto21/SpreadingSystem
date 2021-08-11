@@ -11,6 +11,7 @@ use App\Models\Zonas;
 use App\Models\Estados;
 use App\Models\Agencias;
 use App\Models\CarritoPedido;
+use App\Models\Fuentes;
 date_default_timezone_set("America/Argentina/Buenos_Aires");
 class PedidosController extends Controller
 {
@@ -37,6 +38,7 @@ class PedidosController extends Controller
         $zonas=Zonas::all();
         $estados=Estados::all();
         $agencias=Agencias::all();
+        $fuentes=Fuentes::all();
         $carrito=CarritoPedido::where('id_user',\Auth::getUser()->id)->get();
         $c=CarritoPedido::where('id_user',\Auth::getUser()->id)->first();
         if(count($carrito) > 0){
@@ -51,7 +53,7 @@ class PedidosController extends Controller
             $total_fact=0;
         }
 
-        return view('pedidos.create',compact('productos','categorias','clientes','zonas','estados','agencias','carrito','monto_descuento','porcentaje_descuento','descuento_total','total_fact'));
+        return view('pedidos.create',compact('productos','categorias','clientes','zonas','estados','agencias','carrito','monto_descuento','porcentaje_descuento','descuento_total','total_fact','fuentes'));
         
     }
 
