@@ -178,17 +178,21 @@
                   <label for="Transferencia">Cód. MercadoP.:<b style="color: red;">*</b></label>
                   <input type="number" min="0" value="0" placeholder="123456789" title="ingrese el código de la Transacción por Mercado Pago" name="codigo_mercadopago" id="codigo_mercadopago" class="form-control">
                 </div>
+                <div class="col-2" id="col_tarjeta" style="display: none;">
+                  <label for="Transferencia">Cód. P/Tarjeta:<b style="color: red;">*</b></label>
+                  <input type="number" min="0" value="0" placeholder="123456789" title="ingrese el código de la operación de pago con su tarjeta" name="codigo_tarjeta" id="codigo_tarjeta" class="form-control">
+                </div>
               </div>
-              <div class="row" id="condiciones" style="display: none">
-                <div class="col-4">
+              <div class="row">
+                <div class="col-4"  id="recargo_v" style="display: none;">
                   <label for="Recargo">Recargo:<b style="color: red;">*</b></label>
                   <input type="number" min="0" value="0" placeholder="2000" title="ingrese el monto de recargo" name="recargo" id="recargo" class="form-control">
                 </div>
-                <div class="col-4">
+                <div class="col-4"  id="interes_v" style="display: none;">
                   <label for="interes">Interés:<b style="color: red;">*</b></label>
                   <input type="number" min="0" max="100" value="0" placeholder="2000" title="ingrese el porcentaje de Interés" name="interes" id="interes" class="form-control">
                 </div>
-                <div class="col-4">
+                <div class="col-4" id="cuotas_v" style="display: none;">
                   <label for="cuotas">Cuotas:<b style="color: red;">*</b></label>
                   <input type="number" min="0" value="0" placeholder="2000" title="ingrese el monto de recargo" name="cuotas" id="cuotas" class="form-control">
                 </div>
@@ -539,35 +543,142 @@ function change_cost(costo, id_producto){
   $("#metodo_pago").on('change',function (event) {
     var opcion=event.target.value;
     switch(opcion){
+      case 'Tarjeta':
+        $("#col_mercadop").css('display','none');
+        $("#col_mercadop").removeAttr('required');
+
+        $("#col_transferencia").css('display','none');
+        $("#col_transferencia").removeAttr('required');
+
+        $("#col_tarjeta").css('display','block');
+        $("#col_tarjeta").attr('required',true);  
+        
+        $("#recargo_v").css('display','block');
+        $("#interes_v").css('display','block');
+        $("#cuotas_v").css('display','block');
+        $("#recargo_v").attr('required',true);
+        $("#interes_v").attr('required',true);
+        $("#cuotas_v").attr('required',true);
+
+      break;
       case 'Transferencia':
         $("#col_transferencia").css('display','block');
+        $("#col_transferencia").attr('required',true);
+
         $("#col_mercadop").css('display','none');
-        $("#condiciones").css('display','block');
+        $("#col_mercadop").removeAttr('required');
+
+        $("#col_tarjeta").css('display','none');
+        $("#col_tarjeta").removeAttr('required');  
+
+        $("#recargo_v").css('display','block');
+        $("#interes_v").css('display','block');
+        $("#cuotas_v").css('display','block');
+        $("#recargo_v").attr('required',true);
+        $("#interes_v").attr('required',true);
+        $("#cuotas_v").attr('required',true);
       break;
       case 'Transferencia/MercadoPago':
         $("#col_transferencia").css('display','block');
+        $("#col_transferencia").attr('required',true);
+
         $("#col_mercadop").css('display','block');
-        $("#condiciones").css('display','block');
+        $("#col_mercadop").attr('required',true);
+
+        $("#col_tarjeta").css('display','none');
+        $("#col_tarjeta").removeAttr('required');  
+
+        $("#recargo_v").css('display','block');
+        $("#interes_v").css('display','block');
+        $("#cuotas_v").css('display','block');
+        $("#recargo_v").attr('required',true);
+        $("#interes_v").attr('required',true);
+        $("#cuotas_v").attr('required',true);
       break;
       case 'MercadoPago':
         $("#col_mercadop").css('display','block');
+        $("#col_mercadop").attr('required',true);
+
         $("#col_transferencia").css('display','none');
-        $("#condiciones").css('display','block');
+        $("#col_transferencia").removeAttr('required');
+
+        $("#col_tarjeta").css('display','none');
+        $("#col_tarjeta").removeAttr('required');  
+
+        $("#recargo_v").css('display','block');
+        $("#interes_v").css('display','block');
+        $("#cuotas_v").css('display','block');
+        $("#recargo_v").attr('required',true);
+        $("#interes_v").attr('required',true);
+        $("#cuotas_v").attr('required',true);
       break;
       case 'Efectivo/Transferencia':
         $("#col_transferencia").css('display','block');
+        $("#col_transferencia").attr('required',true);
+
         $("#col_mercadop").css('display','none');
-        $("#condiciones").css('display','block');
+        $("#col_mercadop").removeAttr('required');
+
+        $("#col_tarjeta").css('display','none');
+        $("#col_tarjeta").removeAttr('required');  
+
+        $("#recargo_v").css('display','block');
+        $("#interes_v").css('display','block');
+        $("#cuotas_v").css('display','block');
+        $("#recargo_v").attr('required',true);
+        $("#interes_v").attr('required',true);
+        $("#cuotas_v").attr('required',true);
       break;
       case 'Efectivo/MercadoPago':
         $("#col_mercadop").css('display','block');
+        $("#col_mercadop").attr('required',true);
+
         $("#col_transferencia").css('display','none');
-        $("#condiciones").css('display','block');
+        $("#col_transferencia").removeAttr('required');
+
+        $("#col_tarjeta").css('display','none');
+        $("#col_tarjeta").removeAttr('required');  
+
+        $("#recargo_v").css('display','block');
+        $("#interes_v").css('display','block');
+        $("#cuotas_v").css('display','block');
+        $("#recargo_v").attr('required',true);
+        $("#interes_v").attr('required',true);
+        $("#cuotas_v").attr('required',true);
+      break;
+      case 'Tarjeta':
+        $("#col_transferencia").css('display','none');
+        $("#col_transferencia").removeAttr('required');
+
+        $("#col_mercadop").css('display','none');
+        $("#col_mercadop").removeAttr('required');
+
+        $("#col_tarjeta").css('display','none');
+        $("#col_tarjeta").removeAttr('required');  
+
+        $("#recargo_v").css('display','block');
+        $("#interes_v").css('display','block');
+        $("#cuotas_v").css('display','block');
+        $("#recargo_v").attr('required',true);
+        $("#interes_v").attr('required',true);
+        $("#cuotas_v").attr('required',true);
       break;
       default:
         $("#col_transferencia").css('display','none');
+        $("#col_transferencia").removeAttr('required');
+
+        $("#col_tarjeta").css('display','none');
+        $("#col_tarjeta").removeAttr('required');  
+
         $("#col_mercadop").css('display','none');
-        $("#condiciones").css('display','none');
+        $("#col_mercadop").removeAttr('required');
+        
+        $("#recargo_v").css('display','none');
+        $("#interes_v").css('display','none');
+        $("#cuotas_v").css('display','none');
+        $("#recargo_v").removeAttr('required');
+        $("#interes_v").removeAttr('required');
+        $("#cuotas_v").removeAttr('required');
       break;
 
     }
