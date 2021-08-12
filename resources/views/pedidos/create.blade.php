@@ -157,44 +157,68 @@
                   </select>
                 </div>
                 <div class="col-4">
-                  <label for="fuente">Pagó:</label>
-                  <input type="checkbox" name="pago_realizado" id="pago_realizado">
+                  <div class="icheck-success d-inline">
+                    <input type="checkbox" name="pago_realizado" id="pago_realizado">
+                    <label for="pago_realizado">Pagó?:</label>
+                  </div>
                   <select name="metodo_pago" disabled="disabled" id="metodo_pago" class="form-control">
                     <option value="">Seleccione forma de pago...</option>
                     <option value="Efectivo">Efectivo</option>
                     <option value="Transferencia">Transferencia</option>
-                    <option value="Tarjeta">Tarjeta</option>
+                    <option value="TC">TC</option>
                     <option value="MercadoPago">MercadoPago</option>
                     <option value="Efectivo/Transferencia">Efectivo/Transferencia</option>
                     <option value="Transferencia/MercadoPago">Transferencia/MercadoPago</option>
                     <option value="Efectivo/MercadoPago">Efectivo/MercadoPago</option>
                   </select>
                 </div>
+              </div>
+              <div class="row">
                 <div class="col-2" id="col_transferencia"  style="display: none;">
                   <label for="Transferencia">Cód. Transf.:<b style="color: red;">*</b></label>
                   <input type="number" min="0" value="0" placeholder="123456789" title="ingrese el código de la Transferencia" name="codigo_transferencia" id="codigo_transferencia" class="form-control">
+                </div>
+                <div class="col-2" id="fecha_transferencia" style="display: none">
+                  <label for="Fecha">Fecha Transf.:<b style="color: red;">*</b></label>
+                  <input type="datetime-local" value="{{date('Y-m-d\TH:i')}}" max="{{date('Y-m-d\TH:i')}}" name="fecha_ptransferencia" id="fecha_ptransferencia" class="form-control">
                 </div>
                 <div class="col-2" id="col_mercadop" style="display: none;">
                   <label for="Transferencia">Cód. MercadoP.:<b style="color: red;">*</b></label>
                   <input type="number" min="0" value="0" placeholder="123456789" title="ingrese el código de la Transacción por Mercado Pago" name="codigo_mercadopago" id="codigo_mercadopago" class="form-control">
                 </div>
+                <div class="col-2" id="fecha_mercado" style="display: none">
+                  <label for="Fecha">Fecha MercadoP.:<b style="color: red;">*</b></label>
+                  <input type="datetime-local" value="{{date('Y-m-d\TH:i')}}" max="{{date('Y-m-d\TH:i')}}" name="fecha_mercadop" id="fecha_mercadop" class="form-control">
+                </div>
                 <div class="col-2" id="col_tarjeta" style="display: none;">
-                  <label for="Transferencia">Cód. P/Tarjeta:<b style="color: red;">*</b></label>
+                  <label for="tc">Cód. P/TC:<b style="color: red;">*</b></label>
                   <input type="number" min="0" value="0" placeholder="123456789" title="ingrese el código de la operación de pago con su tarjeta" name="codigo_tarjeta" id="codigo_tarjeta" class="form-control">
+                </div>
+                <div class="col-2" id="fecha_tc" style="display: none">
+                  <label for="Fecha">Fecha P/TC.:<b style="color: red;">*</b></label>
+                  <input type="datetime-local" value="{{date('Y-m-d\TH:i')}}" max="{{date('Y-m-d\TH:i')}}" name="fecha_ptc" id="fecha_ptc" class="form-control">
                 </div>
               </div>
               <div class="row">
                 <div class="col-4"  id="recargo_v" style="display: none;">
-                  <label for="Recargo">Recargo:<b style="color: red;">*</b></label>
-                  <input type="number" min="0" value="0" placeholder="2000" title="ingrese el monto de recargo" name="recargo" id="recargo" class="form-control">
+                  <label for="Recargo">Recargo(%):<b style="color: red;">*</b></label>
+                  <input type="number" min="0" value="8" placeholder="8" title="ingrese el monto de recargo" name="recargo" id="recargo" class="form-control">
                 </div>
                 <div class="col-4"  id="interes_v" style="display: none;">
-                  <label for="interes">Interés:<b style="color: red;">*</b></label>
-                  <input type="number" min="0" max="100" value="0" placeholder="2000" title="ingrese el porcentaje de Interés" name="interes" id="interes" class="form-control">
+                  <label for="interes">Interés(%):<b style="color: red;">*</b></label>
+                  <input type="number" min="0" max="100" value="0" placeholder="2" title="ingrese el porcentaje de Interés" name="interes" id="interes" class="form-control">
                 </div>
                 <div class="col-4" id="cuotas_v" style="display: none;">
                   <label for="cuotas">Cuotas:<b style="color: red;">*</b></label>
-                  <input type="number" min="0" value="0" placeholder="2000" title="ingrese el monto de recargo" name="cuotas" id="cuotas" class="form-control">
+                  <input type="number" min="1" value="0" placeholder="1" title="ingrese el monto de recargo" name="cuotas" id="cuotas" class="form-control">
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-12">
+                  <div class="mb-3">
+                  <label for="observacion">Observación:</label>
+                  <textarea class="textarea" style="width: 100%; height: 200px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;"></textarea>
+                  </div>
                 </div>
               </div>
               <br>
@@ -543,15 +567,21 @@ function change_cost(costo, id_producto){
   $("#metodo_pago").on('change',function (event) {
     var opcion=event.target.value;
     switch(opcion){
-      case 'Tarjeta':
+      case 'TC':
         $("#col_mercadop").css('display','none');
         $("#col_mercadop").removeAttr('required');
+        $("#fecha_mercado").css('display','none');
+        $("#fecha_mercadop").removeAttr('required');
 
         $("#col_transferencia").css('display','none');
         $("#col_transferencia").removeAttr('required');
+        $("#fecha_transferencia").css('display','none');
+        $("#fecha_ptransferencia").removeAttr('required');
 
         $("#col_tarjeta").css('display','block');
-        $("#col_tarjeta").attr('required',true);  
+        $("#col_tarjeta").attr('required',true);
+        $("#fecha_tc").css('display','block');
+        $("#fecha_ptc").attr('required',true);  
         
         $("#recargo_v").css('display','block');
         $("#interes_v").css('display','block');
@@ -564,114 +594,134 @@ function change_cost(costo, id_producto){
       case 'Transferencia':
         $("#col_transferencia").css('display','block');
         $("#col_transferencia").attr('required',true);
+        $("#fecha_transferencia").css('display','block');
+        $("#fecha_ptransferencia").attr('required',true);
 
         $("#col_mercadop").css('display','none');
         $("#col_mercadop").removeAttr('required');
+        $("#fecha_mercado").css('display','none');
+        $("#fecha_mercadop").removeAttr('required');
 
         $("#col_tarjeta").css('display','none');
-        $("#col_tarjeta").removeAttr('required');  
+        $("#col_tarjeta").removeAttr('required');
+        $("#fecha_tc").css('display','none');
+        $("#fecha_ptc").removeAttr('required'); 
 
-        $("#recargo_v").css('display','block');
-        $("#interes_v").css('display','block');
-        $("#cuotas_v").css('display','block');
-        $("#recargo_v").attr('required',true);
-        $("#interes_v").attr('required',true);
-        $("#cuotas_v").attr('required',true);
+        $("#recargo_v").css('display','none');
+        $("#interes_v").css('display','none');
+        $("#cuotas_v").css('display','none');
+        $("#recargo_v").removeAttr('required');
+        $("#interes_v").removeAttr('required');
+        $("#cuotas_v").removeAttr('required');
       break;
       case 'Transferencia/MercadoPago':
         $("#col_transferencia").css('display','block');
         $("#col_transferencia").attr('required',true);
+        $("#fecha_transferencia").css('display','block');
+        $("#fecha_ptransferencia").attr('required',true);
 
         $("#col_mercadop").css('display','block');
         $("#col_mercadop").attr('required',true);
+        $("#fecha_mercado").css('display','block');
+        $("#fecha_mercadop").attr('required',true);
 
         $("#col_tarjeta").css('display','none');
-        $("#col_tarjeta").removeAttr('required');  
+        $("#col_tarjeta").removeAttr('required');
+        $("#fecha_tc").css('display','none');
+        $("#fecha_ptc").removeAttr('required'); 
 
-        $("#recargo_v").css('display','block');
-        $("#interes_v").css('display','block');
-        $("#cuotas_v").css('display','block');
-        $("#recargo_v").attr('required',true);
-        $("#interes_v").attr('required',true);
-        $("#cuotas_v").attr('required',true);
+        $("#recargo_v").css('display','none');
+        $("#interes_v").css('display','none');
+        $("#cuotas_v").css('display','none');
+        $("#recargo_v").removeAttr('required');
+        $("#interes_v").removeAttr('required');
+        $("#cuotas_v").removeAttr('required');
       break;
       case 'MercadoPago':
         $("#col_mercadop").css('display','block');
         $("#col_mercadop").attr('required',true);
+        $("#fecha_mercado").css('display','block');
+        $("#fecha_mercadop").attr('required',true);
 
         $("#col_transferencia").css('display','none');
         $("#col_transferencia").removeAttr('required');
+        $("#fecha_transferencia").css('display','none');
+        $("#fecha_ptransferencia").removeAttr('required');
 
         $("#col_tarjeta").css('display','none');
         $("#col_tarjeta").removeAttr('required');  
+        $("#fecha_tc").css('display','none');
+        $("#fecha_ptc").removeAttr('required');
 
-        $("#recargo_v").css('display','block');
-        $("#interes_v").css('display','block');
-        $("#cuotas_v").css('display','block');
-        $("#recargo_v").attr('required',true);
-        $("#interes_v").attr('required',true);
-        $("#cuotas_v").attr('required',true);
+        $("#recargo_v").css('display','none');
+        $("#interes_v").css('display','none');
+        $("#cuotas_v").css('display','none');
+        $("#recargo_v").removeAttr('required');
+        $("#interes_v").removeAttr('required');
+        $("#cuotas_v").removeAttr('required');
       break;
       case 'Efectivo/Transferencia':
         $("#col_transferencia").css('display','block');
         $("#col_transferencia").attr('required',true);
+        $("#fecha_transferencia").css('display','block');
+        $("#fecha_ptransferencia").attr('required',true);        
 
         $("#col_mercadop").css('display','none');
         $("#col_mercadop").removeAttr('required');
+        $("#fecha_mercado").css('display','none');
+        $("#fecha_mercadop").removeAttr('required');
 
         $("#col_tarjeta").css('display','none');
-        $("#col_tarjeta").removeAttr('required');  
+        $("#col_tarjeta").removeAttr('required');
+        $("#fecha_tc").css('display','none');
+        $("#fecha_ptc").removeAttr('required');  
 
-        $("#recargo_v").css('display','block');
-        $("#interes_v").css('display','block');
-        $("#cuotas_v").css('display','block');
-        $("#recargo_v").attr('required',true);
-        $("#interes_v").attr('required',true);
-        $("#cuotas_v").attr('required',true);
+        $("#recargo_v").css('display','none');
+        $("#interes_v").css('display','none');
+        $("#cuotas_v").css('display','none');
+        $("#recargo_v").removeAttr('required');
+        $("#interes_v").removeAttr('required');
+        $("#cuotas_v").removeAttr('required');
       break;
       case 'Efectivo/MercadoPago':
         $("#col_mercadop").css('display','block');
         $("#col_mercadop").attr('required',true);
+        $("#fecha_mercado").css('display','block');
+        $("#fecha_ptc").attr('required',true);
 
         $("#col_transferencia").css('display','none');
         $("#col_transferencia").removeAttr('required');
+        $("#fecha_transferencia").css('display','none');
+        $("#fecha_ptransferencia").removeAttr('required');
 
         $("#col_tarjeta").css('display','none');
-        $("#col_tarjeta").removeAttr('required');  
+        $("#col_tarjeta").removeAttr('required'); 
+        $("#fecha_tc").css('display','none');
+        $("#fecha_ptc").removeAttr('required'); 
 
-        $("#recargo_v").css('display','block');
-        $("#interes_v").css('display','block');
-        $("#cuotas_v").css('display','block');
-        $("#recargo_v").attr('required',true);
-        $("#interes_v").attr('required',true);
-        $("#cuotas_v").attr('required',true);
+        $("#recargo_v").css('display','none');
+        $("#interes_v").css('display','none');
+        $("#cuotas_v").css('display','none');
+        $("#recargo_v").removeAttr('required');
+        $("#interes_v").removeAttr('required');
+        $("#cuotas_v").removeAttr('required');
       break;
-      case 'Tarjeta':
-        $("#col_transferencia").css('display','none');
-        $("#col_transferencia").removeAttr('required');
-
-        $("#col_mercadop").css('display','none');
-        $("#col_mercadop").removeAttr('required');
-
-        $("#col_tarjeta").css('display','none');
-        $("#col_tarjeta").removeAttr('required');  
-
-        $("#recargo_v").css('display','block');
-        $("#interes_v").css('display','block');
-        $("#cuotas_v").css('display','block');
-        $("#recargo_v").attr('required',true);
-        $("#interes_v").attr('required',true);
-        $("#cuotas_v").attr('required',true);
-      break;
+      
       default:
         $("#col_transferencia").css('display','none');
         $("#col_transferencia").removeAttr('required');
+        $("#fecha_transferencia").css('display','none');
+        $("#fecha_ptransferencia").removeAttr('required');
 
         $("#col_tarjeta").css('display','none');
-        $("#col_tarjeta").removeAttr('required');  
+        $("#col_tarjeta").removeAttr('required');
+        $("#fecha_tc").css('display','none');
+        $("#fecha_ptc").removeAttr('required');  
 
         $("#col_mercadop").css('display','none');
         $("#col_mercadop").removeAttr('required');
+        $("#fecha_mercado").css('display','none');
+        $("#fecha_mercadop").removeAttr('required');
         
         $("#recargo_v").css('display','none');
         $("#interes_v").css('display','none');
@@ -682,7 +732,17 @@ function change_cost(costo, id_producto){
       break;
 
     }
-  });  
+  });
+function calcular_recargo(valor) {
+  
+    $.get('/pedidos/'+valor+'/calcular_recargo',function (data) {})
+    .done(function(data) {
+      
+      $("#total").text(formatNumber(data[0].total_fact.toFixed(2)));
+      $("#total_ip").val(data[0].total_fact);
+            
+    });
+}
 </script>
 <script src="{{ asset('js/sweetalert2.min.js') }}"></script>
 @endsection
