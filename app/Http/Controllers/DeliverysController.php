@@ -24,7 +24,7 @@ class DeliverysController extends Controller
             return datatables()->of($deliverys)
                 ->addColumn('action', function ($row) {
                     $edit = '<a href="javascript:void(0);" data-id="'.$row->id.'" class="btn btn-warning btn-xs" id="editDelivery"><i class="fa fa-pencil-alt"></i></a>';
-                    $delete = ' <a href="javascript:void(0);" id="delete-estado" onClick="deleteDelivery('.$row->id.')" class="delete btn btn-danger btn-xs"><i class="fa fa-trash"></i></a>';
+                    $delete = ' <a href="javascript:void(0);" id="delete-delivery" onClick="deleteDelivery('.$row->id.')" class="delete btn btn-danger btn-xs"><i class="fa fa-trash"></i></a>';
                     return $edit . $delete;
                 })->rawColumns(['action'])
                 ->addIndexColumn()

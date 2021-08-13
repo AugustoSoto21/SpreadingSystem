@@ -36,10 +36,10 @@
             </div>
           </div>
         </div>
+        </div><!-- cierre del modal-body -->
         <div class="modal-footer justify-content-between">
           <button type="button" class="btn btn-default" data-dismiss="modal"> <i class="fa fa-times"></i>Cerrar</button>
           <button type="submit" id="SubmitEditDelivery" class="btn btn-info"><i class="fa fa-save"></i>Guardar</button>
-        </div>
         </div>
       </form> 
     </div>

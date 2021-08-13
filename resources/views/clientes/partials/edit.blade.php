@@ -63,10 +63,10 @@
             </div>
             
           </div>
+        </div>
         <div class="modal-footer justify-content-between">
           <button type="button" class="btn btn-default" data-dismiss="modal"> <i class="fa fa-times"></i>Cerrar</button>
           <button type="submit" id="SubmitEditCliente" class="btn btn-info"><i class="fa fa-save"></i>Guardar</button>
-        </div>
         </div>
       </form> 
     </div>

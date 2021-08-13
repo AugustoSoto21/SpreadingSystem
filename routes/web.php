@@ -13,6 +13,7 @@ use App\Http\Controllers\CategoriasController;
 use App\Http\Controllers\InventarioController;
 use App\Http\Controllers\PedidosController;
 use App\Http\Controllers\IvaController;
+use App\Http\Controllers\MedioController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -68,4 +69,5 @@ Route::group(['middleware' => ['web', 'auth']], function() {
 	Route::get('/buscar_stock/{id_producto}/{opcion}/producto',[ProductosController::class, 'buscar_stock_producto']);
 
 	Route::resource('/iva',IvaController::class);
+	Route::resource('/medios',MedioController::class);
 });

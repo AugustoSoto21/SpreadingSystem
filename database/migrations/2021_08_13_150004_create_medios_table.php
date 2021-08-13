@@ -15,6 +15,12 @@ class CreateMediosTable extends Migration
     {
         Schema::create('medios', function (Blueprint $table) {
             $table->id();
+            $table->string('medio');
+            $table->float('porcentaje');
+            $table->unsignedBigInteger('id_iva');
+            $table->enum('status',['Activo','Inactivo'])->default('Activo');
+
+            $table->foreign('id_iva')->references('id')->on('ivas')->onDelete('cascade');
             $table->timestamps();
         });
     }

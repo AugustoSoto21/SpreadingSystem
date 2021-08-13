@@ -102,13 +102,13 @@ $(document).ready( function () {
     order: [[0, 'desc']]
   });
 });
-//--CODIGO PARA CREAR ESTADOS (LEVANTAR EL MODAL) ---------------------//
+//--CODIGO PARA CREAR DELIVERYS (LEVANTAR EL MODAL) ---------------------//
 $('#createNewDelivery').click(function () {
   $('#deliveryForm').trigger("reset");
   $('#create_deliverys').modal({backdrop: 'static', keyboard: true, show: true});
   $('.alert-danger').hide();
 });
-//--CODIGO PARA CREAR ESTADOS (GUARDAR REGISTRO) ---------------------//
+//--CODIGO PARA CREAR DELIVERYS (GUARDAR REGISTRO) ---------------------//
 $('#SubmitCreateDelivery').click(function(e) {
   e.preventDefault();
   $.ajaxSetup({
@@ -143,7 +143,7 @@ $('#SubmitCreateDelivery').click(function(e) {
   });
 });
 
-//--CODIGO PARA EDITAR ESTADO ---------------------//
+//--CODIGO PARA EDITAR DELIVERY ---------------------//
 $('body').on('click', '#editDelivery', function () {
   var id = $(this).data('id');
   $.ajax({
@@ -161,7 +161,7 @@ $('body').on('click', '#editDelivery', function () {
     }
   });
 });
-//--CODIGO PARA UPDATE ESTADO ---------------------//
+//--CODIGO PARA UPDATE DELIVERY ---------------------//
 $('#SubmitEditDelivery').click(function(e) {
   e.preventDefault();
   var id = $('#id_delivery_edit').val();
@@ -194,7 +194,7 @@ $('#SubmitEditDelivery').click(function(e) {
     }
   });
 });
-//--CODIGO PARA ELIMINAR ESTADO ---------------------//
+//--CODIGO PARA ELIMINAR DELIVERY ---------------------//
 function deleteDelivery(id){
   var id = id;
   Swal.fire({

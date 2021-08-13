@@ -5,16 +5,16 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Iva extends Model
+class Cuotas extends Model
 {
     use HasFactory;
 
-    protected $table='ivas';
+    protected $table='cuotas';
 
-    protected $fillable=['iva','status'];
+    protected $fillable=['id_medio','cant_cuota','interes'];
 
     public function medios()
     {
-    	return $this->hasMany('App\Models\Medio','id_iva','id');
+    	return $this->belongsTo('App\Models\Medio','id_medio');
     }
 }

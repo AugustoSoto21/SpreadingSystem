@@ -109,19 +109,25 @@
           </li>
           <li class="nav-item">
             <a href="{!!route('iva.index')!!}" class="nav-link">
-              <i class="nav-icon fas fa-tag"></i>
+              <i class="nav-icon fas fa-percent"></i>
               <p>Iva</p>
             </a>
           </li>
           <li class="nav-item">
+            <a href="{!!route('medios.index')!!}" class="nav-link">
+              <i class="nav-icon fas fa-credit-card"></i>
+              <p>Medios Mercado Pago</p>
+            </a>
+          </li>
+          <li class="nav-item">
             <a href="{!!route('stocks.index')!!}" class="nav-link">
-              <i class="nav-icon fas fa-tag"></i>
+              <i class="nav-icon fas fa-tasks"></i>
               <p>Stocks</p>
             </a>
           </li>
           <li class="nav-item">
             <a href="{!!route('stocks.historial')!!}" class="nav-link">
-              <i class="nav-icon fas fa-tag"></i>
+              <i class="nav-icon fas fa-history"></i>
               <p>Historial de Stocks</p>
             </a>
           </li>
