@@ -113,9 +113,11 @@ class MedioController extends Controller
      * @param  \App\Models\Medio  $medio
      * @return \Illuminate\Http\Response
      */
-    public function edit(Medio $medio)
+    public function edit($id_medio)
     {
-        //
+        $medio=Medio::where('id',$id_medio)->get();
+
+        return response()->json($medio);
     }
 
     /**
@@ -139,5 +141,11 @@ class MedioController extends Controller
     public function destroy(Medio $medio)
     {
         //
+    }
+
+    public function buscar_cuotas($id_medio)
+    {
+        $cuotas=Cuotas::where('id_medio',$id_medio)->get();
+        return response()->json($cuotas);
     }
 }

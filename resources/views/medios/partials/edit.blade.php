@@ -7,7 +7,7 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <form action="#" method="POST" data-parsley-validate >
+      <form action="#" method="POST" data-parsley-validate id="medioFormEdit" >
         
         <div class="modal-body">
            <p align="center"><small>Todos los campos <b style="color: red;">*</b> son requeridos.</small></p>
@@ -44,7 +44,7 @@
               <label for="interes">Cantidad de Cuotas: {{$i}}</label>
             </div>
             <div class="col-sm-4">
-              <input type="number" min="0" value="0" max="100" name="interes_edit[]" id="interes_edit<?=$i?>" class="form-control" required="required" placeholder="Ingrese el interés de la cantidad de cuota" onkeyup="this.value = this.value.toUpperCase();">
+              <input type="number" min="0" max="100" name="interes[]" id="interes_edit<?=$i?>" class="form-control" required="required" placeholder="Ingrese el interés de la cantidad de cuota" onkeyup="this.value = this.value.toUpperCase();">
             </div>
         </div>
         @endfor

@@ -69,5 +69,6 @@ Route::group(['middleware' => ['web', 'auth']], function() {
 	Route::get('/buscar_stock/{id_producto}/{opcion}/producto',[ProductosController::class, 'buscar_stock_producto']);
 
 	Route::resource('/iva',IvaController::class);
+	Route::get('/medios/{id_medio}/buscar_cuotas',[MedioController::class,'buscar_cuotas']);
 	Route::resource('/medios',MedioController::class);
 });

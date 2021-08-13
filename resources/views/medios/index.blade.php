@@ -151,6 +151,7 @@ $('#SubmitCreateMedio').click(function(e) {
 //--CODIGO PARA EDITAR MEDIO ---------------------//
 $('body').on('click', '#editMedio', function () {
   var id = $(this).data('id');
+  
   $.ajax({
     method:"GET",
     url: "medios/"+id+"/edit",
@@ -162,7 +163,7 @@ $('body').on('click', '#editMedio', function () {
       $('#id_medio_edit').val(data[0].id);
       $('#medio_edit').val(data[0].medio);
       $('#porcentaje_edit').val(data[0].porcentaje);
-      
+      mostrar_cuotas(data[0].id);
     }
   });
 });
@@ -230,6 +231,15 @@ function deleteMedio(id){
       });
     }
   })
+}
+function mostrar_cuotas(id_medio) {
+  
+  $.get('/medios/'+id_medio+'/buscar_cuotas',function (data) {})
+    .done(function(data) {
+      for (var i = 0; i < data.length; i++) {
+        $("#interes_edit"+data[i].cant_cuota).val(data[i].interes);
+      }
+    });
 }
 </script>
 <script src="{{ asset('js/sweetalert2.min.js') }}"></script>
