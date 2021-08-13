@@ -14,7 +14,7 @@
             <div class="col-sm-10">
               <div class="form-group">
                 <label for="categoria">Categoría <b style="color: red;">*</b></label>
-                <input type="text" name="categoria" id="categoria" class="form-control" required="required" placeholder="Ingrese el nombre del categoría" onkeyup="this.value = this.value.toUpperCase();">
+                <input type="text" name="categoria" id="categoria" class="form-control" required="required" placeholder="Ingrese el nombre de la categoría" onkeyup="this.value = this.value.toUpperCase();">
               </div>
               @error('categoria')
                 <div class="alert alert-danger">{{ $message }}</div>

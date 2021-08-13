@@ -23,7 +23,7 @@ class CategoriasController extends Controller
             return datatables()->of($categorias)
                 ->addColumn('action', function ($row) {
                     $edit = '<a href="javascript:void(0);" data-id="'.$row->id.'" class="btn btn-warning btn-xs" id="editCategoria"><i class="fa fa-pencil-alt"></i></a>';
-                    $delete = ' <a href="javascript:void(0);" id="delete-estado" onClick="deleteCategoria('.$row->id.')" class="delete btn btn-danger btn-xs"><i class="fa fa-trash"></i></a>';
+                    $delete = ' <a href="javascript:void(0);" id="delete-categoria" onClick="deleteCategoria('.$row->id.')" class="delete btn btn-danger btn-xs"><i class="fa fa-trash"></i></a>';
                     return $edit . $delete;
                 })->rawColumns(['action'])
                 ->addIndexColumn()

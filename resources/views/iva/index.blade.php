@@ -1,16 +1,16 @@
 @extends('layouts.app')
-@section('title') Categorías @endsection
+@section('title') Iva @endsection
 @section('content')
 <div class="content-header">
   <div class="container-fluid">
     <div class="row mb-2">
       <div class="col-sm-6">
-        <h1 class="m-0 text-dark"><i class="nav-icon fas fa-globe-americas"></i> Categorías</h1>
+        <h1 class="m-0 text-dark"><i class="nav-icon fas fa-globe-americas"></i> Iva</h1>
       </div><!-- /.col -->
       <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
           <li class="breadcrumb-item"><a href="#">Home</a></li>
-          <li class="breadcrumb-item active">Categorías</li>
+          <li class="breadcrumb-item active">Iva</li>
         </ol>
       </div><!-- /.col -->
     </div><!-- /.row -->
@@ -18,40 +18,41 @@
 </div>
 <section class="content">
   <div class="container-fluid">
-    @include('categorias.partials.create')
-    @include('categorias.partials.edit')
+    @include('iva.partials.create')
+    @include('iva.partials.edit')
     <div class="row">
       <div class="col-12">
         <div class="card card-primary card-outline card-tabs">
           <div class="card-header">
-            <h3 class="card-title"><i class="nav-icon fas fa-globe-americas"></i> Categorías registradas</h3>
+            <h3 class="card-title"><i class="nav-icon fas fa-globe-americas"></i> Iva registrados</h3>
             <div class="card-tools">
-              @if(search_permits('Categorias','Imprimir PDF')=="Si" || search_permits('Categorias','Imprimir Excel')=="Si")
+              @if(search_permits('Iva','Imprimir PDF')=="Si" || search_permits('Iva','Imprimir Excel')=="Si")
               <div class="btn-group">
                 <a class="btn btn-danger dropdown-toggle btn-sm dropdown-icon text-white" data-toggle="dropdown" data-tooltip="tooltip" data-placement="top" title="Generar reportes">Imprimir </a>
                 <div class="dropdown-menu dropdown-menu-right">
-                  @if(search_permits('Categorias','Imprimir PDF')=="Si")
-                  {{-- <a class="dropdown-item" href="{!!route('categorias.pdf')!!}" target="_blank" data-tooltip="tooltip" data-placement="top" title="Reportes en PDF"><i class="fa fa-file-pdf"></i> Exportar a PDF</a> --}}
+                  @if(search_permits('Iva','Imprimir PDF')=="Si")
+                  {{-- <a class="dropdown-item" href="{!!route('iva.pdf')!!}" target="_blank" data-tooltip="tooltip" data-placement="top" title="Reportes en PDF"><i class="fa fa-file-pdf"></i> Exportar a PDF</a> --}}
                   @endif
-                  {{-- @if(search_permits('Categorias','Imprimir Excel')=="Si")
-                  <a class="dropdown-item" href="{!! route('categorias.excel') !!}" target="_blank" data-tooltip="tooltip" data-placement="top" title="Reportes en Excel"><i class="fa fa-file-excel"></i> Exportar a Excel</a>
+                  {{-- @if(search_permits('Iva','Imprimir Excel')=="Si")
+                  <a class="dropdown-item" href="{!! route('iva.excel') !!}" target="_blank" data-tooltip="tooltip" data-placement="top" title="Reportes en Excel"><i class="fa fa-file-excel"></i> Exportar a Excel</a>
                   @endif --}}
                 </div>
               </div>
               @endif
-              @if(search_permits('Categorias','Registrar')=="Si")
-              <a class="btn btn-info btn-sm text-white" data-toggle="modal" data-target="#create_categorias" data-tooltip="tooltip" data-placement="top" title="Crear Categorias" id="createNewCategoria">
+              @if(search_permits('Iva','Registrar')=="Si")
+              <a class="btn btn-info btn-sm text-white" data-toggle="modal" data-target="#create_iva" data-tooltip="tooltip" data-placement="top" title="Crear Iva" id="createNewIva">
                 <i class="fa fa-save"> &nbsp;Registrar</i>
               </a>
               @endif
             </div>
           </div>
-          @if(search_permits('Categorias','Ver mismo usuario')=="Si" || search_permits('Categorias','Ver todos los usuarios')=="Si" || search_permits('Categorias','Editar mismo usuario')=="Si" || search_permits('Categorias','Editar todos los usuarios')=="Si" || search_permits('Categorias','Eliminar mismo usuario')=="Si" || search_permits('Categorias','Eliminar todos los usuarios')=="Si") 
+          @if(search_permits('Iva','Ver mismo usuario')=="Si" || search_permits('Iva','Ver todos los usuarios')=="Si" || search_permits('Iva','Editar mismo usuario')=="Si" || search_permits('Iva','Editar todos los usuarios')=="Si" || search_permits('Iva','Eliminar mismo usuario')=="Si" || search_permits('Iva','Eliminar todos los usuarios')=="Si") 
           <div class="card-body">
-            <table id="categorias_table" class="table table-bordered table-striped table-sm" style="font-size: 12px;">
+            <table id="iva_table" class="table table-bordered table-striped table-sm" style="font-size: 12px;">
               <thead>
                 <tr>
-                  <th>Categoría</th>
+                  <th>Iva</th>
+                  <th>Status</th>
                   <th>Acciones</th>
                 </tr>
               </thead>
@@ -83,29 +84,30 @@
       'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
     }
   });
-  $('#categorias_table').DataTable({
+  $('#iva_table').DataTable({
     processing: true,
     serverSide: true,
     responsive: true,
     autoWidth: false,
     ajax: {
-      url:"{{ url('categorias') }}"
+      url:"{{ url('iva') }}"
    },
     columns: [
-      { data: 'categoria', name: 'categoria' },
+      { data: 'iva', name: 'iva' },
+      { data: 'status', name: 'status' },
       {data: 'action', name: 'action', orderable: false},
     ],
     order: [[0, 'desc']]
   });
 });
-//--CODIGO PARA CREAR CATEGORIAS (LEVANTAR EL MODAL) ---------------------//
-$('#createNewCategoria').click(function () {
-  $('#categoriaForm').trigger("reset");
-  $('#create_categorias').modal({backdrop: 'static', keyboard: true, show: true});
+//--CODIGO PARA CREAR IVAS (LEVANTAR EL MODAL) ---------------------//
+$('#createNewIva').click(function () {
+  $('#ivaForm').trigger("reset");
+  $('#create_iva').modal({backdrop: 'static', keyboard: true, show: true});
   $('.alert-danger').hide();
 });
-//--CODIGO PARA CREAR CATEGORIAS (GUARDAR REGISTRO) ---------------------//
-$('#SubmitCreateCategoria').click(function(e) {
+//--CODIGO PARA CREAR IVAS (GUARDAR REGISTRO) ---------------------//
+$('#SubmitCreateIva').click(function(e) {
   e.preventDefault();
   $.ajaxSetup({
     headers: {
@@ -113,10 +115,10 @@ $('#SubmitCreateCategoria').click(function(e) {
     }
   });
   $.ajax({
-    url: "{{ route('categorias.store') }}",
+    url: "{{ route('iva.store') }}",
     method: 'post',
     data: {
-      categoria: $('#categoria').val()
+      iva: $('#iva').val()
     },
     success: function(result) {
       if(result.errors) {
@@ -127,43 +129,43 @@ $('#SubmitCreateCategoria').click(function(e) {
         });
       } else {
         $('.alert-danger').hide();
-        var oTable = $('#categorias_table').dataTable();
+        var oTable = $('#iva_table').dataTable();
         oTable.fnDraw(false);
         Swal.fire ( result.titulo ,  result.message ,  result.icono );
         if (result.icono=="success") {
-          $("#create_categorias").modal('hide');
+          $("#create_iva").modal('hide');
         }
       }
     }
   });
 });
 
-//--CODIGO PARA EDITAR CATEGORIA ---------------------//
-$('body').on('click', '#editCategoria', function () {
+//--CODIGO PARA EDITAR IVA ---------------------//
+$('body').on('click', '#editIva', function () {
   var id = $(this).data('id');
   $.ajax({
     method:"GET",
-    url: "categorias/"+id+"/edit",
+    url: "iva/"+id+"/edit",
     dataType: 'json',
     success: function(data){
       //console.log(data);
-      $('#edit_categorias').modal({backdrop: 'static', keyboard: true, show: true});
+      $('#edit_iva').modal({backdrop: 'static', keyboard: true, show: true});
       $('.alert-danger').hide();
-      $('#id_categoria_edit').val(data.id);
-      $('#categoria_edit').val(data.categoria);
+      $('#id_iva_edit').val(data.id);
+      $('#iva_edit').val(data.iva);
     }
   });
 });
-//--CODIGO PARA UPDATE CATEGORIA ---------------------//
-$('#SubmitEditCategoria').click(function(e) {
+//--CODIGO PARA UPDATE IVA ---------------------//
+$('#SubmitEditIva').click(function(e) {
   e.preventDefault();
-  var id = $('#id_categoria_edit').val();
+  var id = $('#id_iva_edit').val();
   $.ajax({
     method:'PUT',
-    url: "categorias/"+id+"",
+    url: "iva/"+id+"",
     data: {
-      id_categoria: $('#id_categoria_edit').val(),
-      categoria: $('#categoria_edit').val()
+      id_iva: $('#id_iva_edit').val(),
+      iva: $('#iva_edit').val()
     },
     success: (data) => {
       if(data.errors) {
@@ -173,11 +175,11 @@ $('#SubmitEditCategoria').click(function(e) {
           $('.alert-danger').append('<strong><li>'+value+'</li></strong>');
         });
       } else {
-        var oTable = $('#categorias_table').dataTable();
+        var oTable = $('#iva_table').dataTable();
         oTable.fnDraw(false);
         Swal.fire ( data.titulo ,  data.message ,  data.icono );
         if (data.icono=="success") {
-          $("#edit_categorias").modal('hide');
+          $("#edit_iva").modal('hide');
         }
       }
     },
@@ -186,12 +188,12 @@ $('#SubmitEditCategoria').click(function(e) {
     }
   });
 });
-//--CODIGO PARA ELIMINAR CATEGORIA ---------------------//
-function deleteCategoria(id){
+//--CODIGO PARA ELIMINAR IVA ---------------------//
+function deleteIva(id){
   var id = id;
   Swal.fire({
-    title: '¿Estás seguro que desea eliminar a este categoría?',
-    text: "¡Esta opción no podrá deshacerse en el futuro!",
+    title: '¿Estás seguro que desea eliminar a este iva?',
+    text: "¡Esta opción no podrá deshacerse en el futuro, y el últivo valor de iva registrado será colocado como Activo!",
     icon: 'warning',
     showCancelButton: true,
     confirmButtonColor: '#3085d6',
@@ -203,16 +205,16 @@ function deleteCategoria(id){
       // ajax
       $.ajax({
         type:"DELETE",
-        url: "categorias/"+id+"",
+        url: "iva/"+id+"",
         data: { id: id },
         dataType: 'json',
         success: function(response){
           Swal.fire ( response.titulo ,  response.message ,  response.icono );
-          var oTable = $('#categorias_table').dataTable();
+          var oTable = $('#iva_table').dataTable();
           oTable.fnDraw(false);
         },
         error: function (data) {
-          Swal.fire({title: "Error del servidor", text:  "Categoría no eliminada", icon:  "error"});
+          Swal.fire({title: "Error del servidor", text:  "Iva no eliminado", icon:  "error"});
         }
       });
     }

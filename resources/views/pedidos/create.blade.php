@@ -210,7 +210,7 @@
                 </div>
                 <div class="col-4" id="cuotas_v" style="display: none;">
                   <label for="cuotas">Cuotas:<b style="color: red;">*</b></label>
-                  <input type="number" min="1" value="0" placeholder="1" title="ingrese el monto de recargo" name="cuotas" id="cuotas" class="form-control">
+                  <input type="number" min="0" value="1" placeholder="1" title="ingrese el monto de recargo" name="cuotas" id="cuotas" class="form-control">
                 </div>
               </div>
               <div class="row">
