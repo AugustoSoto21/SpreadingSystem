@@ -12,6 +12,8 @@ use App\Models\Estados;
 use App\Models\Agencias;
 use App\Models\CarritoPedido;
 use App\Models\Fuentes;
+use App\Models\Medio;
+use App\Models\Iva;
 date_default_timezone_set("America/Argentina/Buenos_Aires");
 class PedidosController extends Controller
 {
@@ -39,6 +41,8 @@ class PedidosController extends Controller
         $estados=Estados::all();
         $agencias=Agencias::all();
         $fuentes=Fuentes::all();
+        $medios=Medio::all();
+        $iva=Iva::where('status','Activo')->first();
         $carrito=CarritoPedido::where('id_user',\Auth::getUser()->id)->get();
         $c=CarritoPedido::where('id_user',\Auth::getUser()->id)->first();
         if(count($carrito) > 0){
@@ -46,14 +50,22 @@ class PedidosController extends Controller
             $porcentaje_descuento=$c->porcentaje_descuento;
             $descuento_total=$c->descuento_total;
             $total_fact=$c->total_fact;
+            $iva_total=$c->iva_total;
+            $recargo_ct=$c->recargo_ct;
+            $cuotas_ct=$c->cuotas_ct;
+            $total_ct=$c->total_ct;
         }else{
             $monto_descuento=0;
             $porcentaje_descuento=0;
             $descuento_total=0;
             $total_fact=0;
+            $iva_total=0;
+            $recargo_ct=0;
+            $cuotas_ct=0;
+            $total_ct=0;
         }
 
-        return view('pedidos.create',compact('productos','categorias','clientes','zonas','estados','agencias','carrito','monto_descuento','porcentaje_descuento','descuento_total','total_fact','fuentes'));
+        return view('pedidos.create',compact('productos','categorias','clientes','zonas','estados','agencias','carrito','monto_descuento','porcentaje_descuento','descuento_total','total_fact','iva_total','recargo_ct','cuotas_ct','total_ct','fuentes','medios','iva'));
         
     }
 

@@ -70,5 +70,5 @@ Route::group(['middleware' => ['web', 'auth']], function() {
 
 	Route::resource('/iva',IvaController::class);
 	Route::get('/medios/{id_medio}/buscar_cuotas',[MedioController::class,'buscar_cuotas']);
-	Route::resource('/medios',MedioController::class);
+		Route::resource('/medios',MedioController::class);
 });

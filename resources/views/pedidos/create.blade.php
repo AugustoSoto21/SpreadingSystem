@@ -134,12 +134,34 @@
                             <th style="width:50%">Descuento($):</th>
                             <td>$<span id="descuento_total">{{ number_format($descuento_total,2,",",".") }}</span>
                             <input type="hidden" name="descuento_total" id="descuento_total_ip" value="{{$descuento_total}}"></td>
-                          </tr>                            
+                          </tr>
+                          <tr>
+                            <th style="width:50%">Iva({{$iva->iva}}%):</th>
+                            <td>$<span id="iva">{{ number_format($iva_total,2,",",".") }}</span>
+                            <input type="hidden" name="iva" id="iva_ip" value="{{$iva_total}}"></td>
+                          </tr>                              
                           <tr>
                             <th>Total:</th>
                             <td>$<span id="total">{{ number_format($total_fact,2,",",".") }}</span>
                             <input type="hidden" name="total_ip" id="total_ip" value="{{$total_fact}}"></td>
                           </tr>
+                          <div id="pago_ct" @if($recargo_ct == 0) style="display: none;" @else style="display: block;" @endif>
+                          <tr>
+                            <th>Recargo C/Tarjeta:</th>
+                            <td>$<span id="recargo_ct">{{ number_format($recargo_ct,2,",",".") }}</span>
+                            <input type="text" name="recargo_ct_ip" id="recargo_ct_ip" value="{{$recargo_ct}}"></td>
+                          </tr>
+                          <tr>
+                            <th>Cuotas:</th>
+                            <td><span id="cuotas_ct">{{ number_format($cuotas_ct,2,",",".") }}</span>
+                            <input type="hidden" name="cuotas_ct_ip" id="cuotas_ct_ip" value="{{$cuotas_ct}}"></td>
+                          </tr>
+                          <tr>
+                            <th>Total C/Tarjeta:</th>
+                            <td><span id="total_ct">{{ number_format($total_ct,2,",",".") }}</span>
+                            <input type="hidden" name="total_ct_ip" id="total_ct_ip" value="{{$total_ct}}"></td>
+                          </tr>
+                          </div>
                         </table>
                       </div>
                     </div>                    
@@ -165,11 +187,11 @@
                     <option value="">Seleccione forma de pago...</option>
                     <option value="Efectivo">Efectivo</option>
                     <option value="Transferencia">Transferencia</option>
-                    <option value="TC">TC</option>
-                    <option value="MercadoPago">MercadoPago</option>
+                    <option value="TC-MercadoPago">TC-MercadoPago</option>
+                    <!-- <option value="MercadoPago">MercadoPago</option> -->
                     <option value="Efectivo/Transferencia">Efectivo/Transferencia</option>
-                    <option value="Transferencia/MercadoPago">Transferencia/MercadoPago</option>
-                    <option value="Efectivo/MercadoPago">Efectivo/MercadoPago</option>
+                    <option value="Transferencia/TC-MercadoPago">Transferencia/TC-MercadoPago</option>
+                    <option value="Efectivo/TC-MercadoPago">Efectivo/TC-MercadoPago</option>
                   </select>
                 </div>
               </div>
@@ -200,17 +222,38 @@
                 </div>
               </div>
               <div class="row">
+                <div class="col-4" id="monto_tcmp_v" style="display: none;">
+                  <label for="monto_tcmp">Monto a Pagar:<b style="color: red;">*</b></label>
+                  <input type="number" min="0" value="0.00" placeholder="12345"  step="0.01" title="ingrese el monto de a pagar por TC-MercadoPago" name="monto_tcmp" id="monto_tcmp" class="form-control">
+                </div>
+                <div class="col-4" id="medios_v" style="display: none;">
+                  <label for="medios_v">Medio de Mercado Pago:<b style="color: red;">*</b></label>
+                  <select name="id_medio" id="id_medio" class="form-control" title="Seleccione el Medio de Mercado Pago">
+                    <option value="0">Seleccione el Medio</option>
+                    @foreach($medios as $m)
+                      <option value="{{$m->id}}">{{$m->medio}} - Porcentaje: {{$m->porcentaje}}</option>
+                    @endforeach
+                  </select>
+                </div>
+                <div class="col-4" id="cuotas_v" style="display: none;">
+                  <label for="cuotas_v">Cuotas:<b style="color: red;">*</b></label>
+                  <select name="id_cuota" id="id_cuota" class="form-control" title="Seleccione la cuota del Medio de Mercado Pago">
+                    
+                  </select>
+                </div>
+              </div>
+              <div class="row">
                 <div class="col-4"  id="recargo_v" style="display: none;">
                   <label for="Recargo">Recargo(%):<b style="color: red;">*</b></label>
-                  <input type="number" min="0" value="8" placeholder="8" title="ingrese el monto de recargo" name="recargo" id="recargo" class="form-control">
+                  <input type="number" min="0" value="8" placeholder="8" title="ingrese el monto de recargo" name="recargo" id="recargo" class="form-control" readonly="readonly">
                 </div>
                 <div class="col-4"  id="interes_v" style="display: none;">
                   <label for="interes">Interés(%):<b style="color: red;">*</b></label>
-                  <input type="number" min="0" max="100" value="0" placeholder="2" title="ingrese el porcentaje de Interés" name="interes" id="interes" class="form-control">
+                  <input type="number" min="0" max="100" value="0" placeholder="2" title="ingrese el porcentaje de Interés" name="interes" id="interes" class="form-control" readonly="readonly">
                 </div>
                 <div class="col-4" id="cuotas_v" style="display: none;">
                   <label for="cuotas">Cuotas:<b style="color: red;">*</b></label>
-                  <input type="number" min="0" value="1" placeholder="1" title="ingrese el monto de recargo" name="cuotas" id="cuotas" class="form-control">
+                  <input type="number" min="0" value="1" placeholder="1" title="ingrese el monto de recargo" name="cuotas" id="cuotas" class="form-control" readonly="readonly">
                 </div>
               </div>
               <div class="row">
@@ -313,7 +356,7 @@ $('#createNewCliente').click(function () {
 });
 //--CODIGO PARA CREAR PBX (GUARDAR REGISTRO) ---------------------//
 $('#SubmitCreateCliente').click(function(e) {
-  console.log('asas');
+  //console.log('asas');
   e.preventDefault();
   $.ajaxSetup({
     headers: {
@@ -380,7 +423,7 @@ $.ajax({
     dataType: 'json',
     success: function(response){
       $.each(response, function(key, registro) {
-        console.log(registro)
+        //console.log(registro)
 
            if(registro.total_stock){
             if(registro.marca){
@@ -405,11 +448,11 @@ $.ajax({
 $("#id_producto").on('select2:select',function (event) {
     var id_producto=event.target.value;
     var id_cliente=document.getElementById("id_cliente").value;
-    console.log(id_producto+"--"+id_cliente);
+    //console.log(id_producto+"--"+id_cliente);
     if (id_producto!="" && id_cliente!="") {
       $.get('/pedidos/'+id_producto+'/'+id_cliente+'/llenar_carrito',function (data) {})
         .done(function(data) {
-          console.log(data);        
+          //console.log(data);        
           /*if($("#general_discount").is(':disabled')){
             $("#general_discount").removeAttr('disabled');
           }*/
@@ -447,6 +490,7 @@ $("#id_producto").on('select2:select',function (event) {
           $("#descuento_total").text(descuento_total);
           $("#total").text(total_fact);
           $("#total_ip").val(total_fact);
+          $("#monto_tcmp").val(total_fact);
          
           producto_data();
         });
@@ -483,6 +527,7 @@ function change_amount(cantidad, id_producto){
       $("#descuento_total").text(formatNumber(descuento_total.toFixed(2)));
       $("#total").text(formatNumber(total_fact.toFixed(2)));
       $("#total_ip").val(total_fact);
+      $("#monto_tcmp").val(total_fact);
             
     });
   }
@@ -492,14 +537,14 @@ function remove(id_product){
 //CAMBIANDO EL COSTO DEL PRODUCTO
 function change_cost(costo, id_producto){
     var nuevo_costo=costo.value;
-    //console.log('llego'+new_amount+'---'+id_product)
+    //console.log(costo.target.value);
     $.get('/pedidos/'+nuevo_costo+'/'+id_producto+'/actualizar_costo_producto',function (data) {})
     .done(function(data) {
       var porcentaje_descuento;
       var monto_descuento;
       var total_fact;
       var descuento_total;
-      console.log('asajs');
+      //console.log('asajs');
       for(var i=0; i < data.length; i++){
         var total_pp=parseFloat(data[i].total_pp);
          
@@ -512,6 +557,7 @@ function change_cost(costo, id_producto){
       $("#descuento_total").text(formatNumber(descuento_total.toFixed(2)));
       $("#total").text(formatNumber(total_fact.toFixed(2)));
       $("#total_ip").val(total_fact);
+      $("#monto_tcmp").val(total_fact);
             
     });
   }
@@ -525,6 +571,7 @@ function change_cost(costo, id_producto){
       $("#descuento_total").text(formatNumber(data[0].descuento_total.toFixed(2)));
       $("#total").text(formatNumber(data[0].total_fact.toFixed(2)));
       $("#total_ip").val(data[0].total_fact);
+      $("#monto_tcmp").val(data[0].total_fact);
             
     });
   }
@@ -539,6 +586,7 @@ function change_cost(costo, id_producto){
       $("#descuento_total").text(formatNumber(data[0].descuento_total.toFixed(2)));
       $("#total").text(formatNumber(data[0].total_fact.toFixed(2)));
       $("#total_ip").val(data[0].total_fact);
+      $("#monto_tcmp").val(data[0].total_fact);
             
     });
   }
@@ -550,7 +598,7 @@ function change_cost(costo, id_producto){
   
     $("#addHorario").on('click',function (event) {
       add++;
-      console.log(add);
+      //console.log(add);
       $("#horarios_pedidos").append('<tr id="add'+add+'"><td><div class="row"><div class="col-4"><label for="horarios">Horario:<b style="color: red;">*</b></label><div class="input-group input-group-sm"><input type="datetime-local" value="<?=date('Y-m-d\TH:i')?>" min="<?=date('Y-m-d\TH:i')?>" name="horarios[]" id="horarios'+add+'" class="form-control"><span class="input-group-append"> <button type="button" class="btn btn-danger btn-flat" data-toggle="modal" data-target="#" data-tooltip="tooltip" data-placement="top" title="Remover Horario" id="remove'+add+'" onclick="remover_horario('+add+')"><i class="fa fa-ban"></i></button></span></div></div><div class="col-8"><label for="horarios">Dirección:<b style="color: red;">*</b></label><input type="text" name="direccion[]" id="direccion'+add+'" class="form-control form-control-md" title="Ingrese la dirección en la cual se encuentra en el horario a la izquierda"></div></div></td></tr>');
 
     }); 
@@ -567,7 +615,7 @@ function change_cost(costo, id_producto){
   $("#metodo_pago").on('change',function (event) {
     var opcion=event.target.value;
     switch(opcion){
-      case 'TC':
+      case 'TC-MercadoPago':
         $("#col_mercadop").css('display','none');
         $("#col_mercadop").removeAttr('required');
         $("#fecha_mercado").css('display','none');
@@ -590,6 +638,9 @@ function change_cost(costo, id_producto){
         $("#interes_v").attr('required',true);
         $("#cuotas_v").attr('required',true);
 
+        $("#monto_tcmp_v").css('display','block');
+        $("#medios_v").css('display','block');
+        $("#cuotas_v").css('display','block');
       break;
       case 'Transferencia':
         $("#col_transferencia").css('display','block');
@@ -613,8 +664,12 @@ function change_cost(costo, id_producto){
         $("#recargo_v").removeAttr('required');
         $("#interes_v").removeAttr('required');
         $("#cuotas_v").removeAttr('required');
+
+        $("#monto_tcmp_v").css('display','none');
+        $("#medios_v").css('display','none');
+        $("#cuotas_v").css('display','none');
       break;
-      case 'Transferencia/MercadoPago':
+      case 'Transferencia/TC-MercadoPago':
         $("#col_transferencia").css('display','block');
         $("#col_transferencia").attr('required',true);
         $("#fecha_transferencia").css('display','block');
@@ -630,14 +685,19 @@ function change_cost(costo, id_producto){
         $("#fecha_tc").css('display','none');
         $("#fecha_ptc").removeAttr('required'); 
 
-        $("#recargo_v").css('display','none');
-        $("#interes_v").css('display','none');
-        $("#cuotas_v").css('display','none');
-        $("#recargo_v").removeAttr('required');
-        $("#interes_v").removeAttr('required');
-        $("#cuotas_v").removeAttr('required');
+        $("#recargo_v").css('display','block');
+        $("#interes_v").css('display','block');
+        $("#cuotas_v").css('display','block');
+        $("#recargo_v").attr('required');
+        $("#interes_v").attr('required');
+        $("#cuotas_v").attr('required');
+
+
+        $("#monto_tcmp_v").css('display','block');
+        $("#medios_v").css('display','block');
+        $("#cuotas_v").css('display','block');
       break;
-      case 'MercadoPago':
+     /* case 'MercadoPago':
         $("#col_mercadop").css('display','block');
         $("#col_mercadop").attr('required',true);
         $("#fecha_mercado").css('display','block');
@@ -659,7 +719,7 @@ function change_cost(costo, id_producto){
         $("#recargo_v").removeAttr('required');
         $("#interes_v").removeAttr('required');
         $("#cuotas_v").removeAttr('required');
-      break;
+      break;*/
       case 'Efectivo/Transferencia':
         $("#col_transferencia").css('display','block');
         $("#col_transferencia").attr('required',true);
@@ -682,8 +742,13 @@ function change_cost(costo, id_producto){
         $("#recargo_v").removeAttr('required');
         $("#interes_v").removeAttr('required');
         $("#cuotas_v").removeAttr('required');
+
+
+        $("#monto_tcmp_v").css('display','none');
+        $("#medios_v").css('display','none');
+        $("#cuotas_v").css('display','none');
       break;
-      case 'Efectivo/MercadoPago':
+      case 'Efectivo/TC-MercadoPago':
         $("#col_mercadop").css('display','block');
         $("#col_mercadop").attr('required',true);
         $("#fecha_mercado").css('display','block');
@@ -699,12 +764,17 @@ function change_cost(costo, id_producto){
         $("#fecha_tc").css('display','none');
         $("#fecha_ptc").removeAttr('required'); 
 
-        $("#recargo_v").css('display','none');
-        $("#interes_v").css('display','none');
-        $("#cuotas_v").css('display','none');
-        $("#recargo_v").removeAttr('required');
-        $("#interes_v").removeAttr('required');
-        $("#cuotas_v").removeAttr('required');
+        $("#recargo_v").css('display','block');
+        $("#interes_v").css('display','block');
+        $("#cuotas_v").css('display','block');
+        $("#recargo_v").attr('required');
+        $("#interes_v").attr('required');
+        $("#cuotas_v").attr('required');
+
+
+        $("#monto_tcmp_v").css('display','block');
+        $("#medios_v").css('display','block');
+        $("#cuotas_v").css('display','block');
       break;
       
       default:
@@ -729,6 +799,11 @@ function change_cost(costo, id_producto){
         $("#recargo_v").removeAttr('required');
         $("#interes_v").removeAttr('required');
         $("#cuotas_v").removeAttr('required');
+
+
+        $("#monto_tcmp_v").css('display','none');
+        $("#medios_v").css('display','none');
+        $("#cuotas_v").css('display','none');
       break;
 
     }
@@ -740,9 +815,26 @@ function calcular_recargo(valor) {
       
       $("#total").text(formatNumber(data[0].total_fact.toFixed(2)));
       $("#total_ip").val(data[0].total_fact);
+      $("#monto_tcmp").val(data[0].total_fact);
             
     });
 }
+$("#id_medio").on('change',function (event) {
+    var id_medio=event.target.value;
+    //console.log(id_producto+"--"+id_cliente);
+    if (id_producto!="" && id_cliente!="") {
+      $.get('/medios/'+id_medio+'/buscar_cuotas',function (data) {})
+        .done(function(data) {
+            if (data.length > 0) {
+              $("#id_cuota").empty();
+              for(var i=0; i < data.length; i++){
+                $("#id_cuota").append("<option value='"+data[i].id+"'>"+data[i].cant_cuota+" - Interes: "+data[i].interes+"</option>")
+              }
+            }
+        });
+      }
+    });
+      
 </script>
 <script src="{{ asset('js/sweetalert2.min.js') }}"></script>
 @endsection

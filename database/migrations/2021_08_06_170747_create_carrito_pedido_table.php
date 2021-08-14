@@ -24,6 +24,10 @@ class CreateCarritoPedidoTable extends Migration
             $table->float('monto_descuento')->default(0);//de la factura
             $table->float('porcentaje_descuento')->default(0);//de la factura
             $table->float('descuento_total')->default(0);
+            $table->float('iva_total')->default(0);
+            $table->float('recargo_ct')->default(0);//de la factura
+            $table->float('cuotas_ct')->default(0);
+            $table->float('total_ct')->default(0);
             $table->integer('stock');
             $table->integer('disponible');
             $table->float('total_fact')->default(0);
