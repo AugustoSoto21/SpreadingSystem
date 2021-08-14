@@ -20,6 +20,7 @@
   <div class="container-fluid">
     @include('medios.partials.create')
     @include('medios.partials.edit')
+    @include('medios.partials.show')
     <div class="row">
       <div class="col-12">
         <div class="card card-primary card-outline card-tabs">
@@ -174,11 +175,7 @@ $('#SubmitEditMedio').click(function(e) {
   $.ajax({
     method:'PUT',
     url: "medios/"+id+"",
-    data: {
-      id_medio: $('#id_medio_edit').val(),
-      medio: $('#medio_edit').val(),
-      porcentaje: $('#porcentaje_edit').val()
-    },
+    data: $('#medioFormEdit').serialize(),
     success: (data) => {
       if(data.errors) {
         $('.alert-danger').html('');
@@ -197,6 +194,24 @@ $('#SubmitEditMedio').click(function(e) {
     },
     error: function(data){
       console.log(data);
+    }
+  });
+});
+//--CODIGO PARA VER MEDIO Y  SUS CUOTAS---------------------//
+$('body').on('click', '#showMedio', function () {
+  var id = $(this).data('id');
+  
+  $.ajax({
+    method:"GET",
+    url: "medios/"+id+"/edit",
+    dataType: 'json',
+    success: function(data){
+      
+      $('#show_medios').modal({backdrop: 'static', keyboard: true, show: true});
+      $('.alert-danger').hide();
+      $('#medio_show').val(data[0].medio);
+      $('#porcentaje_show').val(data[0].porcentaje);
+      mostrar_cuotas2(data[0].id);
     }
   });
 });
@@ -241,6 +256,16 @@ function mostrar_cuotas(id_medio) {
       }
     });
 }
+function mostrar_cuotas2(id_medio) {
+  
+  $.get('/medios/'+id_medio+'/buscar_cuotas',function (data) {})
+    .done(function(data) {
+      for (var i = 0; i < data.length; i++) {
+        $("#interes_show"+data[i].cant_cuota).val(data[i].interes);
+      }
+    });
+}
+
 </script>
 <script src="{{ asset('js/sweetalert2.min.js') }}"></script>
 @endsection

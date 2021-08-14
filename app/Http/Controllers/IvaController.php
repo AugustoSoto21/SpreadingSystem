@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Iva;
+use App\Models\Medio;
+use App\Models\Cuotas;
 use Illuminate\Http\Request;
 use Alert;
 use Datatables;
@@ -69,10 +71,36 @@ class IvaController extends Controller
                     $b=Iva::where('status','Activo')->first();
                     $b->status='Inactivo';
                     $b->save();
+                    //BUSCANDO MEDIOS DE MERCADO PARA CAMBIAR POR EL NUEVO IVA
+                    $buscar_m=Medio::where('id_iva',$b->id)->count();
                 }
                 $iva= new Iva();
                 $iva->iva=$request->iva;
                 $iva->save();
+                
+                //ACTUALIZANDO MEDIOS DE PAGO EN CASO DE EXISTIR UN IVA ANTERIOR
+                if($buscar2 > 0 && $buscar_m > 0){
+                    $medios=Medio::where('id_iva',$b->id)->get();
+                    foreach ($medios as $key) {
+                        //REGISTRANDO EL MEDIO CON NUEVO IVA
+                        $nuevo= new Medio();
+                        $nuevo->medio=$key->medio;
+                        $nuevo->porcentaje=$key->porcentaje;
+                        $nuevo->id_iva=$iva->id;
+                        $nuevo->save();
+                        //----------------------------
+                        //ACTUALIZANDO STATUS DEL MEDIO ANTERIOR
+                        $key->status='Inactivo';
+                        $key->save();
+                        foreach ($key->cuotas as $key2) {
+                            $nueva=new Cuotas();
+                            $nueva->id_medio=$nuevo->id;
+                            $nueva->cant_cuota=$key2->cant_cuota;
+                            $nueva->interes=$key2->interes;
+                            $nueva->save();
+                        }
+                    }
+                }
 
                 $ivas=Iva::all();
                return response()->json(['message' => "Iva con valor ".$request->iva." registrado con éxito",'icono' => 'success', 'titulo' => 'Éxito','iva' => $ivas]);
