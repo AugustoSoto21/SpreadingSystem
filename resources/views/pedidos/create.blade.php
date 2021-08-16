@@ -145,23 +145,23 @@
                             <td>$<span id="total">{{ number_format($total_fact,2,",",".") }}</span>
                             <input type="hidden" name="total_ip" id="total_ip" value="{{$total_fact}}"></td>
                           </tr>
-                          <div id="pago_ct" @if($recargo_ct == 0) style="display: none;" @else style="display: block;" @endif>
+                          <!-- en caso de pago con tarjeta de mercado pago -->
                           <tr>
                             <th>Recargo C/Tarjeta:</th>
                             <td>$<span id="recargo_ct">{{ number_format($recargo_ct,2,",",".") }}</span>
-                            <input type="text" name="recargo_ct_ip" id="recargo_ct_ip" value="{{$recargo_ct}}"></td>
+                            <input type="hidden" name="recargo_ct_ip" id="recargo_ct_ip" value="{{$recargo_ct}}"></td>
                           </tr>
                           <tr>
-                            <th>Cuotas:</th>
-                            <td><span id="cuotas_ct">{{ number_format($cuotas_ct,2,",",".") }}</span>
+                            <th>Nro. de Cuotas:</th>
+                            <td><span id="cuotas_ct">&nbsp;{{$cuotas_ct}}</span>
                             <input type="hidden" name="cuotas_ct_ip" id="cuotas_ct_ip" value="{{$cuotas_ct}}"></td>
                           </tr>
                           <tr>
                             <th>Total C/Tarjeta:</th>
-                            <td><span id="total_ct">{{ number_format($total_ct,2,",",".") }}</span>
+                            <td>$<span id="total_ct">{{ number_format($total_ct,2,",",".") }}</span>
                             <input type="hidden" name="total_ct_ip" id="total_ct_ip" value="{{$total_ct}}"></td>
                           </tr>
-                          </div>
+                          <!-- fin de pago co tarjeta de mercado pago -->
                         </table>
                       </div>
                     </div>                    
@@ -180,10 +180,10 @@
                 </div>
                 <div class="col-4">
                   <div class="icheck-success d-inline">
-                    <input type="checkbox" name="pago_realizado" id="pago_realizado">
+                    <input type="checkbox" <?php if($recargo_ct > 0){ ?> checked="checked" <?php } ?> name="pago_realizado" id="pago_realizado" onchange="anular_pago_ct()">
                     <label for="pago_realizado">Pagó?:</label>
                   </div>
-                  <select name="metodo_pago" disabled="disabled" id="metodo_pago" class="form-control">
+                  <select name="metodo_pago"  <?php if($recargo_ct == 0){ ?> disabled="disabled" <?php } ?>  id="metodo_pago" class="form-control">
                     <option value="">Seleccione forma de pago...</option>
                     <option value="Efectivo">Efectivo</option>
                     <option value="Transferencia">Transferencia</option>
@@ -224,7 +224,7 @@
               <div class="row">
                 <div class="col-4" id="monto_tcmp_v" style="display: none;">
                   <label for="monto_tcmp">Monto a Pagar:<b style="color: red;">*</b></label>
-                  <input type="number" min="0" value="0.00" placeholder="12345"  step="0.01" title="ingrese el monto de a pagar por TC-MercadoPago" name="monto_tcmp" id="monto_tcmp" class="form-control">
+                  <input type="number" min="0" placeholder="12345"  step="0.01" title="ingrese el monto de a pagar por TC-MercadoPago" name="monto_tcmp" id="monto_tcmp" class="form-control" value="{{$total_fact}}">
                 </div>
                 <div class="col-4" id="medios_v" style="display: none;">
                   <label for="medios_v">Medio de Mercado Pago:<b style="color: red;">*</b></label>
@@ -237,7 +237,7 @@
                 </div>
                 <div class="col-4" id="cuotas_v" style="display: none;">
                   <label for="cuotas_v">Cuotas:<b style="color: red;">*</b></label>
-                  <select name="id_cuota" id="id_cuota" class="form-control" title="Seleccione la cuota del Medio de Mercado Pago">
+                  <select name="id_cuota" id="id_cuota" onchange="calcular_recargo(this)" class="form-control" title="Seleccione la cuota del Medio de Mercado Pago">
                     
                   </select>
                 </div>
@@ -245,16 +245,13 @@
               <div class="row">
                 <div class="col-4"  id="recargo_v" style="display: none;">
                   <label for="Recargo">Recargo(%):<b style="color: red;">*</b></label>
-                  <input type="number" min="0" value="8" placeholder="8" title="ingrese el monto de recargo" name="recargo" id="recargo" class="form-control" readonly="readonly">
+                  <input type="number" min="0" value="{{$recargo_ct}}" placeholder="8" title="ingrese el monto de recargo" name="recargo" id="recargo"  class="form-control" readonly="readonly">
                 </div>
                 <div class="col-4"  id="interes_v" style="display: none;">
-                  <label for="interes">Interés(%):<b style="color: red;">*</b></label>
-                  <input type="number" min="0" max="100" value="0" placeholder="2" title="ingrese el porcentaje de Interés" name="interes" id="interes" class="form-control" readonly="readonly">
+                  <label for="interes">Interés por cuota(%):<b style="color: red;">*</b></label>
+                  <input type="number" min="0" max="100" value="{{$interes_ct}}" placeholder="2" title="ingrese el porcentaje de Interés" name="interes" id="interes" class="form-control" readonly="readonly">
                 </div>
-                <div class="col-4" id="cuotas_v" style="display: none;">
-                  <label for="cuotas">Cuotas:<b style="color: red;">*</b></label>
-                  <input type="number" min="0" value="1" placeholder="1" title="ingrese el monto de recargo" name="cuotas" id="cuotas" class="form-control" readonly="readonly">
-                </div>
+                
               </div>
               <div class="row">
                 <div class="col-12">
@@ -572,6 +569,16 @@ function change_cost(costo, id_producto){
       $("#total").text(formatNumber(data[0].total_fact.toFixed(2)));
       $("#total_ip").val(data[0].total_fact);
       $("#monto_tcmp").val(data[0].total_fact);
+      $("#total_ct").text(formatNumber(data[0].total_ct.toFixed(2)));
+      $("#total_ct_ip").val(data[0].total_ct);
+      $("#recargo_ct").text(formatNumber(data[0].recargo_ct.toFixed(2)));
+      $("#recargo_ct_ip").val(data[0].recargo_ct);
+      $("#recargo").val(data[0].recargo_ct.toFixed(2));
+      $("#interes").val(data[0].interes_ct);
+      $("#cuotas_ct").text(data[0].cuotas_ct);
+      $("#cuotas_ct_ip").val(data[0].cuotas_ct);
+      $("#iva").text(formatNumber(data[0].recargo_ct.toFixed(2)));
+      $("#iva_ip").text(data[0].recargo_ct.toFixed(2));
             
     });
   }
@@ -808,15 +815,24 @@ function change_cost(costo, id_producto){
 
     }
   });
-function calcular_recargo(valor) {
-  
-    $.get('/pedidos/'+valor+'/calcular_recargo',function (data) {})
+function calcular_recargo(id_cuota) {
+  //console.log(id_cuota.value);
+    var monto=$("#monto_tcmp").val();
+    $.get('/pedidos/'+id_cuota.value+'/'+monto+'/calcular_recargo',function (data) {})
     .done(function(data) {
       
-      $("#total").text(formatNumber(data[0].total_fact.toFixed(2)));
-      $("#total_ip").val(data[0].total_fact);
-      $("#monto_tcmp").val(data[0].total_fact);
-            
+      $("#total_ct").text(formatNumber(data[0].total_ct.toFixed(2)));
+      $("#total_ct_ip").val(data[0].total_ct);
+      $("#recargo_ct").text(formatNumber(data[0].recargo_ct.toFixed(2)));
+      $("#recargo_ct_ip").val(data[0].recargo_ct);
+      $("#recargo").val(data[0].recargo_ct.toFixed(2));
+      $("#interes").val(data[0].interes_ct);
+      $("#cuotas_ct").text(data[0].cuotas_ct);
+      $("#cuotas_ct_ip").val(data[0].cuotas_ct);
+      $("#iva").text(formatNumber(data[0].recargo_ct.toFixed(2)));
+      $("#iva_ip").text(data[0].recargo_ct.toFixed(2));
+      $("#monto_ct").text(formatNumber(data[0].recargo_ct.toFixed(2)));
+      $("#monto_ct_ip").text(data[0].recargo_ct.toFixed(2));
     });
 }
 $("#id_medio").on('change',function (event) {
@@ -827,14 +843,59 @@ $("#id_medio").on('change',function (event) {
         .done(function(data) {
             if (data.length > 0) {
               $("#id_cuota").empty();
+              $("#id_cuota").append("<option value='0'>Seleccione la cantidad de cuotas</option>");
               for(var i=0; i < data.length; i++){
-                $("#id_cuota").append("<option value='"+data[i].id+"'>"+data[i].cant_cuota+" - Interes: "+data[i].interes+"</option>")
+                $("#id_cuota").append("<option value='"+data[i].id+"'>"+data[i].cant_cuota+" - Interes: "+data[i].interes+"</option>");
               }
             }
         });
       }
     });
+  function anular_pago_ct() {
+    $.get('/pedidos/0/0/calcular_recargo',function (data) {})
+    .done(function(data) {
       
+      $("#total_ct").text(formatNumber(data[0].total_ct.toFixed(2)));
+      $("#total_ct_ip").val(data[0].total_ct);
+      $("#recargo_ct").text(formatNumber(data[0].recargo_ct.toFixed(2)));
+      $("#recargo_ct_ip").val(data[0].recargo_ct);
+      $("#recargo").val(data[0].recargo_ct.toFixed(2));
+      $("#interes").val(data[0].interes_ct);
+      $("#cuotas_ct").text(data[0].cuotas_ct);
+      $("#cuotas_ct_ip").val(data[0].cuotas_ct);
+      $("#iva").text(formatNumber(data[0].recargo_ct.toFixed(2)));
+      $("#iva_ip").text(data[0].recargo_ct.toFixed(2));
+      $("#monto_ct").text(formatNumber(data[0].recargo_ct.toFixed(2)));
+      $("#monto_ct_ip").text(data[0].recargo_ct.toFixed(2));
+
+      $("#col_transferencia").css('display','none');
+        $("#col_transferencia").removeAttr('required');
+        $("#fecha_transferencia").css('display','none');
+        $("#fecha_ptransferencia").removeAttr('required');
+
+        $("#col_tarjeta").css('display','none');
+        $("#col_tarjeta").removeAttr('required');
+        $("#fecha_tc").css('display','none');
+        $("#fecha_ptc").removeAttr('required');  
+
+        $("#col_mercadop").css('display','none');
+        $("#col_mercadop").removeAttr('required');
+        $("#fecha_mercado").css('display','none');
+        $("#fecha_mercadop").removeAttr('required');
+        
+        $("#recargo_v").css('display','none');
+        $("#interes_v").css('display','none');
+        $("#cuotas_v").css('display','none');
+        $("#recargo_v").removeAttr('required');
+        $("#interes_v").removeAttr('required');
+        $("#cuotas_v").removeAttr('required');
+
+
+        $("#monto_tcmp_v").css('display','none');
+        $("#medios_v").css('display','none');
+        $("#cuotas_v").css('display','none');
+    });
+  }
 </script>
 <script src="{{ asset('js/sweetalert2.min.js') }}"></script>
 @endsection

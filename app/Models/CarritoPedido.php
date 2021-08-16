@@ -9,9 +9,10 @@ class CarritoPedido extends Model
 {
     use HasFactory;
 
+
     protected $table='carrito_pedido';
 
-    protected $fillable=['id_cliente','id_user','id_producto','cantidad','monto_und','total_pp','monto_descuento','porcentaje_descuento','descuento_total','stock','disponible','total_fact'];
+    protected $fillable=['id_cliente','id_user','id_producto','cantidad','monto_und','total_pp','monto_descuento','porcentaje_descuento','descuento_total','iva_total','monto_ct','recargo_ct','cuotas_ct','interes_ct','total_ct','stock','disponible','total_fact'];
 
     public function cliente()
     {

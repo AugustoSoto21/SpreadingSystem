@@ -14,6 +14,7 @@ use App\Models\CarritoPedido;
 use App\Models\Fuentes;
 use App\Models\Medio;
 use App\Models\Iva;
+use App\Models\Cuotas;
 date_default_timezone_set("America/Argentina/Buenos_Aires");
 class PedidosController extends Controller
 {
@@ -54,6 +55,7 @@ class PedidosController extends Controller
             $recargo_ct=$c->recargo_ct;
             $cuotas_ct=$c->cuotas_ct;
             $total_ct=$c->total_ct;
+            $interes_ct=$c->interes_ct;
         }else{
             $monto_descuento=0;
             $porcentaje_descuento=0;
@@ -63,9 +65,10 @@ class PedidosController extends Controller
             $recargo_ct=0;
             $cuotas_ct=0;
             $total_ct=0;
+            $interes_ct=0;
         }
 
-        return view('pedidos.create',compact('productos','categorias','clientes','zonas','estados','agencias','carrito','monto_descuento','porcentaje_descuento','descuento_total','total_fact','iva_total','recargo_ct','cuotas_ct','total_ct','fuentes','medios','iva'));
+        return view('pedidos.create',compact('productos','categorias','clientes','zonas','estados','agencias','carrito','monto_descuento','porcentaje_descuento','descuento_total','total_fact','iva_total','recargo_ct','cuotas_ct','total_ct','fuentes','medios','iva','interes_ct'));
         
     }
 
@@ -143,6 +146,13 @@ class PedidosController extends Controller
             $carrito->monto_descuento=$previo->monto_descuento;
             $carrito->porcentaje_descuento=$previo->porcentaje_descuento;
             $carrito->descuento_total=$previo->descuento_total;
+            $carrito->id_cuota=$previo->id_cuota;
+            $carrito->iva_total=$previo->iva_total;
+            $carrito->monto_ct=$previo->monto_ct;
+            $carrito->recargo_ct=$previo->recargo_ct;
+            $carrito->cuotas_ct=$previo->cuotas_ct;
+            $carrito->interes_ct=$previo->interes_ct;
+            $carrito->total_ct=$previo->total_ct;
             $carrito->stock=producto_stock($id_producto);
             $carrito->disponible=producto_disponible($id_producto);
             $carrito->total_fact=$previo->total_fact;
@@ -200,7 +210,17 @@ class PedidosController extends Controller
                 $total-=$monto_descuento;
             }
             $descuento_total=$monto_descuento+(($porcentaje_descuento*$sub_total)/100);
-
+            if($previo->recargo_ct > 0){
+            $cuota=Cuotas::find($previo->id_cuota);
+            $medio=Medio::find($cuota->id_medio);
+            $iva=Iva::where('status','Activo')->first();
+            $iva_total=(($medio->porcentaje+$cuota->interes)*$iva->iva)/100;
+            $total_porcentaje=$medio->porcentaje+$cuota->interes+$iva_total;
+            $total_porcentaje2=100-$total_porcentaje;
+            $recargo_ct=($previo->monto_ct/$total_porcentaje2)*100-$previo->monto_ct;
+            $total_ct2=$total+$recargo_ct;
+            $cada_cuota=$total_ct2/$cuota->cant_cuota;
+            }
 
 
             //actualizando totales
@@ -209,6 +229,12 @@ class PedidosController extends Controller
                     $key->total_fact=$total;
                     $key->porcentaje_descuento=$porcentaje_descuento;
                     $key->descuento_total=$descuento_total;
+                    if($previo->recargo_ct > 0){
+                        $key->recargo_ct=$recargo_ct;
+                        $key->cuotas_ct=$cuota->cant_cuota;
+                        $key->interes_ct=$cada_cuota;
+                        $key->total_ct=$total_ct2;
+                    }
                     $key->save();
                 }
             }
@@ -253,6 +279,17 @@ class PedidosController extends Controller
             }
             $descuento_total=$monto_descuento+(($porcentaje_descuento*$sub_total)/100);
 
+            if($previo->recargo_ct > 0){
+            $cuota=Cuotas::find($previo->id_cuota);
+            $medio=Medio::find($cuota->id_medio);
+            $iva=Iva::where('status','Activo')->first();
+            $iva_total=(($medio->porcentaje+$cuota->interes)*$iva->iva)/100;
+            $total_porcentaje=$medio->porcentaje+$cuota->interes+$iva_total;
+            $total_porcentaje2=100-$total_porcentaje;
+            $recargo_ct=($previo->monto_ct/$total_porcentaje2)*100-$previo->monto_ct;
+            $total_ct2=$total+$recargo_ct;
+            $cada_cuota=$total_ct2/$cuota->cant_cuota;
+            }
 
 
             //actualizando totales
@@ -261,6 +298,12 @@ class PedidosController extends Controller
                 $key->total_fact=$total;
                 $key->porcentaje_descuento=$porcentaje_descuento;
                 $key->descuento_total=$descuento_total;
+                if($previo->recargo_ct > 0){
+                    $key->recargo_ct=$recargo_ct;
+                    $key->cuotas_ct=$cuota->cant_cuota;
+                    $key->interes_ct=$cada_cuota;
+                    $key->total_ct=$total_ct2;
+                }
                 $key->save();
                 
             }
@@ -304,7 +347,17 @@ class PedidosController extends Controller
             }
             $descuento_total=$monto_descuento+(($porcentaje_descuento*$sub_total)/100);
 
-
+            if($previo->recargo_ct > 0){
+            $cuota=Cuotas::find($previo->id_cuota);
+            $medio=Medio::find($cuota->id_medio);
+            $iva=Iva::where('status','Activo')->first();
+            $iva_total=(($medio->porcentaje+$cuota->interes)*$iva->iva)/100;
+            $total_porcentaje=$medio->porcentaje+$cuota->interes+$iva_total;
+            $total_porcentaje2=100-$total_porcentaje;
+            $recargo_ct=($previo->monto_ct/$total_porcentaje2)*100-$previo->monto_ct;
+            $total_ct2=$total+$recargo_ct;
+            $cada_cuota=$total_ct2/$cuota->cant_cuota;
+            }
 
             //actualizando totales
             foreach ($previo2 as $key) {
@@ -312,6 +365,12 @@ class PedidosController extends Controller
                 $key->total_fact=$total;
                 $key->porcentaje_descuento=$porcentaje_descuento;
                 $key->descuento_total=$descuento_total;
+                if($previo->recargo_ct > 0){
+                    $key->recargo_ct=$recargo_ct;
+                    $key->cuotas_ct=$cuota->cant_cuota;
+                    $key->interes_ct=$cada_cuota;
+                    $key->total_ct=$total_ct2;
+                }
                 $key->save();
                 
             }
@@ -347,13 +406,31 @@ class PedidosController extends Controller
                 $total-=$monto_descuento;
             }
             $descuento_total=$monto_descuento+(($porcentaje_descuento*$sub_total)/100);
-
+            //---------------------en caso de pago con tarjeta
+            if($previo->recargo_ct > 0){
+            $cuota=Cuotas::find($previo->id_cuota);
+            $medio=Medio::find($cuota->id_medio);
+            $iva=Iva::where('status','Activo')->first();
+            $iva_total=(($medio->porcentaje+$cuota->interes)*$iva->iva)/100;
+            $total_porcentaje=$medio->porcentaje+$cuota->interes+$iva_total;
+            $total_porcentaje2=100-$total_porcentaje;
+            $recargo_ct=($previo->monto_ct/$total_porcentaje2)*100-$previo->monto_ct;
+            $total_ct2=$total+$recargo_ct;
+            $cada_cuota=$total_ct2/$cuota->cant_cuota;
+            }
+            //--------------------------------------------------------------------------
             //actualizando totales
             foreach ($previo2 as $key) {
                 
                 $key->total_fact=$total;
                 $key->monto_descuento=$nuevo_monto;
                 $key->descuento_total=$descuento_total;
+                if($previo->recargo_ct > 0){
+                    $key->recargo_ct=$recargo_ct;
+                    $key->cuotas_ct=$cuota->cant_cuota;
+                    $key->interes_ct=$cada_cuota;
+                    $key->total_ct=$total_ct2;
+                }
                 $key->save();
                 
             }
@@ -388,7 +465,17 @@ class PedidosController extends Controller
             }
             $descuento_total=$monto_descuento+(($porcentaje_descuento*$sub_total)/100);
 
-
+            if($previo->recargo_ct > 0){
+            $cuota=Cuotas::find($previo->id_cuota);
+            $medio=Medio::find($cuota->id_medio);
+            $iva=Iva::where('status','Activo')->first();
+            $iva_total=(($medio->porcentaje+$cuota->interes)*$iva->iva)/100;
+            $total_porcentaje=$medio->porcentaje+$cuota->interes+$iva_total;
+            $total_porcentaje2=100-$total_porcentaje;
+            $recargo_ct=($previo->monto_ct/$total_porcentaje2)*100-$previo->monto_ct;
+            $total_ct2=$total+$recargo_ct;
+            $cada_cuota=$total_ct2/$cuota->cant_cuota;
+            }
 
             //actualizando totales
             foreach ($previo2 as $key) {
@@ -396,6 +483,12 @@ class PedidosController extends Controller
                 $key->total_fact=$total;
                 $key->porcentaje_descuento=$nuevo_monto;
                 $key->descuento_total=$descuento_total;
+                if($previo->recargo_ct > 0){
+                    $key->recargo_ct=$recargo_ct;
+                    $key->cuotas_ct=$cuota->cant_cuota;
+                    $key->interes_ct=$cada_cuota;
+                    $key->total_ct=$total_ct2;
+                }
                 $key->save();
                 
             }
@@ -406,39 +499,50 @@ class PedidosController extends Controller
         }
     }
 
-    public function calcular_recargo($valor)
+    public function calcular_recargo($id_cuota,$monto)
     {
         $carrito=CarritoPedido::where('id_user',\Auth::getUser()->id)->count();
         if ($carrito > 0) {
-
+            $iva=Iva::where('status','Activo')->first();
             $previo=CarritoPedido::where('id_user',\Auth::getUser()->id)->first();
             
             $previo2=CarritoPedido::where('id_user',\Auth::getUser()->id)->get();
+            if($id_cuota > 0){
+            $cuota=Cuotas::find($id_cuota);
+            $medio=Medio::find($cuota->id_medio);
+            //formula:
+            //pago total con tarjeta
+            /*$total_ct=($monto/100 - ((($medio->porcentaje+$cuota->interes)*(($monto*21)/100)) + ($medio->porcentaje+$cuota->interes)))*100;*/
+            //--------------------------------con calculadora---------------------------
+            
 
-            $porcentaje_descuento=$nuevo_monto;
-            $monto_descuento=$previo->monto_descuento;
-            $sub_total=0;
-            foreach ($previo2 as $key) {
-                $sub_total+=$key->cantidad*$key->monto_und;
+                $iva_total=(($medio->porcentaje+$cuota->interes)*$iva->iva)/100;
+                $total_porcentaje=$medio->porcentaje+$cuota->interes+$iva_total;
+                $total_porcentaje2=100-$total_porcentaje;
+                $recargo_ct=($monto/$total_porcentaje2)*100-$monto;
+                $total_ct2=$previo->total_fact+$recargo_ct;
+                $cada_cuota=$total_ct2/$cuota->cant_cuota;
             }
-            //realizando descuento
-            $total=$sub_total;
-            if ($porcentaje_descuento >= 0) {
-                $total-=($porcentaje_descuento*$sub_total)/100;
-            }
-            if ($monto_descuento >= 0) {
-                $total-=$monto_descuento;
-            }
-            $descuento_total=$monto_descuento+(($porcentaje_descuento*$sub_total)/100);
-
-
+            //--------------------------------------------------------------------------
 
             //actualizando totales
+
             foreach ($previo2 as $key) {
-                
-                $key->total_fact=$total;
-                $key->porcentaje_descuento=$nuevo_monto;
-                $key->descuento_total=$descuento_total;
+                if($id_cuota > 0){
+                    $key->id_cuota=$id_cuota;
+                    $key->monto_ct=$monto;
+                    $key->recargo_ct=$recargo_ct;
+                    $key->cuotas_ct=$cuota->cant_cuota;
+                    $key->interes_ct=$cada_cuota;
+                    $key->total_ct=$total_ct2;
+                }else{
+                    $key->id_cuota=$id_cuota;
+                    $key->monto_ct=0;
+                    $key->recargo_ct=0;
+                    $key->cuotas_ct=0;
+                    $key->interes_ct=0;
+                    $key->total_ct=0;
+                }
                 $key->save();
                 
             }
