@@ -684,6 +684,7 @@ function change_cost(costo, id_producto){
         $("#cuotas_v").attr('required',true);
 
         $("#monto_tcmp_v").css('display','block');
+        $("#monto_tcmp").attr('readonly',true);
         $("#medios_v").css('display','block');
         $("#cuotas_v").css('display','block');
       break;
@@ -713,6 +714,8 @@ function change_cost(costo, id_producto){
         $("#monto_tcmp_v").css('display','none');
         $("#medios_v").css('display','none');
         $("#cuotas_v").css('display','none');
+        $("#monto_tcmp").removeAttr('readonly');
+        anular_pago_ct();
       break;
       case 'Transferencia/TC-MercadoPago':
         $("#col_transferencia").css('display','block');
@@ -739,32 +742,10 @@ function change_cost(costo, id_producto){
 
 
         $("#monto_tcmp_v").css('display','block');
+        $("#monto_tcmp").removeAttr('readonly');
         $("#medios_v").css('display','block');
         $("#cuotas_v").css('display','block');
       break;
-     /* case 'MercadoPago':
-        $("#col_mercadop").css('display','block');
-        $("#col_mercadop").attr('required',true);
-        $("#fecha_mercado").css('display','block');
-        $("#fecha_mercadop").attr('required',true);
-
-        $("#col_transferencia").css('display','none');
-        $("#col_transferencia").removeAttr('required');
-        $("#fecha_transferencia").css('display','none');
-        $("#fecha_ptransferencia").removeAttr('required');
-
-        $("#col_tarjeta").css('display','none');
-        $("#col_tarjeta").removeAttr('required');  
-        $("#fecha_tc").css('display','none');
-        $("#fecha_ptc").removeAttr('required');
-
-        $("#recargo_v").css('display','none');
-        $("#interes_v").css('display','none');
-        $("#cuotas_v").css('display','none');
-        $("#recargo_v").removeAttr('required');
-        $("#interes_v").removeAttr('required');
-        $("#cuotas_v").removeAttr('required');
-      break;*/
       case 'Efectivo/Transferencia':
         $("#col_transferencia").css('display','block');
         $("#col_transferencia").attr('required',true);
@@ -790,8 +771,11 @@ function change_cost(costo, id_producto){
 
 
         $("#monto_tcmp_v").css('display','none');
+        $("#monto_tcmp").removeAttr('readonly');
         $("#medios_v").css('display','none');
         $("#cuotas_v").css('display','none');
+
+        anular_pago_ct();
       break;
       case 'Efectivo/TC-MercadoPago':
         $("#col_mercadop").css('display','block');
@@ -818,8 +802,10 @@ function change_cost(costo, id_producto){
 
 
         $("#monto_tcmp_v").css('display','block');
+        $("#monto_tcmp").removeAttr('readonly');
         $("#medios_v").css('display','block');
         $("#cuotas_v").css('display','block');
+
       break;
       
       default:
@@ -847,8 +833,11 @@ function change_cost(costo, id_producto){
 
 
         $("#monto_tcmp_v").css('display','none');
+        $("#monto_tcmp").removeAttr('readonly');
         $("#medios_v").css('display','none');
         $("#cuotas_v").css('display','none');
+
+        anular_pago_ct();
       break;
 
     }

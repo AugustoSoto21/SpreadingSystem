@@ -224,9 +224,16 @@ class PedidosController extends Controller
                 $total_ct2=$total+$recargo_ct;
                 $monto_ct=$total;    
             }else{
+                //CALCULANDO DIFERENCIA EN TOTALES
+                if ($previo->total_fact > $total) {
+                    $resta=$previo->total_fact - $total;
+                } else {
+                    $resta=$total - $previo->total_fact;
+                }
+                
                 //en caso de que el monto sea distinto
                 $recargo_ct=($previo->monto_ct/$total_porcentaje2)*100-$previo->monto_ct;
-                $total_ct2=$previo->monto_ct+$recargo_ct;
+                $total_ct2=$previo->monto_ct+$recargo_ct + $resta;
                 $monto_ct=$previo->monto_ct;
             }
             
@@ -304,9 +311,16 @@ class PedidosController extends Controller
                 $total_ct2=$total+$recargo_ct;
                 $monto_ct=$total;
             }else{
+                //CALCULANDO DIFERENCIA EN TOTALES
+                if ($previo->total_fact > $total) {
+                    $resta=$previo->total_fact - $total;
+                } else {
+                    $resta=$total - $previo->total_fact;
+                }
+                
                 //en caso de que el monto sea distinto
                 $recargo_ct=($previo->monto_ct/$total_porcentaje2)*100-$previo->monto_ct;
-                $total_ct2=$previo->monto_ct+$recargo_ct;
+                $total_ct2=$previo->monto_ct+$recargo_ct+$resta;
                 $monto_ct=$previo->monto_ct;
             }
             
@@ -383,9 +397,16 @@ class PedidosController extends Controller
                 $total_ct2=$total+$recargo_ct;
                 $monto_ct=$total; 
             }else{
+                //CALCULANDO DIFERENCIA EN TOTALES
+                if ($previo->total_fact > $total) {
+                    $resta=$previo->total_fact - $total;
+                } else {
+                    $resta=$total - $previo->total_fact;
+                }
+                
                 //en caso de que el monto sea distinto
                 $recargo_ct=($previo->monto_ct/$total_porcentaje2)*100-$previo->monto_ct;
-                $total_ct2=$previo->monto_ct+$recargo_ct;
+                $total_ct2=$previo->monto_ct+$recargo_ct+$resta;
                 $monto_ct=$previo->monto_ct;
             }
             
@@ -454,9 +475,16 @@ class PedidosController extends Controller
                 $total_ct2=$total+$recargo_ct;
                 $monto_ct=$total;    
             }else{
+                //CALCULANDO DIFERENCIA EN TOTALES
+                if ($previo->total_fact > $total) {
+                    $resta=$previo->total_fact - $total;
+                } else {
+                    $resta=$total - $previo->total_fact;
+                }
+                
                 //en caso de que el monto sea distinto
                 $recargo_ct=($previo->monto_ct/$total_porcentaje2)*100-$previo->monto_ct;
-                $total_ct2=$previo->monto_ct+$recargo_ct;
+                $total_ct2=$previo->monto_ct+$recargo_ct+$resta;
                 $monto_ct=$previo->monto_ct;
             }
             $cada_cuota=$total_ct2/$cuota->cant_cuota;
@@ -522,9 +550,16 @@ class PedidosController extends Controller
                 $total_ct2=$total+$recargo_ct;   
                 $monto_ct=$total; 
             }else{
+                //CALCULANDO DIFERENCIA EN TOTALES
+                if ($previo->total_fact > $total) {
+                    $resta=$previo->total_fact - $total;
+                } else {
+                    $resta=$total - $previo->total_fact;
+                }
+                
                 //en caso de que el monto sea distinto
                 $recargo_ct=($previo->monto_ct/$total_porcentaje2)*100-$previo->monto_ct;
-                $total_ct2=$previo->monto_ct+$recargo_ct;
+                $total_ct2=$previo->monto_ct+$recargo_ct+$resta;
                 $monto_ct=$previo->monto_ct;
             }
             
