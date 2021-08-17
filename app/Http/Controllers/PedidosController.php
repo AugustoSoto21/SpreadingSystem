@@ -210,6 +210,7 @@ class PedidosController extends Controller
                 $total-=$monto_descuento;
             }
             $descuento_total=$monto_descuento+(($porcentaje_descuento*$sub_total)/100);
+
             if($previo->recargo_ct > 0){
             $cuota=Cuotas::find($previo->id_cuota);
             $medio=Medio::find($cuota->id_medio);
@@ -217,8 +218,18 @@ class PedidosController extends Controller
             $iva_total=(($medio->porcentaje+$cuota->interes)*$iva->iva)/100;
             $total_porcentaje=$medio->porcentaje+$cuota->interes+$iva_total;
             $total_porcentaje2=100-$total_porcentaje;
-            $recargo_ct=($previo->monto_ct/$total_porcentaje2)*100-$previo->monto_ct;
-            $total_ct2=$total+$recargo_ct;
+            //en caso de que el monto a pagar con tarjeta sea igual al monto total de la factura
+            if($previo->total_fact==$previo->monto_ct){
+                $recargo_ct=($total/$total_porcentaje2)*100-$total;
+                $total_ct2=$total+$recargo_ct;
+                $monto_ct=$total;    
+            }else{
+                //en caso de que el monto sea distinto
+                $recargo_ct=($previo->monto_ct/$total_porcentaje2)*100-$previo->monto_ct;
+                $total_ct2=$previo->monto_ct+$recargo_ct;
+                $monto_ct=$previo->monto_ct;
+            }
+            
             $cada_cuota=$total_ct2/$cuota->cant_cuota;
             }
 
@@ -230,6 +241,7 @@ class PedidosController extends Controller
                     $key->porcentaje_descuento=$porcentaje_descuento;
                     $key->descuento_total=$descuento_total;
                     if($previo->recargo_ct > 0){
+                        $key->monto_ct=$monto_ct;
                         $key->recargo_ct=$recargo_ct;
                         $key->cuotas_ct=$cuota->cant_cuota;
                         $key->interes_ct=$cada_cuota;
@@ -286,8 +298,18 @@ class PedidosController extends Controller
             $iva_total=(($medio->porcentaje+$cuota->interes)*$iva->iva)/100;
             $total_porcentaje=$medio->porcentaje+$cuota->interes+$iva_total;
             $total_porcentaje2=100-$total_porcentaje;
-            $recargo_ct=($previo->monto_ct/$total_porcentaje2)*100-$previo->monto_ct;
-            $total_ct2=$total+$recargo_ct;
+            //en caso de que el monto a pagar con tarjeta sea igual al monto total de la factura
+            if($previo->total_fact==$previo->monto_ct){
+                $recargo_ct=($total/$total_porcentaje2)*100-$total;    
+                $total_ct2=$total+$recargo_ct;
+                $monto_ct=$total;
+            }else{
+                //en caso de que el monto sea distinto
+                $recargo_ct=($previo->monto_ct/$total_porcentaje2)*100-$previo->monto_ct;
+                $total_ct2=$previo->monto_ct+$recargo_ct;
+                $monto_ct=$previo->monto_ct;
+            }
+            
             $cada_cuota=$total_ct2/$cuota->cant_cuota;
             }
 
@@ -299,6 +321,7 @@ class PedidosController extends Controller
                 $key->porcentaje_descuento=$porcentaje_descuento;
                 $key->descuento_total=$descuento_total;
                 if($previo->recargo_ct > 0){
+                    $key->monto_ct=$monto_ct;
                     $key->recargo_ct=$recargo_ct;
                     $key->cuotas_ct=$cuota->cant_cuota;
                     $key->interes_ct=$cada_cuota;
@@ -354,8 +377,18 @@ class PedidosController extends Controller
             $iva_total=(($medio->porcentaje+$cuota->interes)*$iva->iva)/100;
             $total_porcentaje=$medio->porcentaje+$cuota->interes+$iva_total;
             $total_porcentaje2=100-$total_porcentaje;
-            $recargo_ct=($previo->monto_ct/$total_porcentaje2)*100-$previo->monto_ct;
-            $total_ct2=$total+$recargo_ct;
+            //en caso de que el monto a pagar con tarjeta sea igual al monto total de la factura
+            if($previo->total_fact==$previo->monto_ct){
+                $recargo_ct=($total/$total_porcentaje2)*100-$total;
+                $total_ct2=$total+$recargo_ct;
+                $monto_ct=$total; 
+            }else{
+                //en caso de que el monto sea distinto
+                $recargo_ct=($previo->monto_ct/$total_porcentaje2)*100-$previo->monto_ct;
+                $total_ct2=$previo->monto_ct+$recargo_ct;
+                $monto_ct=$previo->monto_ct;
+            }
+            
             $cada_cuota=$total_ct2/$cuota->cant_cuota;
             }
 
@@ -366,6 +399,7 @@ class PedidosController extends Controller
                 $key->porcentaje_descuento=$porcentaje_descuento;
                 $key->descuento_total=$descuento_total;
                 if($previo->recargo_ct > 0){
+                    $key->monto_ct=$monto_ct;
                     $key->recargo_ct=$recargo_ct;
                     $key->cuotas_ct=$cuota->cant_cuota;
                     $key->interes_ct=$cada_cuota;
@@ -414,8 +448,17 @@ class PedidosController extends Controller
             $iva_total=(($medio->porcentaje+$cuota->interes)*$iva->iva)/100;
             $total_porcentaje=$medio->porcentaje+$cuota->interes+$iva_total;
             $total_porcentaje2=100-$total_porcentaje;
-            $recargo_ct=($previo->monto_ct/$total_porcentaje2)*100-$previo->monto_ct;
-            $total_ct2=$total+$recargo_ct;
+            //en caso de que el monto a pagar con tarjeta sea igual al monto total de la factura
+            if($previo->total_fact==$previo->monto_ct){
+                $recargo_ct=($total/$total_porcentaje2)*100-$total;
+                $total_ct2=$total+$recargo_ct;
+                $monto_ct=$total;    
+            }else{
+                //en caso de que el monto sea distinto
+                $recargo_ct=($previo->monto_ct/$total_porcentaje2)*100-$previo->monto_ct;
+                $total_ct2=$previo->monto_ct+$recargo_ct;
+                $monto_ct=$previo->monto_ct;
+            }
             $cada_cuota=$total_ct2/$cuota->cant_cuota;
             }
             //--------------------------------------------------------------------------
@@ -426,6 +469,7 @@ class PedidosController extends Controller
                 $key->monto_descuento=$nuevo_monto;
                 $key->descuento_total=$descuento_total;
                 if($previo->recargo_ct > 0){
+                    $key->monto_ct=$monto_ct;
                     $key->recargo_ct=$recargo_ct;
                     $key->cuotas_ct=$cuota->cant_cuota;
                     $key->interes_ct=$cada_cuota;
@@ -472,8 +516,18 @@ class PedidosController extends Controller
             $iva_total=(($medio->porcentaje+$cuota->interes)*$iva->iva)/100;
             $total_porcentaje=$medio->porcentaje+$cuota->interes+$iva_total;
             $total_porcentaje2=100-$total_porcentaje;
-            $recargo_ct=($previo->monto_ct/$total_porcentaje2)*100-$previo->monto_ct;
-            $total_ct2=$total+$recargo_ct;
+            //en caso de que el monto a pagar con tarjeta sea igual al monto total de la factura
+            if($previo->total_fact==$previo->monto_ct){
+                $recargo_ct=($total/$total_porcentaje2)*100-$total;
+                $total_ct2=$total+$recargo_ct;   
+                $monto_ct=$total; 
+            }else{
+                //en caso de que el monto sea distinto
+                $recargo_ct=($previo->monto_ct/$total_porcentaje2)*100-$previo->monto_ct;
+                $total_ct2=$previo->monto_ct+$recargo_ct;
+                $monto_ct=$previo->monto_ct;
+            }
+            
             $cada_cuota=$total_ct2/$cuota->cant_cuota;
             }
 
@@ -484,6 +538,7 @@ class PedidosController extends Controller
                 $key->porcentaje_descuento=$nuevo_monto;
                 $key->descuento_total=$descuento_total;
                 if($previo->recargo_ct > 0){
+                    $key->monto_ct=$monto_ct;
                     $key->recargo_ct=$recargo_ct;
                     $key->cuotas_ct=$cuota->cant_cuota;
                     $key->interes_ct=$cada_cuota;

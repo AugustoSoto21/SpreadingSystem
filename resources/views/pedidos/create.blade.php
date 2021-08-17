@@ -465,7 +465,10 @@ $("#id_producto").on('select2:select',function (event) {
               porcentaje_descuento=parseFloat(data[i].porcentaje_descuento.toFixed(2));
               monto_descuento=parseFloat(data[i].monto_descuento.toFixed(2));
               total_fact=parseFloat(data[i].total_fact.toFixed(2));
-              descuento_total=parseFloat(data[i].descuento_total.toFixed(2));
+              total_ct=parseFloat(data[i].total_ct.toFixed(2));
+              recargo_ct=parseFloat(data[i].recargo_ct.toFixed(2));
+              cuotas_ct=data[i].cuotas_ct;
+              /*para pagos con mercado */
             $('#invoice').append(
               '<tr>'+
                 '<td><a href="#" class="btn btn-primary btn-xs"'+
@@ -473,7 +476,7 @@ $("#id_producto").on('select2:select',function (event) {
                 '<i class="fa fa-list-ol"></i></a></td>'+
                 '<td><input type="number" class="form-control" onchange="change_amount(this,'+data[i].id_producto+')" value="'+data[i].cantidad+'" name="amount[]" style="border: 0px; text-align: center;" min="1" max="'+data[i].disponible+'" ></td>'+
                 '<td>'+data[i].detalles+' '+data[i].marca+' '+data[i].modelo+' '+data[i].color+'</td>'+
-                '<td><input type="number" name="monto_und[]" id="monto_und" value="'+data[i].monto_und+'" min="0" class="form-control"  pattern="[0-9]+([,\.][0-9]+)?" formnovalidate="formnovalidate"></td>'+
+                '<td><input type="number" name="monto_und[]" id="monto_und" value="'+data[i].monto_und+'"  onchange="change_cost(this,'+data[i].id_producto+')" min="0" class="form-control"  pattern="[0-9]+([,\.][0-9]+)?" formnovalidate="formnovalidate"></td>'+
                 '<td><td><input type="hidden" name="total_pp[]" id="total_pp'+data[i].id_producto+'" value="'+data[i].total_pp+'" min="0" class="form-control"><span id="total_pp_span'+data[i].id_producto+'">'+total_pp+'</span></td>'+
                 '<td><a href="#" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#remove_products" onclick="remove('+data[i].id+')"><i class="fa fa-trash"></i></a></td>'+
               +'</tr>'
@@ -487,8 +490,14 @@ $("#id_producto").on('select2:select',function (event) {
           $("#descuento_total").text(descuento_total);
           $("#total").text(total_fact);
           $("#total_ip").val(total_fact);
+
           $("#monto_tcmp").val(total_fact);
-         
+          $("#total_ct").text(total_ct);
+          $("#total_ct_ip").val(total_ct);
+          $("#recargo_ct").text(recargo_ct);
+          $("#recargo_ct_ip").val(recargo_ct);
+          $("#cuotas_ct").text(cuotas_ct);
+          $("#cuotas_ct_ip").val(cuotas_ct);         
           producto_data();
         });
         
@@ -517,6 +526,10 @@ function change_amount(cantidad, id_producto){
          
           total_fact=parseFloat(data[i].total_fact);
           descuento_total=parseFloat(data[i].descuento_total);
+
+          total_ct=parseFloat(data[i].total_ct.toFixed(2));
+          recargo_ct=parseFloat(data[i].recargo_ct.toFixed(2));
+          cuotas_ct=data[i].cuotas_ct;
         $('#total_pp_span'+data[i].id_producto).text(formatNumber(total_pp.toFixed(2)));
       }
 
@@ -524,8 +537,14 @@ function change_amount(cantidad, id_producto){
       $("#descuento_total").text(formatNumber(descuento_total.toFixed(2)));
       $("#total").text(formatNumber(total_fact.toFixed(2)));
       $("#total_ip").val(total_fact);
+      
       $("#monto_tcmp").val(total_fact);
-            
+      $("#total_ct").text(total_ct);
+      $("#total_ct_ip").val(total_ct);
+      $("#recargo_ct").text(recargo_ct);
+      $("#recargo_ct_ip").val(recargo_ct);
+      $("#cuotas_ct").text(cuotas_ct);
+      $("#cuotas_ct_ip").val(cuotas_ct);               
     });
   }
 function remove(id_product){
@@ -547,6 +566,9 @@ function change_cost(costo, id_producto){
          
           total_fact=parseFloat(data[i].total_fact.toFixed(2));
           descuento_total=parseFloat(data[i].descuento_total.toFixed(2));
+          total_ct=parseFloat(data[i].total_ct.toFixed(2));
+          recargo_ct=parseFloat(data[i].recargo_ct.toFixed(2));
+          cuotas_ct=data[i].cuotas_ct;
         $('#total_pp_span'+data[i].id_producto).text(formatNumber(total_pp.toFixed(2)));
       }
 
@@ -555,7 +577,12 @@ function change_cost(costo, id_producto){
       $("#total").text(formatNumber(total_fact.toFixed(2)));
       $("#total_ip").val(total_fact);
       $("#monto_tcmp").val(total_fact);
-            
+      $("#total_ct").text(total_ct);
+      $("#total_ct_ip").val(total_ct);
+      $("#recargo_ct").text(recargo_ct);
+      $("#recargo_ct_ip").val(recargo_ct);
+      $("#cuotas_ct").text(cuotas_ct);
+      $("#cuotas_ct_ip").val(cuotas_ct);              
     });
   }
   function change_monto_descuento(monto){
@@ -579,7 +606,13 @@ function change_cost(costo, id_producto){
       $("#cuotas_ct_ip").val(data[0].cuotas_ct);
       $("#iva").text(formatNumber(data[0].recargo_ct.toFixed(2)));
       $("#iva_ip").text(data[0].recargo_ct.toFixed(2));
-            
+      
+      $("#total_ct").text(formatNumber(data[0].total_ct.toFixed(2)));
+      $("#total_ct_ip").val(data[0].total_ct);
+      $("#recargo_ct").text(formatNumber(data[0].recargo_ct.toFixed(2)));
+      $("#recargo_ct_ip").val(data[0].recargo_ct);
+      $("#cuotas_ct").text(formatNumber(data[0].cuotas_ct.toFixed(2)));
+      $("#cuotas_ct_ip").val(data[0].cuotas_ct);                   
     });
   }
 
@@ -594,7 +627,12 @@ function change_cost(costo, id_producto){
       $("#total").text(formatNumber(data[0].total_fact.toFixed(2)));
       $("#total_ip").val(data[0].total_fact);
       $("#monto_tcmp").val(data[0].total_fact);
-            
+      $("#total_ct").text(formatNumber(data[0].total_ct.toFixed(2)));
+      $("#total_ct_ip").val(data[0].total_ct);
+      $("#recargo_ct").text(formatNumber(data[0].recargo_ct.toFixed(2)));
+      $("#recargo_ct_ip").val(data[0].recargo_ct);
+      $("#cuotas_ct").text(formatNumber(data[0].cuotas_ct.toFixed(2)));
+      $("#cuotas_ct_ip").val(data[0].cuotas_ct);                       
     });
   }
 
