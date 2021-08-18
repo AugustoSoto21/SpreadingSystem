@@ -15,7 +15,9 @@ use App\Models\Fuentes;
 use App\Models\Medio;
 use App\Models\Iva;
 use App\Models\Cuotas;
+    
 date_default_timezone_set("America/Argentina/Buenos_Aires");
+
 class PedidosController extends Controller
 {
     /**
@@ -43,6 +45,7 @@ class PedidosController extends Controller
         $agencias=Agencias::all();
         $fuentes=Fuentes::all();
         $medios=Medio::all();
+
         $iva=Iva::where('status','Activo')->first();
         $carrito=CarritoPedido::where('id_user',\Auth::getUser()->id)->get();
         $c=CarritoPedido::where('id_user',\Auth::getUser()->id)->first();
@@ -56,6 +59,9 @@ class PedidosController extends Controller
             $cuotas_ct=$c->cuotas_ct;
             $total_ct=$c->total_ct;
             $interes_ct=$c->interes_ct;
+            $pago_delivery=$c->pago_delivery;
+            $monto_pago_delivery=$c->monto_pago_delivery;
+            $id_zona=$c->id_zona;
         }else{
             $monto_descuento=0;
             $porcentaje_descuento=0;
@@ -66,9 +72,12 @@ class PedidosController extends Controller
             $cuotas_ct=0;
             $total_ct=0;
             $interes_ct=0;
+            $pago_delivery=0;
+            $monto_pago_delivery=0;
+            $id_zona=0;
         }
 
-        return view('pedidos.create',compact('productos','categorias','clientes','zonas','estados','agencias','carrito','monto_descuento','porcentaje_descuento','descuento_total','total_fact','iva_total','recargo_ct','cuotas_ct','total_ct','fuentes','medios','iva','interes_ct'));
+        return view('pedidos.create',compact('productos','categorias','clientes','zonas','estados','agencias','carrito','monto_descuento','porcentaje_descuento','descuento_total','total_fact','iva_total','recargo_ct','cuotas_ct','total_ct','fuentes','medios','iva','interes_ct','pago_delivery','monto_pago_delivery','id_zona'));
         
     }
 
@@ -80,7 +89,7 @@ class PedidosController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        dd($request->all());
     }
 
     /**
@@ -641,5 +650,14 @@ class PedidosController extends Controller
 
             return response()->json($carrito);
         }
+    }
+
+    public function buscar_agencias_tarifas($id_zona)
+    {
+         $agencias=\DB::table('tarifas')->join('zonas','zonas.id','=','tarifas.id_zona')
+        ->join('agencias','agencias.id','=','tarifas.id_agencia')
+        ->where('tarifas.id_zona',$id_zona)
+        ->select('agencias.*','tarifas.id_agencia','tarifas.monto')->get();
+        return $agencias;
     }
 }

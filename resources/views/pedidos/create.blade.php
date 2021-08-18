@@ -25,7 +25,7 @@
     <div class="row">
       <div class="col-md-12">
         <div class="card card-primary card-outline">
-          <form action="{{ route('productos.store') }}" class="form-horizontal" method="POST" autocomplete="off" name="productoForm" id="productoForm" enctype="Multipart/form-data" data-parsley-validate>
+          <form action="{{ route('pedidos.store') }}" class="form-horizontal" method="POST" autocomplete="off" name="productoForm" id="productoForm" enctype="Multipart/form-data" data-parsley-validate>
             @csrf
             <div class="card-header">
               <h3 class="card-title" style="margin-top: 5px;"><i class="nav-icon fa fa-shopping-basket"></i> Registro de pedido</h3>
@@ -124,6 +124,37 @@
                     </div>                    
                     
                   </div>
+                  <div class="row">
+                    <div class="col-md-7">
+                      <label for="descuento_m">Ubicación</label>
+                      <select name="id_zona" id="id_zona" class="form-control select2">
+                        <option>Seleccione una zona</option>
+                        @foreach($zonas as $z)
+                          <option value="{{$z->id}}">{{$z->partidos->partido}} {{$z->zona}} </option>
+                        @endforeach
+                      </select>
+                    </div>
+                    <div class="col-md-3">
+                      <div class="icheck-success d-inline">
+                        <input type="checkbox" <?php if($pago_delivery=="Si"){ ?> checked="checked" <?php } ?> name="pago_delivery" id="pago_delivery" >
+                        <label for="pago_delivery">Envío gratis?:</label>
+                        <input type="number" name="monto_pago_delivery" id="monto_pago_delivery" min="0" class="form-control form-control-sm" placeholder="300" title="Ingrese el monto del pago del delivery en caso de tomar el de la zona" <?php if($pago_delivery=="Si"){ ?> disabled="disabled" <?php } ?> >
+                      </div>
+                    </div>                    
+                  </div>
+                  <div class="row">
+                    <div class="col-md-7">
+                      <label for="tarifas">Tarifas p/agencia</label>
+                      <select name="id_tarifa" id="id_tarifa" class="form-control select2">
+                       
+                      </select>
+                    </div>
+                    <div class="col-md-3">
+                      <label for="pago_delivery">Cambiar Tarifa:</label>
+                        <input type="number" name="monto_tarifa" id="monto_tarifa" min="0" class="form-control form-control-sm" placeholder="300" title="Ingrese un monto si quiere que el envío sea distinto a la tarifa de la agencia"  <?php if($pago_delivery=="Si"){ ?> disabled="disabled" <?php } ?>  >
+                      
+                    </div>                
+                  </div>
                 </div>
                 <div class="col-5">
                   <div class="row">
@@ -201,30 +232,33 @@
                   <input type="number" min="0" value="0" placeholder="123456789" title="ingrese el código de la Transferencia" name="codigo_transferencia" id="codigo_transferencia" class="form-control">
                 </div>
                 <div class="col-2" id="fecha_transferencia" style="display: none">
+                  <!-- max="{{date('Y-m-d\TH:i')}}" -->
                   <label for="Fecha">Fecha Transf.:<b style="color: red;">*</b></label>
-                  <input type="datetime-local" value="{{date('Y-m-d\TH:i')}}" max="{{date('Y-m-d\TH:i')}}" name="fecha_ptransferencia" id="fecha_ptransferencia" class="form-control">
+                  <input type="datetime-local" value="{{date('Y-m-d\TH:i')}}"  name="fecha_ptransferencia" id="fecha_ptransferencia" class="form-control">
                 </div>
                 <div class="col-2" id="col_mercadop" style="display: none;">
                   <label for="Transferencia">Cód. MercadoP.:<b style="color: red;">*</b></label>
                   <input type="number" min="0" value="0" placeholder="123456789" title="ingrese el código de la Transacción por Mercado Pago" name="codigo_mercadopago" id="codigo_mercadopago" class="form-control">
                 </div>
+                <!-- max="{{date('Y-m-d\TH:i')}}" -->
                 <div class="col-2" id="fecha_mercado" style="display: none">
                   <label for="Fecha">Fecha MercadoP.:<b style="color: red;">*</b></label>
-                  <input type="datetime-local" value="{{date('Y-m-d\TH:i')}}" max="{{date('Y-m-d\TH:i')}}" name="fecha_mercadop" id="fecha_mercadop" class="form-control">
+                  <input type="datetime-local" value="{{date('Y-m-d\TH:i')}}"  name="fecha_mercadop" id="fecha_mercadop" class="form-control">
                 </div>
                 <div class="col-2" id="col_tarjeta" style="display: none;">
                   <label for="tc">Cód. P/TC:<b style="color: red;">*</b></label>
                   <input type="number" min="0" value="0" placeholder="123456789" title="ingrese el código de la operación de pago con su tarjeta" name="codigo_tarjeta" id="codigo_tarjeta" class="form-control">
                 </div>
+                <!-- max="{{date('Y-m-d\TH:i')}}" -->
                 <div class="col-2" id="fecha_tc" style="display: none">
                   <label for="Fecha">Fecha P/TC.:<b style="color: red;">*</b></label>
-                  <input type="datetime-local" value="{{date('Y-m-d\TH:i')}}" max="{{date('Y-m-d\TH:i')}}" name="fecha_ptc" id="fecha_ptc" class="form-control">
+                  <input type="datetime-local" value="{{date('Y-m-d\TH:i')}}"  name="fecha_ptc" id="fecha_ptc" class="form-control">
                 </div>
               </div>
               <div class="row">
                 <div class="col-4" id="monto_tcmp_v" style="display: none;">
                   <label for="monto_tcmp">Monto a Pagar:<b style="color: red;">*</b></label>
-                  <input type="number" min="0" placeholder="12345"  step="0.01" title="ingrese el monto de a pagar por TC-MercadoPago" name="monto_tcmp" id="monto_tcmp" class="form-control" value="{{$total_fact}}">
+                  <input type="number" min="0" max="{{$total_fact}}" placeholder="12345"  step="0.01" title="ingrese el monto de a pagar por TC-MercadoPago" name="monto_tcmp" id="monto_tcmp" class="form-control" value="{{$total_fact}}">
                 </div>
                 <div class="col-4" id="medios_v" style="display: none;">
                   <label for="medios_v">Medio de Mercado Pago:<b style="color: red;">*</b></label>
@@ -245,11 +279,11 @@
               <div class="row">
                 <div class="col-4"  id="recargo_v" style="display: none;">
                   <label for="Recargo">Recargo(%):<b style="color: red;">*</b></label>
-                  <input type="number" min="0" value="{{$recargo_ct}}" placeholder="8" title="ingrese el monto de recargo" name="recargo" id="recargo"  class="form-control" readonly="readonly">
+                  <input type="text"  value="{{$recargo_ct}}" placeholder="8" title="Ingrese el monto de recargo" name="recargo" id="recargo" readonly="readonly"  class="form-control" >
                 </div>
                 <div class="col-4"  id="interes_v" style="display: none;">
                   <label for="interes">Interés por cuota(%):<b style="color: red;">*</b></label>
-                  <input type="number" min="0" max="100" value="{{$interes_ct}}" placeholder="2" title="ingrese el porcentaje de Interés" name="interes" id="interes" class="form-control" readonly="readonly">
+                  <input type="text"  value="{{$interes_ct}}" placeholder="2" title="Ingrese el porcentaje de Interés" readonly="readonly" name="interes" id="interes" class="form-control" >
                 </div>
                 
               </div>
@@ -257,7 +291,7 @@
                 <div class="col-12">
                   <div class="mb-3">
                   <label for="observacion">Observación:</label>
-                  <textarea class="textarea" style="width: 100%; height: 200px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;"></textarea>
+                  <textarea name="observacion" id="observacion"  class="textarea" style="width: 100%; height: 200px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;"></textarea>
                   </div>
                 </div>
               </div>
@@ -270,7 +304,8 @@
                         <div class="col-4">
                           <label for="horarios">Horario:<b style="color: red;">*</b></label>
                           <div class="input-group input-group-sm">
-                            <input type="datetime-local" value="{{date('Y-m-d\TH:i')}}" min="{{date('Y-m-d\TH:i')}}" name="horarios[]" id="horarios" class="form-control">
+                            <input type="datetime-local" value="{{date('Y-m-d\TH:i')}}" 
+                             name="horarios[]" id="horarios" class="form-control">
                             <span class="input-group-append">
                               <button type="button" class="btn btn-info btn-flat" data-toggle="modal" data-target="#" data-tooltip="tooltip" data-placement="top" title="Agregar Horario" id="addHorario"><i class="fa fa-plus"></i></button>
                             </span>
@@ -644,7 +679,7 @@ function change_cost(costo, id_producto){
     $("#addHorario").on('click',function (event) {
       add++;
       //console.log(add);
-      $("#horarios_pedidos").append('<tr id="add'+add+'"><td><div class="row"><div class="col-4"><label for="horarios">Horario:<b style="color: red;">*</b></label><div class="input-group input-group-sm"><input type="datetime-local" value="<?=date('Y-m-d\TH:i')?>" min="<?=date('Y-m-d\TH:i')?>" name="horarios[]" id="horarios'+add+'" class="form-control"><span class="input-group-append"> <button type="button" class="btn btn-danger btn-flat" data-toggle="modal" data-target="#" data-tooltip="tooltip" data-placement="top" title="Remover Horario" id="remove'+add+'" onclick="remover_horario('+add+')"><i class="fa fa-ban"></i></button></span></div></div><div class="col-8"><label for="horarios">Dirección:<b style="color: red;">*</b></label><input type="text" name="direccion[]" id="direccion'+add+'" class="form-control form-control-md" title="Ingrese la dirección en la cual se encuentra en el horario a la izquierda"></div></div></td></tr>');
+      $("#horarios_pedidos").append('<tr id="add'+add+'"><td><div class="row"><div class="col-4"><label for="horarios">Horario:<b style="color: red;">*</b></label><div class="input-group input-group-sm"><input type="datetime-local" value="<?=date('Y-m-d\TH:i')?>" name="horarios[]" id="horarios'+add+'" class="form-control"><span class="input-group-append"> <button type="button" class="btn btn-danger btn-flat" data-toggle="modal" data-target="#" data-tooltip="tooltip" data-placement="top" title="Remover Horario" id="remove'+add+'" onclick="remover_horario('+add+')"><i class="fa fa-ban"></i></button></span></div></div><div class="col-8"><label for="horarios">Dirección:<b style="color: red;">*</b></label><input type="text" name="direccion[]" id="direccion'+add+'" class="form-control form-control-md" title="Ingrese la dirección en la cual se encuentra en el horario a la izquierda"></div></div></td></tr>');
 
     }); 
   function remover_horario(fila) {
@@ -679,12 +714,10 @@ function change_cost(costo, id_producto){
         $("#recargo_v").css('display','block');
         $("#interes_v").css('display','block');
         $("#cuotas_v").css('display','block');
-        $("#recargo_v").attr('required',true);
-        $("#interes_v").attr('required',true);
-        $("#cuotas_v").attr('required',true);
+        $("#id_cuota").attr('required',true);
 
         $("#monto_tcmp_v").css('display','block');
-        $("#monto_tcmp").attr('readonly',true);
+        $("#monto_tcmp").prop('readonly',true);
         $("#medios_v").css('display','block');
         $("#cuotas_v").css('display','block');
       break;
@@ -706,14 +739,12 @@ function change_cost(costo, id_producto){
 
         $("#recargo_v").css('display','none');
         $("#interes_v").css('display','none');
-        $("#cuotas_v").css('display','none');
-        $("#recargo_v").removeAttr('required');
-        $("#interes_v").removeAttr('required');
-        $("#cuotas_v").removeAttr('required');
-
-        $("#monto_tcmp_v").css('display','none');
         $("#medios_v").css('display','none');
         $("#cuotas_v").css('display','none');
+        $("#id_cuota").removeAttr('required');
+        
+
+        $("#monto_tcmp_v").css('display','none');
         $("#monto_tcmp").removeAttr('readonly');
         anular_pago_ct();
       break;
@@ -735,16 +766,13 @@ function change_cost(costo, id_producto){
 
         $("#recargo_v").css('display','block');
         $("#interes_v").css('display','block');
+        $("#medios_v").css('display','block');
         $("#cuotas_v").css('display','block');
-        $("#recargo_v").attr('required');
-        $("#interes_v").attr('required');
-        $("#cuotas_v").attr('required');
-
+        $("#id_cuota").attr('required');
 
         $("#monto_tcmp_v").css('display','block');
         $("#monto_tcmp").removeAttr('readonly');
-        $("#medios_v").css('display','block');
-        $("#cuotas_v").css('display','block');
+        
       break;
       case 'Efectivo/Transferencia':
         $("#col_transferencia").css('display','block');
@@ -764,16 +792,14 @@ function change_cost(costo, id_producto){
 
         $("#recargo_v").css('display','none');
         $("#interes_v").css('display','none');
+        $("#medios_v").css('display','none');
         $("#cuotas_v").css('display','none');
-        $("#recargo_v").removeAttr('required');
-        $("#interes_v").removeAttr('required');
-        $("#cuotas_v").removeAttr('required');
+        $("#id_cuota").removeAttr('required');
 
 
         $("#monto_tcmp_v").css('display','none');
         $("#monto_tcmp").removeAttr('readonly');
-        $("#medios_v").css('display','none');
-        $("#cuotas_v").css('display','none');
+        
 
         anular_pago_ct();
       break;
@@ -795,16 +821,13 @@ function change_cost(costo, id_producto){
 
         $("#recargo_v").css('display','block');
         $("#interes_v").css('display','block');
+        $("#medios_v").css('display','block');
         $("#cuotas_v").css('display','block');
-        $("#recargo_v").attr('required');
-        $("#interes_v").attr('required');
-        $("#cuotas_v").attr('required');
-
+        $("#id_cuota").attr('required');
 
         $("#monto_tcmp_v").css('display','block');
         $("#monto_tcmp").removeAttr('readonly');
-        $("#medios_v").css('display','block');
-        $("#cuotas_v").css('display','block');
+        
 
       break;
       
@@ -826,16 +849,14 @@ function change_cost(costo, id_producto){
         
         $("#recargo_v").css('display','none');
         $("#interes_v").css('display','none');
+        $("#medios_v").css('display','none');
         $("#cuotas_v").css('display','none');
-        $("#recargo_v").removeAttr('required');
-        $("#interes_v").removeAttr('required');
-        $("#cuotas_v").removeAttr('required');
-
+        $("#id_cuotas").removeAttr('required');
+        
 
         $("#monto_tcmp_v").css('display','none');
         $("#monto_tcmp").removeAttr('readonly');
-        $("#medios_v").css('display','none');
-        $("#cuotas_v").css('display','none');
+        
 
         anular_pago_ct();
       break;
@@ -913,9 +934,9 @@ $("#id_medio").on('change',function (event) {
         $("#recargo_v").css('display','none');
         $("#interes_v").css('display','none');
         $("#cuotas_v").css('display','none');
-        $("#recargo_v").removeAttr('required');
-        $("#interes_v").removeAttr('required');
-        $("#cuotas_v").removeAttr('required');
+        $("#recargo").removeAttr('required');
+        $("#interes").removeAttr('required');
+        $("#cuotas").removeAttr('required');
 
 
         $("#monto_tcmp_v").css('display','none');
@@ -923,6 +944,30 @@ $("#id_medio").on('change',function (event) {
         $("#cuotas_v").css('display','none');
     });
   }
+  //EN CASO DE QUE EL DELIVERY SEA O NO GRATIS
+  $("#pago_delivery").on('change',function (event) {
+    if(!$(this).is(':checked')){
+      $("#monto_pago_delivery").removeAttr('disabled');
+      $("#monto_tarifa").removeAttr('disabled');
+    }else{
+      $("#monto_pago_delivery").attr('disabled',true);
+      $("#monto_tarifa").attr('disabled',true);
+    }    
+  });
+  //BUSCANDO LAS TARIFAS DE LAS AGENCIAS O PARA ASIGNAR AGENCIAS
+  $("#id_zona").on('change',function (event) {
+    var id_zona=event.target.value;
+    $.get('/pedidos/'+id_zona+'/buscar_agencias_tarifas',function (data) {})
+    .done(function(data) {
+      console.log(data);
+        if(data.length > 0){
+          $("#id_tarifa").empty();
+          for(var i=0; i < data.length; i++){
+            $("#id_tarifa").append("<option value='"+data[i].id_agencia+"'>"+data[i].nombre+" - Tarifa: "+data[i].monto+"</option>")
+          }
+        }
+    });    
+  });
 </script>
 <script src="{{ asset('js/sweetalert2.min.js') }}"></script>
 @endsection

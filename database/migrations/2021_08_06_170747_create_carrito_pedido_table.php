@@ -34,6 +34,9 @@ class CreateCarritoPedidoTable extends Migration
             $table->integer('stock');
             $table->integer('disponible');
             $table->float('total_fact')->default(0);
+            $table->integer('id_zona')->default(0);
+            $table->enum('pago_delivery',['Si','No'])->default('No');
+            $table->float('monto_pago_delivery')->default(0);
 
             $table->foreign('id_cliente')->references('id')->on('clientes')->onDelete('cascade');
             $table->foreign('id_user')->references('id')->on('users')->onDelete('cascade');

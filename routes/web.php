@@ -61,8 +61,9 @@ Route::group(['middleware' => ['web', 'auth']], function() {
 	Route::get('/pedidos/{nuevo_monto}/actualizar_monto_descuento',[PedidosController::class,'actualizar_monto_descuento']);
 	Route::get('/pedidos/{nuevo_monto}/actualizar_porcentaje_descuento',[PedidosController::class,'actualizar_porcentaje_descuento']);
 	Route::get('/pedidos/{id_cuota}/{monto}/calcular_recargo',[PedidosController::class,'calcular_recargo']);
-
 	Route::post('/pedidos/remove',[PedidosController::class,'remove'])->name('pedidos.remove');
+	Route::get('/pedidos/{id_zona}/buscar_agencias_tarifas',[PedidosController::class,'buscar_agencias_tarifas']);
+
 	Route::resource('/pedidos',PedidosController::class);
 	Route::get('/buscar_clientes',[ClientesController::class, 'buscar_clientes']);
 	Route::get('/buscar_productos',[ProductosController::class, 'buscar_productos']);
