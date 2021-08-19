@@ -15,7 +15,7 @@ use App\Models\Fuentes;
 use App\Models\Medio;
 use App\Models\Iva;
 use App\Models\Cuotas;
-    
+use App\Models\Tarifas;
 date_default_timezone_set("America/Argentina/Buenos_Aires");
 
 class PedidosController extends Controller
@@ -45,7 +45,7 @@ class PedidosController extends Controller
         $agencias=Agencias::all();
         $fuentes=Fuentes::all();
         $medios=Medio::all();
-
+        $tarifas=Tarifas::all();
         $iva=Iva::where('status','Activo')->first();
         $carrito=CarritoPedido::where('id_user',\Auth::getUser()->id)->get();
         $c=CarritoPedido::where('id_user',\Auth::getUser()->id)->first();
@@ -59,9 +59,11 @@ class PedidosController extends Controller
             $cuotas_ct=$c->cuotas_ct;
             $total_ct=$c->total_ct;
             $interes_ct=$c->interes_ct;
-            $pago_delivery=$c->pago_delivery;
-            $monto_pago_delivery=$c->monto_pago_delivery;
+
+            $envio_gratis=$c->envio_gratis;
             $id_zona=$c->id_zona;
+            $monto_tarifa=$c->monto_tarifa;
+            $id_tarifa=$c->id_tarifa;
         }else{
             $monto_descuento=0;
             $porcentaje_descuento=0;
@@ -72,12 +74,13 @@ class PedidosController extends Controller
             $cuotas_ct=0;
             $total_ct=0;
             $interes_ct=0;
-            $pago_delivery=0;
-            $monto_pago_delivery=0;
+            $envio_gratis="Si";
             $id_zona=0;
+            $monto_tarifa=0;
+            $id_tarifa=0;
         }
 
-        return view('pedidos.create',compact('productos','categorias','clientes','zonas','estados','agencias','carrito','monto_descuento','porcentaje_descuento','descuento_total','total_fact','iva_total','recargo_ct','cuotas_ct','total_ct','fuentes','medios','iva','interes_ct','pago_delivery','monto_pago_delivery','id_zona'));
+        return view('pedidos.create',compact('productos','categorias','clientes','zonas','estados','agencias','carrito','monto_descuento','porcentaje_descuento','descuento_total','total_fact','iva_total','recargo_ct','cuotas_ct','total_ct','fuentes','medios','iva','interes_ct','envio_gratis','id_zona','monto_tarifa','id_tarifa','tarifas'));
         
     }
 
@@ -204,7 +207,7 @@ class PedidosController extends Controller
             $previo2=CarritoPedido::where('id_user',\Auth::getUser()->id)->get();
             $porcentaje_descuento=$previo->porcentaje_descuento;
             $monto_descuento=$previo->monto_descuento;
-            $monto_tarifa=$previo->monto_pago_delivery;
+            $monto_tarifa=$previo->monto_tarifa;
             $sub_total=0;
             foreach ($previo2 as $key) {
                 if($key->id_producto!=$request->id_product_remove){
@@ -294,7 +297,7 @@ class PedidosController extends Controller
 
             $porcentaje_descuento=$previo->porcentaje_descuento;
             $monto_descuento=$previo->monto_descuento;
-            $monto_tarifa=$previo->monto_pago_delivery;
+            $monto_tarifa=$previo->monto_tarifa;
             $sub_total=0;
             foreach ($previo2 as $key) {
                 if($key->id_producto!=$id_producto){
@@ -383,7 +386,7 @@ class PedidosController extends Controller
 
             $porcentaje_descuento=$previo->porcentaje_descuento;
             $monto_descuento=$previo->monto_descuento;
-            $monto_tarifa=$previo->monto_pago_delivery;
+            $monto_tarifa=$previo->monto_tarifa;
             $sub_total=0;
             foreach ($previo2 as $key) {
                 if($key->id_producto!=$id_producto){
@@ -469,7 +472,7 @@ class PedidosController extends Controller
 
             $porcentaje_descuento=$previo->porcentaje_descuento;
             $monto_descuento=$nuevo_monto;
-            $monto_tarifa=$previo->monto_pago_delivery;
+            $monto_tarifa=$previo->monto_tarifa;
             $sub_total=0;
             foreach ($previo2 as $key) {
                 $sub_total+=$key->cantidad*$key->monto_und;
@@ -547,7 +550,7 @@ class PedidosController extends Controller
 
             $porcentaje_descuento=$nuevo_monto;
             $monto_descuento=$previo->monto_descuento;
-            $monto_tarifa=$previo->monto_pago_delivery;
+            $monto_tarifa=$previo->monto_tarifa;
             $sub_total=0;
             foreach ($previo2 as $key) {
                 $sub_total+=$key->cantidad*$key->monto_und;
@@ -675,7 +678,7 @@ class PedidosController extends Controller
          $agencias=\DB::table('tarifas')->join('zonas','zonas.id','=','tarifas.id_zona')
         ->join('agencias','agencias.id','=','tarifas.id_agencia')
         ->where('tarifas.id_zona',$id_zona)
-        ->select('agencias.*','tarifas.id_agencia','tarifas.monto')->get();
+        ->select('agencias.nombre','tarifas.*')->get();
         return $agencias;
     }
 
@@ -690,7 +693,6 @@ class PedidosController extends Controller
 
             $porcentaje_descuento=$previo->porcentaje_descuento;
             $monto_descuento=$previo->monto_descuento;
-            $monto_tarifa=$previo->monto_pago_delivery;
             $sub_total=0;
             foreach ($previo2 as $key) {
                 $sub_total+=$key->cantidad*$key->monto_und;
@@ -699,10 +701,7 @@ class PedidosController extends Controller
             //realizando carga o quite de pago de delivery
             if ($opcion==1) {
                 $sub_total+=$monto;
-            } else {
-                $sub_total-=$monto_tarifa;
             }
-            
 
             //realizando descuento
 
@@ -756,11 +755,106 @@ class PedidosController extends Controller
                     $key->total_ct=$total_ct2;
                 }
                 if ($opcion==1) {
-                    $key->pago_delivery="Si";
-                    $key->monto_pago_delivery=$monto;
+                    $key->envio_gratis="No";
+                    $key->monto_tarifa=$monto;
                 } else {
-                    $key->monto_pago_delivery=0;
-                    $key->pago_delivery="No";
+                    $key->monto_tarifa=0;
+                    $key->envio_gratis="Si";
+                }
+                
+                $key->save();
+                
+            }
+
+            $carrito=CarritoPedido::where('id_user',\Auth::getUser()->id)->get();
+
+            return response()->json($carrito);        
+        }
+    }
+
+    public function agregar_tarifa_envio_agencia($id_tarifa,$opcion)
+    {
+        $carrito=CarritoPedido::where('id_user',\Auth::getUser()->id)->count();
+        if ($carrito > 0) {
+
+            $previo=CarritoPedido::where('id_user',\Auth::getUser()->id)->first();
+            
+            $previo2=CarritoPedido::where('id_user',\Auth::getUser()->id)->get();
+            $tarifa=Tarifas::find($id_tarifa);
+            if($tarifa){
+                $monto=$tarifa->monto;
+            }else{
+                $monto=0;
+            }
+            $porcentaje_descuento=$previo->porcentaje_descuento;
+            $monto_descuento=$previo->monto_descuento;
+            $sub_total=0;
+            foreach ($previo2 as $key) {
+                $sub_total+=$key->cantidad*$key->monto_und;
+            }
+            
+            //realizando carga o quite de pago de delivery
+            if ($opcion==1) {
+                $sub_total+=$monto;
+            }
+
+            //realizando descuento
+
+            $total=$sub_total;
+            if ($porcentaje_descuento >= 0) {
+                $total-=($porcentaje_descuento*$sub_total)/100;
+            }
+            if ($monto_descuento >= 0) {
+                $total-=$monto_descuento;
+            }
+            $descuento_total=$monto_descuento+(($porcentaje_descuento*$sub_total)/100);
+            //---------------------en caso de pago con tarjeta
+            if($previo->recargo_ct > 0){
+            $cuota=Cuotas::find($previo->id_cuota);
+            $medio=Medio::find($cuota->id_medio);
+            $iva=Iva::where('status','Activo')->first();
+            $iva_total=(($medio->porcentaje+$cuota->interes)*$iva->iva)/100;
+            $total_porcentaje=$medio->porcentaje+$cuota->interes+$iva_total;
+            $total_porcentaje2=100-$total_porcentaje;
+            //en caso de que el monto a pagar con tarjeta sea igual al monto total de la factura
+            if($previo->total_fact==$previo->monto_ct){
+                $recargo_ct=($total/$total_porcentaje2)*100-$total;
+                $total_ct2=$total+$recargo_ct;
+                $monto_ct=$total;    
+            }else{
+                //CALCULANDO DIFERENCIA EN TOTALES
+                if ($previo->total_fact > $total) {
+                    $resta=$previo->total_fact - $total;
+                } else {
+                    $resta=$total - $previo->total_fact;
+                }
+                
+                //en caso de que el monto sea distinto
+                $recargo_ct=($previo->monto_ct/$total_porcentaje2)*100-$previo->monto_ct;
+                $total_ct2=$previo->monto_ct+$recargo_ct+$resta;
+                $monto_ct=$previo->monto_ct;
+            }
+            $cada_cuota=$total_ct2/$cuota->cant_cuota;
+            }
+            //--------------------------------------------------------------------------
+            //actualizando totales
+            foreach ($previo2 as $key) {
+                
+                $key->total_fact=$total;
+                $key->descuento_total=$descuento_total;
+                if($previo->recargo_ct > 0){
+                    $key->monto_ct=$monto_ct;
+                    $key->recargo_ct=$recargo_ct;
+                    $key->cuotas_ct=$cuota->cant_cuota;
+                    $key->interes_ct=$cada_cuota;
+                    $key->total_ct=$total_ct2;
+                }
+                if ($opcion==1) {
+                    $key->envio_gratis="No";
+                    $key->monto_tarifa=$monto;
+                } else {
+                    $key->monto_tarifa=0;
+                    $key->envio_gratis="Si";
                 }
                 
                 $key->save();

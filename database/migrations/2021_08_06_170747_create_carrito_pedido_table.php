@@ -24,6 +24,7 @@ class CreateCarritoPedidoTable extends Migration
             $table->float('monto_descuento')->default(0);//de la factura
             $table->float('porcentaje_descuento')->default(0);//de la factura
             $table->float('descuento_total')->default(0);
+            //en cuanto a pago por mercado pago
             $table->integer('id_cuota')->default(0);
             $table->float('iva_total')->default(0);
             $table->float('monto_ct')->default(0);
@@ -34,9 +35,11 @@ class CreateCarritoPedidoTable extends Migration
             $table->integer('stock');
             $table->integer('disponible');
             $table->float('total_fact')->default(0);
+            //en cuanto  pago de delivery
             $table->integer('id_zona')->default(0);
-            $table->enum('pago_delivery',['Si','No'])->default('No');
-            $table->float('monto_pago_delivery')->default(0);
+            $table->enum('envio_gratis',['Si','No'])->default('Si');
+            $table->integer('id_tarifa')->default(0);
+            $table->float('monto_tarifa')->default(0);
 
             $table->foreign('id_cliente')->references('id')->on('clientes')->onDelete('cascade');
             $table->foreign('id_user')->references('id')->on('users')->onDelete('cascade');

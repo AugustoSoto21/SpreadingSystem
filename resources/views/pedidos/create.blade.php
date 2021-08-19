@@ -122,7 +122,12 @@
                       <label for="descuento_p">Descuento(%)</label>
                       <input type="number" name="porcentaje_descuento" min="0" max="100" title="Ingrese el porcentaje del descuento" class="form-control form-control-sm" value="{{$porcentaje_descuento}}"  pattern="[0-9]+([,\.][0-9]+)?" formnovalidate="formnovalidate" onchange="change_porcentaje_descuento(this)">
                     </div>                    
-                    
+                    <div class="col-md-4">
+                      <div class="icheck-success d-inline">
+                        <input type="checkbox" <?php if($envio_gratis=="Si"){ ?> checked="checked" <?php } ?> name="envio_gratis" id="envio_gratis" >
+                        <label for="envio_gratis">Envío gratis?:</label>
+                      </div>
+                    </div>
                   </div>
                   <div class="row">
                     <div class="col-md-7">
@@ -134,27 +139,22 @@
                         @endforeach
                       </select>
                     </div>
-                    <div class="col-md-4">
-                      <br>
-                      <div class="icheck-success d-inline">
-                        <input type="checkbox" <?php if($pago_delivery=="Si"){ ?> checked="checked" <?php } ?> name="pago_delivery" id="pago_delivery" >
-                        <label for="pago_delivery">Envío gratis?:</label>
-                        
-                        <!-- 
-                        <input type="number" name="monto_pago_delivery" id="monto_pago_delivery" min="0" class="form-control form-control-sm" placeholder="300" title="Ingrese el monto del pago del delivery en caso de tomar el de la zona" <?php if($pago_delivery=="Si"){ ?> disabled="disabled" <?php } ?> > -->
-                      </div>
-                    </div>                    
                   </div>
                   <div class="row">
                     <div class="col-md-7">
                       <label for="tarifas">Tarifas p/agencia</label>
-                      <select name="id_tarifa" id="id_tarifa" class="form-control select2">
-                       
+                      <select name="id_tarifa" id="id_tarifa" class="form-control select2" onchange="agregar_tarifa_envio_agencia(1)">
+                      @if($id_tarifa > 0)
+                        <option value="0">Seleccione una Agencia</option>
+                       @foreach($tarifas as $t)
+                        <option value="{{$t->id}}" <?php if($t->id==$id_tarifa){ ?> selected="selected" <?php } ?> >{{$t->agencias->nombre}} Tarifa: {{$t->monto}}</option>
+                       @endforeach
+                      @endif
                       </select>
                     </div>
                     <div class="col-md-3">
-                      <label for="pago_delivery">Cambiar Tarifa:</label>
-                        <input type="number" value="{{$monto_pago_delivery}}" name="monto_tarifa" id="monto_tarifa" min="0" class="form-control form-control-sm" placeholder="300" title="Ingrese un monto si quiere que el envío sea distinto a la tarifa de la agencia"  <?php if($pago_delivery=="Si"){ ?> disabled="disabled" <?php } ?> onchange="agregar_tarifa_envio(1)" >
+                      <label for="tarifas_p">Tarifa por envío</label>
+                      <input type="number" <?php if($monto_tarifa > 0){ ?> value="{{$monto_tarifa}}" <?php } ?> name="monto_tarifa" id="monto_tarifa" min="0" class="form-control form-control-sm" placeholder="300" title="Ingrese un monto si quiere que el envío sea distinto a la tarifa de la agencia"  <?php if($envio_gratis=="Si"){ ?> readonly="readonly" <?php } ?> onchange="agregar_tarifa_envio(1)" >
                       
                     </div>                
                   </div>
@@ -948,27 +948,30 @@ $("#id_medio").on('change',function (event) {
     });
   }
   //EN CASO DE QUE EL DELIVERY SEA O NO GRATIS
-  $("#pago_delivery").on('change',function (event) {
+  $("#envio_gratis").on('change',function (event) {
     if(!$(this).is(':checked')){
-      /*$("#monto_pago_delivery").removeAttr('disabled');*/
-      $("#monto_tarifa").removeAttr('disabled');
+      $("#monto_tarifa").removeAttr('readonly');
+      
+      
     }else{
-      /*$("#monto_pago_delivery").attr('disabled',true);*/
-      $("#monto_tarifa").attr('disabled',true);
+      
+      $("#monto_tarifa").attr('readonly',true);
       $("#monto_tarifa").val("");
       agregar_tarifa_envio(0);
     }    
   });
+  
   //BUSCANDO LAS TARIFAS DE LAS AGENCIAS O PARA ASIGNAR AGENCIAS
   $("#id_zona").on('change',function (event) {
     var id_zona=event.target.value;
     $.get('/pedidos/'+id_zona+'/buscar_agencias_tarifas',function (data) {})
     .done(function(data) {
-      console.log(data);
+      //console.log(data);
         if(data.length > 0){
           $("#id_tarifa").empty();
+          $("#id_tarifa").append("<option value='0'>Seleccione una Agencia</option>")
           for(var i=0; i < data.length; i++){
-            $("#id_tarifa").append("<option value='"+data[i].id_agencia+"'>"+data[i].nombre+" - Tarifa: "+data[i].monto+"</option>")
+            $("#id_tarifa").append("<option value='"+data[i].id+"'>"+data[i].nombre+" - Tarifa: "+data[i].monto+"</option>")
           }
         }
     });    
@@ -984,8 +987,8 @@ $("#id_medio").on('change',function (event) {
     .done(function(data) {
       console.log(data);
         if(data.length > 0){
-          $("#total").text(formatNumber(data[0].total_ct.toFixed(2)));
-          $("#total_ip").val(data[0].total_ct);
+          $("#total").text(formatNumber(data[0].total_fact.toFixed(2)));
+          $("#total_ip").val(data[0].total_fact);
           $("#total_ct").text(formatNumber(data[0].total_ct.toFixed(2)));
           $("#total_ct_ip").val(data[0].total_ct);
           $("#recargo_ct").text(formatNumber(data[0].recargo_ct.toFixed(2)));
@@ -999,6 +1002,35 @@ $("#id_medio").on('change',function (event) {
           $("#monto_ct").text(formatNumber(data[0].recargo_ct.toFixed(2)));
           $("#monto_ct_ip").text(data[0].recargo_ct.toFixed(2));
           
+        }
+    });
+  }
+  //agregando tarifa de agencia
+  function agregar_tarifa_envio_agencia(opcion) {
+    if(opcion==1){
+        var id_tarifa=$("#id_tarifa").val();
+    }else{
+      var id_tarifa=0;
+    }
+    $.get('/pedidos/'+id_tarifa+'/'+opcion+'/agregar_tarifa_envio_agencia',function (data) {})
+    .done(function(data) {
+      console.log(data);
+        if(data.length > 0){
+          $("#total").text(formatNumber(data[0].total_fact.toFixed(2)));
+          $("#total_ip").val(data[0].total_fact);
+          $("#total_ct").text(formatNumber(data[0].total_ct.toFixed(2)));
+          $("#total_ct_ip").val(data[0].total_ct);
+          $("#recargo_ct").text(formatNumber(data[0].recargo_ct.toFixed(2)));
+          $("#recargo_ct_ip").val(data[0].recargo_ct);
+          $("#recargo").val(data[0].recargo_ct.toFixed(2));
+          $("#interes").val(data[0].interes_ct);
+          $("#cuotas_ct").text(data[0].cuotas_ct);
+          $("#cuotas_ct_ip").val(data[0].cuotas_ct);
+          $("#iva").text(formatNumber(data[0].recargo_ct.toFixed(2)));
+          $("#iva_ip").text(data[0].recargo_ct.toFixed(2));
+          $("#monto_ct").text(formatNumber(data[0].recargo_ct.toFixed(2)));
+          $("#monto_ct_ip").text(data[0].recargo_ct.toFixed(2));
+          $("#monto_tarifa").val(data[0].monto_tarifa);
         }
     });
   }
