@@ -63,7 +63,7 @@ Route::group(['middleware' => ['web', 'auth']], function() {
 	Route::get('/pedidos/{id_cuota}/{monto}/calcular_recargo',[PedidosController::class,'calcular_recargo']);
 	Route::post('/pedidos/remove',[PedidosController::class,'remove'])->name('pedidos.remove');
 	Route::get('/pedidos/{id_zona}/buscar_agencias_tarifas',[PedidosController::class,'buscar_agencias_tarifas']);
-
+	Route::get('/pedidos/{monto}/{opcion}/agregar_tarifa_envio',[PedidosController::class,'agregar_tarifa_envio']);
 	Route::resource('/pedidos',PedidosController::class);
 	Route::get('/buscar_clientes',[ClientesController::class, 'buscar_clientes']);
 	Route::get('/buscar_productos',[ProductosController::class, 'buscar_productos']);

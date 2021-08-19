@@ -134,11 +134,14 @@
                         @endforeach
                       </select>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-4">
+                      <br>
                       <div class="icheck-success d-inline">
                         <input type="checkbox" <?php if($pago_delivery=="Si"){ ?> checked="checked" <?php } ?> name="pago_delivery" id="pago_delivery" >
                         <label for="pago_delivery">Envío gratis?:</label>
-                        <input type="number" name="monto_pago_delivery" id="monto_pago_delivery" min="0" class="form-control form-control-sm" placeholder="300" title="Ingrese el monto del pago del delivery en caso de tomar el de la zona" <?php if($pago_delivery=="Si"){ ?> disabled="disabled" <?php } ?> >
+                        
+                        <!-- 
+                        <input type="number" name="monto_pago_delivery" id="monto_pago_delivery" min="0" class="form-control form-control-sm" placeholder="300" title="Ingrese el monto del pago del delivery en caso de tomar el de la zona" <?php if($pago_delivery=="Si"){ ?> disabled="disabled" <?php } ?> > -->
                       </div>
                     </div>                    
                   </div>
@@ -151,7 +154,7 @@
                     </div>
                     <div class="col-md-3">
                       <label for="pago_delivery">Cambiar Tarifa:</label>
-                        <input type="number" name="monto_tarifa" id="monto_tarifa" min="0" class="form-control form-control-sm" placeholder="300" title="Ingrese un monto si quiere que el envío sea distinto a la tarifa de la agencia"  <?php if($pago_delivery=="Si"){ ?> disabled="disabled" <?php } ?>  >
+                        <input type="number" value="{{$monto_pago_delivery}}" name="monto_tarifa" id="monto_tarifa" min="0" class="form-control form-control-sm" placeholder="300" title="Ingrese un monto si quiere que el envío sea distinto a la tarifa de la agencia"  <?php if($pago_delivery=="Si"){ ?> disabled="disabled" <?php } ?> onchange="agregar_tarifa_envio(1)" >
                       
                     </div>                
                   </div>
@@ -947,11 +950,13 @@ $("#id_medio").on('change',function (event) {
   //EN CASO DE QUE EL DELIVERY SEA O NO GRATIS
   $("#pago_delivery").on('change',function (event) {
     if(!$(this).is(':checked')){
-      $("#monto_pago_delivery").removeAttr('disabled');
+      /*$("#monto_pago_delivery").removeAttr('disabled');*/
       $("#monto_tarifa").removeAttr('disabled');
     }else{
-      $("#monto_pago_delivery").attr('disabled',true);
+      /*$("#monto_pago_delivery").attr('disabled',true);*/
       $("#monto_tarifa").attr('disabled',true);
+      $("#monto_tarifa").val("");
+      agregar_tarifa_envio(0);
     }    
   });
   //BUSCANDO LAS TARIFAS DE LAS AGENCIAS O PARA ASIGNAR AGENCIAS
@@ -968,6 +973,35 @@ $("#id_medio").on('change',function (event) {
         }
     });    
   });
+
+  function agregar_tarifa_envio(opcion) {
+    if(opcion==1){
+        var monto=$("#monto_tarifa").val();
+    }else{
+      var monto=0;
+    }
+    $.get('/pedidos/'+monto+'/'+opcion+'/agregar_tarifa_envio',function (data) {})
+    .done(function(data) {
+      console.log(data);
+        if(data.length > 0){
+          $("#total").text(formatNumber(data[0].total_ct.toFixed(2)));
+          $("#total_ip").val(data[0].total_ct);
+          $("#total_ct").text(formatNumber(data[0].total_ct.toFixed(2)));
+          $("#total_ct_ip").val(data[0].total_ct);
+          $("#recargo_ct").text(formatNumber(data[0].recargo_ct.toFixed(2)));
+          $("#recargo_ct_ip").val(data[0].recargo_ct);
+          $("#recargo").val(data[0].recargo_ct.toFixed(2));
+          $("#interes").val(data[0].interes_ct);
+          $("#cuotas_ct").text(data[0].cuotas_ct);
+          $("#cuotas_ct_ip").val(data[0].cuotas_ct);
+          $("#iva").text(formatNumber(data[0].recargo_ct.toFixed(2)));
+          $("#iva_ip").text(data[0].recargo_ct.toFixed(2));
+          $("#monto_ct").text(formatNumber(data[0].recargo_ct.toFixed(2)));
+          $("#monto_ct_ip").text(data[0].recargo_ct.toFixed(2));
+          
+        }
+    });
+  }
 </script>
 <script src="{{ asset('js/sweetalert2.min.js') }}"></script>
 @endsection
