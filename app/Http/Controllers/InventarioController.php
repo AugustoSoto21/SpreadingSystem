@@ -20,6 +20,7 @@ class InventarioController extends Controller
     public function index()
     {
         $categorias=Categorias::all();
+        $agencias=Agencias::where('nombre','<>','SPREADING')->get();
         if(request()->ajax()) {
             $productos=\DB::table('productos')
             ->join('categorias','categorias.id','=','productos.id_categoria')
@@ -43,7 +44,7 @@ class InventarioController extends Controller
                 ->make(true);
         }
 
-        return view('stocks.index',compact('categorias'));
+        return view('stocks.index',compact('categorias','agencias'));
     }
 
     /**
