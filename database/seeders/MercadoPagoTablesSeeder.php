@@ -20,22 +20,34 @@ class MercadoPagoTablesSeeder extends Seeder
         \DB::table('medios')->insert([
             ['medio' => 'LINK',
             'porcentaje' => 5.99,
-            'id_iva' => 1],
+            'id_iva' => 1,
+            'status' => 'Activo',
+            'comision' => 'Si'],
             ['medio' => 'POINT CREDITO',
             'porcentaje' => 5.79,
-            'id_iva' => 1],
+            'id_iva' => 1,
+            'status' => 'Activo',
+            'comision' => 'Si'],
             ['medio' => 'POINT DEBITO',
             'porcentaje' => 3.29,
-            'id_iva' => 1],
+            'id_iva' => 1,
+            'status' => 'Activo',
+            'comision' => 'Si'],
             ['medio' => 'QR DINERO EN CUENTA',
             'porcentaje' => 0.8,
-            'id_iva' => 1],
+            'id_iva' => 1,
+            'status' => 'Activo',
+            'comision' => 'No'],
             ['medio' => 'QR CREDITO',
             'porcentaje' => 5.79,
-            'id_iva' => 1],
+            'id_iva' => 1,
+            'status' => 'Activo',
+            'comision' => 'Si'],
             ['medio' => 'QR DEBITO',
             'porcentaje' => 0.99,
-            'id_iva' => 1]
+            'id_iva' => 1,
+            'status' => 'Activo',
+            'comision' => 'No']
         ]);
 
         \DB::table('cuotas')->insert([
@@ -68,6 +80,10 @@ class MercadoPagoTablesSeeder extends Seeder
             'interes' => 0],
             //-------------------
             ['id_medio' => 5,
+            'cant_cuota' => 1,
+            'interes' => 0],
+            //-------------------
+            ['id_medio' => 6,
             'cant_cuota' => 1,
             'interes' => 0],
         ]);

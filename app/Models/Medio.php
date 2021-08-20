@@ -11,7 +11,7 @@ class Medio extends Model
 
     protected $table='medios';
 
-    protected $fillable=['medio','porcentaje','id_iva','status'];
+    protected $fillable=['medio','porcentaje','id_iva','status','comision'];
 
     public function iva()
     {

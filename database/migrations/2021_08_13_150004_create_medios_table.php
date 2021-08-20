@@ -19,6 +19,7 @@ class CreateMediosTable extends Migration
             $table->float('porcentaje');
             $table->unsignedBigInteger('id_iva');
             $table->enum('status',['Activo','Inactivo'])->default('Activo');
+            $table->enum('comision',['Si','No'])->default('Si');
 
             $table->foreign('id_iva')->references('id')->on('ivas')->onDelete('cascade');
             $table->timestamps();

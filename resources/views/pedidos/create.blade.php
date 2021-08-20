@@ -216,7 +216,7 @@
                 <div class="col-4">
                   <label>
                     <div class="icheck-success d-inline">
-                      <input type="checkbox" <?php if($recargo_ct > 0){ ?> checked="checked" <?php } ?> name="pago_realizado" id="pago_realizado" onchange="anular_pago_ct()">
+                      <input type="checkbox" <?php if($recargo_ct > 0){ ?> checked="checked" <?php } ?> name="pago_realizado" id="pago_realizado" onchange="anular_pago_ct(1)">
                       <label for="pago_realizado">Pagó?:</label>
                     </div>
                   </label>                    
@@ -296,7 +296,7 @@
                   <input type="text"  value="{{$recargo_ct}}" placeholder="8" title="Ingrese el monto de recargo" name="recargo" id="recargo" readonly="readonly"  class="form-control" >
                 </div>
                 <div class="col-4"  id="interes_v" style="display: none;">
-                  <label for="interes">Interés por cuota(%):<b style="color: red;">*</b></label>
+                  <label for="interes">Monto por cuota:<b style="color: red;">*</b></label>
                   <input type="text"  value="{{$interes_ct}}" placeholder="2" title="Ingrese el porcentaje de Interés" readonly="readonly" name="interes" id="interes" class="form-control" >
                 </div>
                 
@@ -760,7 +760,7 @@ function change_cost(costo, id_producto){
 
         $("#monto_tcmp_v").css('display','none');
         $("#monto_tcmp").removeAttr('readonly');
-        anular_pago_ct();
+        anular_pago_ct(2);
       break;
       case 'Transferencia/TC-MercadoPago':
         $("#col_transferencia").css('display','block');
@@ -815,7 +815,7 @@ function change_cost(costo, id_producto){
         $("#monto_tcmp").removeAttr('readonly');
         
 
-        anular_pago_ct();
+        anular_pago_ct(2);
       break;
       case 'Efectivo/TC-MercadoPago':
         $("#col_mercadop").css('display','block');
@@ -872,7 +872,7 @@ function change_cost(costo, id_producto){
         $("#monto_tcmp").removeAttr('readonly');
         
 
-        anular_pago_ct();
+        anular_pago_ct(1);
       break;
 
     }
@@ -913,7 +913,7 @@ $("#id_medio").on('change',function (event) {
         });
       }
     });
-  function anular_pago_ct() {
+  function anular_pago_ct(opcion) {
     $.get('/pedidos/0/0/calcular_recargo',function (data) {})
     .done(function(data) {
       
@@ -929,12 +929,12 @@ $("#id_medio").on('change',function (event) {
       $("#iva_ip").text(data[0].recargo_ct.toFixed(2));
       $("#monto_ct").text(formatNumber(data[0].recargo_ct.toFixed(2)));
       $("#monto_ct_ip").text(data[0].recargo_ct.toFixed(2));
-
-      $("#col_transferencia").css('display','none');
+        if(opcion==1){
+        $("#col_transferencia").css('display','none');
         $("#col_transferencia").removeAttr('required');
         $("#fecha_transferencia").css('display','none');
         $("#fecha_ptransferencia").removeAttr('required');
-
+        }
         $("#col_tarjeta").css('display','none');
         $("#col_tarjeta").removeAttr('required');
         $("#fecha_tc").css('display','none');
