@@ -215,10 +215,12 @@
                   </select>
                 </div>
                 <div class="col-4">
+                  <label>
                     <div class="icheck-success d-inline">
                       <input type="checkbox" <?php if($recargo_ct > 0){ ?> checked="checked" <?php } ?> name="pago_realizado" id="pago_realizado" onchange="anular_pago_ct()">
-                    <label for="pago_realizado">Pagó?:</label>
+                      <label for="pago_realizado">Pagó?:</label>
                     </div>
+                  </label>                    
                   <select name="metodo_pago"  <?php if($recargo_ct == 0){ ?> disabled="disabled" <?php } ?>  id="metodo_pago" class="form-control">
                     <option value="">Seleccione forma de pago...</option>
                     <option value="Efectivo">Efectivo</option>
