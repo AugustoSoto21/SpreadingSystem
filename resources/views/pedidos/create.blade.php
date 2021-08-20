@@ -207,11 +207,10 @@
                 <div class="col-4">
                   <label for="fuente">Fuente:<b style="color: red;">*</b></label>
                   <select name="id_fuente" id="id_fuente" class="form-control" required="required">
-                    @if($id_fuente > 0)
-                      @foreach($fuentes as $f)
-                        <option value="{{$f->id}}">{{$f->fuente}}</option>
-                      @endforeach
-                    @endif
+                    @foreach($fuentes as $f)
+                        <option value="{{$f->id}}" <?php if($id_fuente==$f->id){ ?> selected="selected" <?php } ?> >{{$f->fuente}}</option>
+                    @endforeach
+                    
                   </select>
                 </div>
                 <div class="col-4">
@@ -234,12 +233,10 @@
                 </div>
                 <div class="col-4">
                     <label for="estado">Estado:</label>
-                  <select name="id_estado" id="id_estado" class="form-control">
-                    @if($id_estado > 0)
-                      @foreach($estados as $e)
-                        <option value="{{$e->id}}">{{$e->estado}}</option>
-                      @endforeach
-                    @endif
+                  <select name="id_estado" id="id_estado" class="form-control select2bs4">
+                    @foreach($estados as $e)
+                        <option value="{{$e->id}}" <?php if($e->id==$id_estado){ ?> selected="selected" <?php } ?> >{{$e->estado}}</option>
+                    @endforeach
                   </select>
                 </div>
               </div>

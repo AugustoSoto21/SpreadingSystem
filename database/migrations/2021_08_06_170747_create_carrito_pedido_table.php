@@ -43,8 +43,8 @@ class CreateCarritoPedidoTable extends Migration
             $table->integer('id_tarifa')->default(0);
             $table->float('monto_tarifa')->default(0);
 
-            $table->unsignedBigInteger('id_fuente');
-            $table->unsignedBigInteger('id_estado');
+            $table->unsignedBigInteger('id_fuente')->default(1);
+            $table->unsignedBigInteger('id_estado')->default(1);;
             
             $table->text('observacion')->nullable();
 
