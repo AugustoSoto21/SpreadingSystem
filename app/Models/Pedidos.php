@@ -11,13 +11,13 @@ use App\Models\Recepcionistas;
 use App\Models\Estados;
 use App\Models\Deliverys;
 use App\Models\Productos;
+use App\Models\User;
 class Pedidos extends Model
 {
     use HasFactory;
-
     protected $table='pedidos';
 
-    protected $fillable=['fecha','id_cliente','id_tarifa','link','envio_gratis','monto_envio','id_fuente','id_recepcionista','id_estado','observacion','id_delivery','status_deposito'];
+    protected $fillable=['codigo','id_cliente','id_user','id_producto','cantidad','monto_und','total_pp','monto_descuento','porcentaje_descuento','descuento_total','iva_total','monto_ct','recargo_ct','total_ct','id_cuota','cuotas_ct','interes_ct','total_fact','id_zona','envio_gratis','id_tarifa','monto_tarifa','link','id_fuente','id_estado','observacion'];
 
     public function clientes(){
 
@@ -31,22 +31,17 @@ class Pedidos extends Model
 
     	return $this->belongsTo(Fuentes::class,'id_fuente');
     }
-    public function recepcionistas(){
+    public function usuario(){
 
-    	return $this->belongsTo(Recepcionistas::class,'id_recepcionista');
+    	return $this->belongsTo(User::class,'id_user');
     }
     public function estados(){
 
     	return $this->belongsTo(Estado::class,'id_estado');
     }
-    public function deliverys(){
-
-    	return $this->belongsTo(Deliverys::class,'id_delivery');
-    }
-
     public function productos(){
 
-    	return $this->belongsToMany(Productos::class,'pedidos_has_productos','id_pedido','id_producto')->withPivot('cantidad');
+        return $this->belongsTo(Estado::class,'id_producto');
     }
 }
 

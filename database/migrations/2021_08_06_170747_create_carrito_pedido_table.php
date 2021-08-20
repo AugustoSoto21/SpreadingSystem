@@ -25,15 +25,17 @@ class CreateCarritoPedidoTable extends Migration
             $table->float('porcentaje_descuento')->default(0);//de la factura
             $table->float('descuento_total')->default(0);
             //en cuanto a pago por mercado pago
-            $table->integer('id_cuota')->default(0);
             $table->float('iva_total')->default(0);
             $table->float('monto_ct')->default(0);
             $table->float('recargo_ct')->default(0);//de la factura
+            $table->float('total_ct')->default(0);
+            $table->integer('id_cuota')->default(0);
             $table->float('cuotas_ct')->default(0);
             $table->float('interes_ct')->default(0);
-            $table->float('total_ct')->default(0);
+            
             $table->integer('stock');
             $table->integer('disponible');
+            
             $table->float('total_fact')->default(0);
             //en cuanto  pago de delivery
             $table->integer('id_zona')->default(0);
@@ -41,9 +43,16 @@ class CreateCarritoPedidoTable extends Migration
             $table->integer('id_tarifa')->default(0);
             $table->float('monto_tarifa')->default(0);
 
-            $table->foreign('id_cliente')->references('id')->on('clientes')->onDelete('cascade');
-            $table->foreign('id_user')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('id_producto')->references('id')->on('productos')->onDelete('cascade');
+            $table->unsignedBigInteger('id_fuente');
+            $table->unsignedBigInteger('id_estado');
+            
+            $table->text('observacion')->nullable();
+
+            $table->foreign('id_cliente')->references('id')->on('clientes');
+            $table->foreign('id_user')->references('id')->on('users');
+            $table->foreign('id_fuente')->references('id')->on('fuentes');
+            $table->foreign('id_producto')->references('id')->on('productos');
+            $table->foreign('id_estado')->references('id')->on('estados');
             $table->timestamps();
         });
     }

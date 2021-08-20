@@ -15,25 +15,46 @@ class CreatePedidosTable extends Migration
     {
         Schema::create('pedidos', function (Blueprint $table) {
             $table->id();
-            $table->timestamp('fecha');
+            $table->string('codigo');
             $table->unsignedBigInteger('id_cliente');
-            $table->unsignedBigInteger('id_tarifa');
-            $table->string('link');
+            $table->unsignedBigInteger('id_user');
+            
+            $table->unsignedBigInteger('id_producto');
+            $table->integer('cantidad');
+            $table->float('monto_und');
+            $table->float('total_pp');//total por producto
+            $table->float('monto_descuento')->default(0);//de la factura
+            $table->float('porcentaje_descuento')->default(0);//de la factura
+            $table->float('descuento_total')->default(0);
+            //en cuanto a pago por mercado pago
+            $table->float('iva_total')->default(0);
+            $table->float('monto_ct')->default(0);
+            $table->float('recargo_ct')->default(0);//de la factura
+            $table->float('total_ct')->default(0);
+            $table->integer('id_cuota')->default(0);
+            $table->float('cuotas_ct')->default(0);
+            $table->float('interes_ct')->default(0);
+            
+            $table->float('total_fact')->default(0);
+
+            //en cuanto  pago de delivery
+            $table->integer('id_zona')->default(0);
             $table->enum('envio_gratis',['Si','No'])->default('Si');
-            $table->float('monto_envio');
+            $table->integer('id_tarifa')->default(0);
+            $table->float('monto_tarifa')->default(0);
+            $table->string('link');
+            
             $table->unsignedBigInteger('id_fuente');
-            $table->unsignedBigInteger('id_recepcionista');
             $table->unsignedBigInteger('id_estado');
             $table->text('observacion')->nullable();
-            $table->unsignedBigInteger('id_delivery');
-            $table->enum('status_deposito',['Depositado','Por Depositar'])->default('Depositado');
+            
+            /*$table->enum('status_deposito',['Depositado','Por Depositar'])->default('Depositado');*/
 
             $table->foreign('id_cliente')->references('id')->on('clientes');
-            $table->foreign('id_tarifa')->references('id')->on('tarifas');
+            $table->foreign('id_user')->references('id')->on('users');
             $table->foreign('id_fuente')->references('id')->on('fuentes');
-            $table->foreign('id_recepcionista')->references('id')->on('recepcionistas');
+            $table->foreign('id_producto')->references('id')->on('productos');
             $table->foreign('id_estado')->references('id')->on('estados');
-            $table->foreign('id_delivery')->references('id')->on('deliverys');
 
 
 

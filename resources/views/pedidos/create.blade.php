@@ -207,16 +207,18 @@
                 <div class="col-4">
                   <label for="fuente">Fuente:<b style="color: red;">*</b></label>
                   <select name="id_fuente" id="id_fuente" class="form-control" required="required">
-                    @foreach($fuentes as $f)
-                      <option value="{{$f->id}}">{{$f->fuente}}</option>
-                    @endforeach
+                    @if($id_fuente > 0)
+                      @foreach($fuentes as $f)
+                        <option value="{{$f->id}}">{{$f->fuente}}</option>
+                      @endforeach
+                    @endif
                   </select>
                 </div>
                 <div class="col-4">
-                  <div class="icheck-success d-inline">
-                    <input type="checkbox" <?php if($recargo_ct > 0){ ?> checked="checked" <?php } ?> name="pago_realizado" id="pago_realizado" onchange="anular_pago_ct()">
+                    <div class="icheck-success d-inline">
+                      <input type="checkbox" <?php if($recargo_ct > 0){ ?> checked="checked" <?php } ?> name="pago_realizado" id="pago_realizado" onchange="anular_pago_ct()">
                     <label for="pago_realizado">Pagó?:</label>
-                  </div>
+                    </div>
                   <select name="metodo_pago"  <?php if($recargo_ct == 0){ ?> disabled="disabled" <?php } ?>  id="metodo_pago" class="form-control">
                     <option value="">Seleccione forma de pago...</option>
                     <option value="Efectivo">Efectivo</option>
@@ -226,6 +228,16 @@
                     <option value="Efectivo/Transferencia">Efectivo/Transferencia</option>
                     <option value="Transferencia/TC-MercadoPago">Transferencia/TC-MercadoPago</option>
                     <option value="Efectivo/TC-MercadoPago">Efectivo/TC-MercadoPago</option>
+                  </select>
+                </div>
+                <div class="col-4">
+                    <label for="estado">Estado:</label>
+                  <select name="id_estado" id="id_estado" class="form-control">
+                    @if($id_estado > 0)
+                      @foreach($estados as $e)
+                        <option value="{{$e->id}}">{{$e->estado}}</option>
+                      @endforeach
+                    @endif
                   </select>
                 </div>
               </div>

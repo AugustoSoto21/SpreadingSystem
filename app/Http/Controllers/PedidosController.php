@@ -46,6 +46,7 @@ class PedidosController extends Controller
         $fuentes=Fuentes::all();
         $medios=Medio::all();
         $tarifas=Tarifas::all();
+        $estados=Estados::all();
         $iva=Iva::where('status','Activo')->first();
         $carrito=CarritoPedido::where('id_user',\Auth::getUser()->id)->get();
         $c=CarritoPedido::where('id_user',\Auth::getUser()->id)->first();
@@ -64,6 +65,11 @@ class PedidosController extends Controller
             $id_zona=$c->id_zona;
             $monto_tarifa=$c->monto_tarifa;
             $id_tarifa=$c->id_tarifa;
+
+            $id_fuente=$c->id_fuente;
+            $id_estado=$c->id_estado;
+            $observacion=$c->observacion;
+
         }else{
             $monto_descuento=0;
             $porcentaje_descuento=0;
@@ -78,9 +84,12 @@ class PedidosController extends Controller
             $id_zona=0;
             $monto_tarifa=0;
             $id_tarifa=0;
+            $id_fuente=0;
+            $id_estado=0;
+            $observacion="";
         }
 
-        return view('pedidos.create',compact('productos','categorias','clientes','zonas','estados','agencias','carrito','monto_descuento','porcentaje_descuento','descuento_total','total_fact','iva_total','recargo_ct','cuotas_ct','total_ct','fuentes','medios','iva','interes_ct','envio_gratis','id_zona','monto_tarifa','id_tarifa','tarifas'));
+        return view('pedidos.create',compact('productos','categorias','clientes','zonas','estados','agencias','carrito','monto_descuento','porcentaje_descuento','descuento_total','total_fact','iva_total','recargo_ct','cuotas_ct','total_ct','fuentes','medios','iva','interes_ct','envio_gratis','id_zona','monto_tarifa','id_tarifa','tarifas','estados','id_fuente','id_estado','observacion'));
         
     }
 

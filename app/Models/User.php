@@ -45,4 +45,9 @@ class User extends Authenticatable
     {
         return $this->hasMany('App\Models\CarritoPedido','id_user','id');
     }
+
+    public function recepcionista()
+    {
+        return $this->hasMany('App\Models\Pedidos','id_user','id');
+    }
 }

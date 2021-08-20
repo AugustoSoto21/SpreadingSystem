@@ -12,10 +12,11 @@ class Recepcionistas extends Model
 
     protected $table='recepcionistas';
 
-    protected $fillable=['nombres','apellidos'];
+    protected $fillable=['nombres','apellidos','id_user'];
 
-    public function pedidos(){
-
-    	return $this->hasMany(Pedidos::class);
+    
+    public function usuario()
+    {
+    	return $this->belongsTo('App\Models\User','id_user');
     }
 }
