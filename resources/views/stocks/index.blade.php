@@ -77,7 +77,6 @@
                               <th>Probar</th>
                               <th>Fallas</th>
                               <th>Devueltos</th>
-                              <th>Acciones</th>
                             </tr>
                           </thead>
                           <tbody>
@@ -155,10 +154,10 @@
                               <th>Stock</th>
                               <th>Disponibles</th>
                               <th>Mínimo</th>
-                              <th>Probar</th>
                               <th>Fallas</th>
+                              <th>Reclamos</th>
                               <th>Devueltos</th>
-                              <th>Acciones</th>
+                              <!-- <th>Acciones</th> -->
                             </tr>
                           </thead>
                           <tbody>
@@ -199,6 +198,12 @@ $(document).ready( function () {
       'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
     }
   });
+  table = $('#almacen_table').DataTable( {
+      paging: false,
+      searching: false,
+  } );
+   
+  table.destroy();
   $('#productos_table').DataTable({
     processing: true,
     serverSide: true,
@@ -218,13 +223,39 @@ $(document).ready( function () {
       { data: 'stock_probar', name: 'stock_probar' },
       { data: 'stock_fallas', name: 'stock_fallas' },
       { data: 'stock_devueltos', name: 'stock_devueltos' },
-      {data: 'action', name: 'action', orderable: false},
+      
     ],
     order: [[0, 'desc']]
   });
 });
 
-
+$('#filter').on('click',function (event) {
+  var id_agencia=$("#agencias").val();
+  
+  $('#almacen_table').DataTable({
+    processing: true,
+    serverSide: true,
+    responsive: true,
+    autoWidth: false,
+    destroy: true,
+    ajax: {
+      url:"stocks/"+id_agencia+"/buscar",
+   },
+    columns: [
+      { data: 'codigo', name: 'codigo' },
+      { data: 'categoria', name: 'categoria' },
+      { data: 'detalles', name: 'detalles' },
+      { data: 'status', name: 'status' },
+      { data: 'stock', name: 'stock' },
+      { data: 'stock_disponible', name: 'stock_disponible' },
+      { data: 'stock_min', name: 'stock_min' },
+      { data: 'stock_fallas', name: 'stock_fallas' },
+      { data: 'stock_reclamos', name: 'stock_reclamos' },
+      { data: 'stock_devueltos', name: 'stock_devueltos', orderable: false },
+    ],
+    order: [[0, 'desc']]
+  });
+})
 </script>
 <script src="{{ asset('js/sweetalert2.min.js') }}"></script>
 @endsection

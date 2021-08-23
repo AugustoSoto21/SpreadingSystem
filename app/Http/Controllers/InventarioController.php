@@ -20,7 +20,7 @@ class InventarioController extends Controller
     public function index()
     {
         $categorias=Categorias::all();
-        $agencias=Agencias::where('nombre','<>','SPREADING')->get();
+        $agencias=Agencias::where('nombre','<>','SPREADING')->where('almacen','Si')->get();
         if(request()->ajax()) {
             $productos=\DB::table('productos')
             ->join('categorias','categorias.id','=','productos.id_categoria')
@@ -28,11 +28,6 @@ class InventarioController extends Controller
             ->select('productos.*','categorias.categoria','inventarios.stock','inventarios.stock_disponible','inventarios.stock_min','inventarios.stock_probar','inventarios.stock_fallas','inventarios.stock_devueltos')
             ->get();
             return datatables()->of($productos)
-                ->addColumn('action', function ($row) {
-                    $edit = '<a href="productos/'.$row->id.'/edit" data-id="'.$row->id.'" class="btn btn-warning btn-xs" id="editStocks"><i class="fa fa-pencil-alt"></i></a>';
-                    $delete = ' <a href="javascript:void(0);" id="delete-estado" onClick="deleteStocks('.$row->id.')" class="delete btn btn-danger btn-xs"><i class="fa fa-trash"></i></a>';
-                    return $edit . $delete;
-                })->rawColumns(['action'])
                 ->editColumn('detalles',function($row){
                     $d=$row->detalles;
                     $ma=$row->marca;
@@ -607,5 +602,28 @@ class InventarioController extends Controller
     public function editar($id){
         $historial=HistorialStocks::where('id',$id)->get();
         return Response()->json($historial);
+    }
+
+    public function buscar_stock_agencias($id_agencia)
+    {
+        
+        
+            $productos=\DB::table('productos')
+            ->join('categorias','categorias.id','=','productos.id_categoria')
+            ->join('almacens','almacens.id_producto','=','productos.id')
+            ->where('almacens.id_agencia',$id_agencia)
+            ->select('productos.*','categorias.categoria','almacens.stock','almacens.stock_disponible','almacens.stock_min','almacens.stock_reclamos','almacens.stock_fallas','almacens.stock_devueltos')
+            ->get();
+            return datatables()->of($productos)
+                ->editColumn('detalles',function($row){
+                    $d=$row->detalles;
+                    $ma=$row->marca;
+                    $mo=$row->modelo;
+                    $c=$row->color;
+                    return $d.' '.$ma.' '.$mo.' '.$c;
+                })
+                ->addIndexColumn()
+                ->make(true);
+        
     }
 }
