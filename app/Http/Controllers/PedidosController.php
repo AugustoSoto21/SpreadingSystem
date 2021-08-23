@@ -27,7 +27,7 @@ class PedidosController extends Controller
      */
     public function index()
     {
-        //
+        return view('pedidos.index');
     }
 
     /**
@@ -101,7 +101,33 @@ class PedidosController extends Controller
      */
     public function store(Request $request)
     {
-        dd($request->all());
+        //dd($request->all());
+        
+        //VERIFICANDO SI EXISTE UN CARRITO PARA EL USUARIO
+        $carrito=CarritoPedido::where('id_user',\Auth::getUser()->id)->count();
+        if($carrito > 0){
+            //el usuario ya tiene un pedido en proceso
+            //obteniendo los datos unicos
+            $pedido=CarritoPedido::where('id_user',\Auth::getUser()->id)->first();
+            //obteniendo los demas datos
+            $pedido2=CarritoPedido::where('id_user',\Auth::getUser()->id)->get();
+            /*'id_cliente','id_user','id_producto','cantidad','monto_und','total_pp','monto_descuento','porcentaje_descuento','descuento_total','iva_total','monto_ct','recargo_ct','total_ct','id_cuota','cuotas_ct','interes_ct','stock','disponible','total_fact','id_zona','envio_gratis','id_tarifa','monto_tarifa','id_fuente','id_estado','observacion'*/
+            $nuevo_pedido= new Pedidos();
+            $codigo=date('d').strtoupper(date('M')).date('y').$this->generarCodigo2();
+            //dd($codigo);
+            do{
+                $found=0;
+             $buscar=Pedidos::where('codigo',$codigo)->count();
+             if($buscar > 0){
+                $found=1;
+             }   
+            }while ($found==1);
+            
+
+        }else{
+            return response()->json(['message'=>"No tiene ningún pedido en proceso",'icono'=>'success','titulo'=>'Éxito']);
+        }
+        
     }
 
     /**
@@ -874,5 +900,15 @@ class PedidosController extends Controller
 
             return response()->json($carrito);        
         }
+    }
+
+     protected function generarCodigo2() {
+     $key = '';
+     $pattern = '1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+     $max = strlen($pattern)-1;
+     for($i=0;$i < 2;$i++){
+        $key .= $pattern=mt_rand(0,$max);
+    }
+     return $key;
     }
 }

@@ -12,7 +12,7 @@ class CarritoPedido extends Model
 
     protected $table='carrito_pedido';
 
-    protected $fillable=['id_cliente','id_user','id_producto','cantidad','monto_und','total_pp','monto_descuento','porcentaje_descuento','descuento_total','iva_total','monto_ct','recargo_ct','cuotas_ct','interes_ct','total_ct','stock','disponible','total_fact'];
+    protected $fillable=['id_cliente','id_user','id_producto','cantidad','monto_und','total_pp','monto_descuento','porcentaje_descuento','descuento_total','iva_total','monto_ct','recargo_ct','total_ct','id_cuota','cuotas_ct','interes_ct','stock','disponible','total_fact','id_zona','envio_gratis','id_tarifa','monto_tarifa','id_fuente','id_estado','observacion'];
 
     public function cliente()
     {

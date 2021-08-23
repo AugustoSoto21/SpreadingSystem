@@ -51,6 +51,12 @@
                 <p>Registrar</p>
               </a>
               </li>
+              <li class="nav-item">
+              <a href="{{ route('pedidos.index') }}" class="nav-link {{ Request::is('pedidos/index*') ? 'active':'' }}">
+                <i class="nav-icon far fa-circle nav-icon"></i>
+                <p>Listar</p>
+              </a>
+              </li>
             </ul>
           </li>
           <li class="nav-item">
