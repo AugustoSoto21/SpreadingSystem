@@ -25,7 +25,7 @@
     <div class="row">
       <div class="col-md-12">
         <div class="card card-primary card-outline">
-          <form action="{{ route('pedidos.store') }}" class="form-horizontal" method="POST" autocomplete="off" name="productoForm" id="productoForm" enctype="Multipart/form-data" data-parsley-validate>
+          <form action="{{ route('pedidos.store') }}" class="form-horizontal" method="POST" autocomplete="off" name="pedidoForm" id="pedidoForm" enctype="Multipart/form-data" data-parsley-validate>
             @csrf
             <div class="card-header">
               <h3 class="card-title" style="margin-top: 5px;"><i class="nav-icon fa fa-shopping-basket"></i> Registro de pedido</h3>
@@ -316,16 +316,24 @@
                     <td>
                       <div class="row">
                         <div class="col-4">
-                          <label for="horarios">Horario:<b style="color: red;">*</b></label>
+                          <label for="horarios">Fecha:<b style="color: red;">*</b></label>
                           <div class="input-group input-group-sm">
-                            <input type="datetime-local" value="{{date('Y-m-d\TH:i')}}" 
-                             name="horarios[]" id="horarios" class="form-control" required="required">
                             <span class="input-group-append">
                               <button type="button" class="btn btn-info btn-flat" data-toggle="modal" data-target="#" data-tooltip="tooltip" data-placement="top" title="Agregar Horario" id="addHorario"><i class="fa fa-plus"></i></button>
                             </span>
+                            <input type="date" value="{{date('Y-m-d')}}" min="{{date('Y-m-d')}}" 
+                             name="horarios[]" id="horarios" class="form-control" required="required">
                           </div>
                         </div>
-                        <div class="col-8">
+                        <div class="col-2">
+                          <label for="horarios">Desde:<b style="color: red;">*</b></label>
+                          <input type="time" class="form-control" name="hora_inicio[]" id="hora_inicio" title="Ingrese la hora desde que se encontrará en el lugar" required="required">
+                        </div>
+                        <div class="col-2">
+                          <label for="horarios">Hasta:<b style="color: red;">*</b></label>
+                          <input type="time" class="form-control" name="hora_fin[]" id="hora_fin" title="Ingrese la hora hasta la cual se encontrará en el lugar" required="required">
+                        </div>
+                        <div class="col-4">
                           <label for="horarios">Dirección:<b style="color: red;">*</b></label>
                           <input type="text" name="direccion[]" id="direccion" class="form-control form-control-md" title="Ingrese la dirección en la cual se encuentra en el horario a la izquierda" required="required">
                         </div>
@@ -500,7 +508,7 @@ $("#id_producto").on('select2:select',function (event) {
         .done(function(data) {
           //console.log(data);        
           /*if($("#general_discount").is(':disabled')){
-            $("#general_discount").removeAttr('disabled');
+            $("#general_discount").prop('disabled',false);
           }*/
           $('#invoice').empty();
             
@@ -523,7 +531,7 @@ $("#id_producto").on('select2:select',function (event) {
                 '<td><a href="#" class="btn btn-primary btn-xs"'+
                 ' onclick="cant_disponible('+data[i].id_producto+')">'+
                 '<i class="fa fa-list-ol"></i></a></td>'+
-                '<td><input type="number" class="form-control" onchange="change_amount(this,'+data[i].id_producto+')" value="'+data[i].cantidad+'" name="amount[]" style="border: 0px; text-align: center;" min="1" max="'+data[i].disponible+'" ></td>'+
+                '<td><input type="number" class="form-control" onchange="change_amount(this,'+data[i].id_producto+')" value="'+data[i].cantidad+'" name="cantidad[]" style="border: 0px; text-align: center;" min="1" max="'+data[i].disponible+'" ></td>'+
                 '<td>'+data[i].detalles+' '+data[i].marca+' '+data[i].modelo+' '+data[i].color+'</td>'+
                 '<td><input type="number" name="monto_und[]" id="monto_und" value="'+data[i].monto_und+'"  onchange="change_cost(this,'+data[i].id_producto+')" min="0" class="form-control"  pattern="[0-9]+([,\.][0-9]+)?" formnovalidate="formnovalidate"></td>'+
                 '<td><td><input type="hidden" name="total_pp[]" id="total_pp'+data[i].id_producto+'" value="'+data[i].total_pp+'" min="0" class="form-control"><span id="total_pp_span'+data[i].id_producto+'">'+total_pp+'</span></td>'+
@@ -693,7 +701,7 @@ function change_cost(costo, id_producto){
     $("#addHorario").on('click',function (event) {
       add++;
       //console.log(add);
-      $("#horarios_pedidos").append('<tr id="add'+add+'"><td><div class="row"><div class="col-4"><label for="horarios">Horario:<b style="color: red;">*</b></label><div class="input-group input-group-sm"><input type="datetime-local" value="<?=date('Y-m-d\TH:i')?>" name="horarios[]" id="horarios'+add+'"  required="required" class="form-control"><span class="input-group-append"> <button type="button" class="btn btn-danger btn-flat" data-toggle="modal" data-target="#" data-tooltip="tooltip" data-placement="top" title="Remover Horario" id="remove'+add+'" onclick="remover_horario('+add+')"><i class="fa fa-ban"></i></button></span></div></div><div class="col-8"><label for="horarios">Dirección:<b style="color: red;">*</b></label><input type="text" name="direccion[]" id="direccion'+add+'" required="required" class="form-control form-control-md" title="Ingrese la dirección en la cual se encuentra en el horario a la izquierda"></div></div></td></tr>');
+      $("#horarios_pedidos").append('<tr id="add'+add+'"><td><div class="row"><div class="col-4"><label for="horarios">Fecha:<b style="color: red;">*</b></label><div class="input-group input-group-sm"><span class="input-group-append"> <button type="button" class="btn btn-danger btn-flat" data-toggle="modal" data-target="#" data-tooltip="tooltip" data-placement="top" title="Remover Horario" id="remove'+add+'" onclick="remover_horario('+add+')"><i class="fa fa-ban"></i></button></span><input type="date" value="<?=date('Y-m-d')?>" name="horarios[]" id="horarios'+add+'"  required="required" class="form-control"></div></div><div class="col-2"><label for="horarios">Desde:<b style="color: red;">*</b></label><input type="time" class="form-control" name="hora_inicio[]" id="hora_inicio'+add+'" required="required" title="Ingrese la hora desde que se encontrará en el lugar"></div><div class="col-2"><label for="horarios">Hasta:<b style="color: red;">*</b></label><input type="time" class="form-control" name="hora_fin[]" required="required" id="hora_fin'+add+'" title="Ingrese la hora hasta la cual se encontrará en el lugar"></div><div class="col-4"><label for="horarios">Dirección:<b style="color: red;">*</b></label><input type="text" name="direccion[]" id="direccion'+add+'" required="required" class="form-control form-control-md" title="Ingrese la dirección en la cual se encuentra en el horario a la izquierda"></div></div></td></tr>');
 
     }); 
   function remover_horario(fila) {
@@ -701,9 +709,9 @@ function change_cost(costo, id_producto){
   }
   $("#pago_realizado").on('change',function (event) {
     if($(this).is(':checked')){
-      $("#metodo_pago").removeAttr('disabled');
+      $("#metodo_pago").prop('disabled',false);
     }else{
-      $("#metodo_pago").attr('disabled',true);
+      $("#metodo_pago").prop('disabled',true);
     }
   });
   $("#metodo_pago").on('change',function (event) {
@@ -711,24 +719,24 @@ function change_cost(costo, id_producto){
     switch(opcion){
       case 'TC-MercadoPago':
         $("#col_mercadop").css('display','none');
-        $("#col_mercadop").removeAttr('required');
+        $("#col_mercadop").prop('required',false);
         $("#fecha_mercado").css('display','none');
-        $("#fecha_mercadop").removeAttr('required');
+        $("#fecha_mercadop").prop('required',false);
 
         $("#col_transferencia").css('display','none');
-        $("#col_transferencia").removeAttr('required');
+        $("#col_transferencia").prop('required',false);
         $("#fecha_transferencia").css('display','none');
-        $("#fecha_ptransferencia").removeAttr('required');
+        $("#fecha_ptransferencia").prop('required',false);
 
         $("#col_tarjeta").css('display','block');
-        $("#col_tarjeta").attr('required',true);
+        $("#col_tarjeta").prop('required',true);
         $("#fecha_tc").css('display','block');
-        $("#fecha_ptc").attr('required',true);  
+        $("#fecha_ptc").prop('required',true);  
         
         $("#recargo_v").css('display','block');
         $("#interes_v").css('display','block');
         $("#cuotas_v").css('display','block');
-        $("#id_cuota").attr('required',true);
+        $("#id_cuota").prop('required',true);
 
         $("#monto_tcmp_v").css('display','block');
         $("#monto_tcmp").prop('readonly',true);
@@ -737,139 +745,139 @@ function change_cost(costo, id_producto){
       break;
       case 'Transferencia':
         $("#col_transferencia").css('display','block');
-        $("#col_transferencia").attr('required',true);
+        $("#col_transferencia").prop('required',true);
         $("#fecha_transferencia").css('display','block');
-        $("#fecha_ptransferencia").attr('required',true);
+        $("#fecha_ptransferencia").prop('required',true);
 
         $("#col_mercadop").css('display','none');
-        $("#col_mercadop").removeAttr('required');
+        $("#col_mercadop").prop('required',false);
         $("#fecha_mercado").css('display','none');
-        $("#fecha_mercadop").removeAttr('required');
+        $("#fecha_mercadop").prop('required',false);
 
         $("#col_tarjeta").css('display','none');
-        $("#col_tarjeta").removeAttr('required');
+        $("#col_tarjeta").prop('required',false);
         $("#fecha_tc").css('display','none');
-        $("#fecha_ptc").removeAttr('required'); 
+        $("#fecha_ptc").prop('required',false); 
 
         $("#recargo_v").css('display','none');
         $("#interes_v").css('display','none');
         $("#medios_v").css('display','none');
         $("#cuotas_v").css('display','none');
-        $("#id_cuota").removeAttr('required');
+        $("#id_cuota").prop('required',false);
         
 
         $("#monto_tcmp_v").css('display','none');
-        $("#monto_tcmp").removeAttr('readonly');
+        $("#monto_tcmp").prop('readonly',false);
         anular_pago_ct(2);
       break;
       case 'Transferencia/TC-MercadoPago':
         $("#col_transferencia").css('display','block');
-        $("#col_transferencia").attr('required',true);
+        $("#col_transferencia").prop('required',true);
         $("#fecha_transferencia").css('display','block');
-        $("#fecha_ptransferencia").attr('required',true);
+        $("#fecha_ptransferencia").prop('required',true);
 
         $("#col_mercadop").css('display','block');
-        $("#col_mercadop").attr('required',true);
+        $("#col_mercadop").prop('required',true);
         $("#fecha_mercado").css('display','block');
-        $("#fecha_mercadop").attr('required',true);
+        $("#fecha_mercadop").prop('required',true);
 
         $("#col_tarjeta").css('display','none');
-        $("#col_tarjeta").removeAttr('required');
+        $("#col_tarjeta").prop('required',false);
         $("#fecha_tc").css('display','none');
-        $("#fecha_ptc").removeAttr('required'); 
+        $("#fecha_ptc").prop('required',false); 
 
         $("#recargo_v").css('display','block');
         $("#interes_v").css('display','block');
         $("#medios_v").css('display','block');
         $("#cuotas_v").css('display','block');
-        $("#id_cuota").attr('required');
+        $("#id_cuota").prop('required',true);
 
         $("#monto_tcmp_v").css('display','block');
-        $("#monto_tcmp").removeAttr('readonly');
+        $("#monto_tcmp").prop('readonly',false);
         
       break;
       case 'Efectivo/Transferencia':
         $("#col_transferencia").css('display','block');
-        $("#col_transferencia").attr('required',true);
+        $("#col_transferencia").prop('required',true);
         $("#fecha_transferencia").css('display','block');
-        $("#fecha_ptransferencia").attr('required',true);        
+        $("#fecha_ptransferencia").prop('required',true);        
 
         $("#col_mercadop").css('display','none');
-        $("#col_mercadop").removeAttr('required');
+        $("#col_mercadop").prop('required',false);
         $("#fecha_mercado").css('display','none');
-        $("#fecha_mercadop").removeAttr('required');
+        $("#fecha_mercadop").prop('required',false);
 
         $("#col_tarjeta").css('display','none');
-        $("#col_tarjeta").removeAttr('required');
+        $("#col_tarjeta").prop('required',false);
         $("#fecha_tc").css('display','none');
-        $("#fecha_ptc").removeAttr('required');  
+        $("#fecha_ptc").prop('required',false);
 
         $("#recargo_v").css('display','none');
         $("#interes_v").css('display','none');
         $("#medios_v").css('display','none');
         $("#cuotas_v").css('display','none');
-        $("#id_cuota").removeAttr('required');
+        $("#id_cuota").prop('required',false);
 
 
         $("#monto_tcmp_v").css('display','none');
-        $("#monto_tcmp").removeAttr('readonly');
+        $("#monto_tcmp").prop('readonly',false);
         
 
         anular_pago_ct(2);
       break;
       case 'Efectivo/TC-MercadoPago':
         $("#col_mercadop").css('display','block');
-        $("#col_mercadop").attr('required',true);
+        $("#col_mercadop").prop('required',true);
         $("#fecha_mercado").css('display','block');
-        $("#fecha_ptc").attr('required',true);
+        $("#fecha_ptc").prop('required',true);
 
         $("#col_transferencia").css('display','none');
-        $("#col_transferencia").removeAttr('required');
+        $("#col_transferencia").prop('required',false);
         $("#fecha_transferencia").css('display','none');
-        $("#fecha_ptransferencia").removeAttr('required');
+        $("#fecha_ptransferencia").prop('required',false);
 
         $("#col_tarjeta").css('display','none');
-        $("#col_tarjeta").removeAttr('required'); 
+        $("#col_tarjeta").prop('required',false);
         $("#fecha_tc").css('display','none');
-        $("#fecha_ptc").removeAttr('required'); 
+        $("#fecha_ptc").prop('required',false);
 
         $("#recargo_v").css('display','block');
         $("#interes_v").css('display','block');
         $("#medios_v").css('display','block');
         $("#cuotas_v").css('display','block');
-        $("#id_cuota").attr('required');
+        $("#id_cuota").prop('required');
 
         $("#monto_tcmp_v").css('display','block');
-        $("#monto_tcmp").removeAttr('readonly');
+        $("#monto_tcmp").prop('readonly',false);
         
 
       break;
       
       default:
         $("#col_transferencia").css('display','none');
-        $("#col_transferencia").removeAttr('required');
+        $("#col_transferencia").prop('required',false);
         $("#fecha_transferencia").css('display','none');
-        $("#fecha_ptransferencia").removeAttr('required');
+        $("#fecha_ptransferencia").prop('required',false);
 
         $("#col_tarjeta").css('display','none');
-        $("#col_tarjeta").removeAttr('required');
+        $("#col_tarjeta").prop('required',false);
         $("#fecha_tc").css('display','none');
-        $("#fecha_ptc").removeAttr('required');  
+        $("#fecha_ptc").prop('required',false);  
 
         $("#col_mercadop").css('display','none');
-        $("#col_mercadop").removeAttr('required');
+        $("#col_mercadop").prop('required',false);
         $("#fecha_mercado").css('display','none');
-        $("#fecha_mercadop").removeAttr('required');
+        $("#fecha_mercadop").prop('required',false);
         
         $("#recargo_v").css('display','none');
         $("#interes_v").css('display','none');
         $("#medios_v").css('display','none');
         $("#cuotas_v").css('display','none');
-        $("#id_cuotas").removeAttr('required');
+        $("#id_cuotas").prop('required',false);
         
 
         $("#monto_tcmp_v").css('display','none');
-        $("#monto_tcmp").removeAttr('readonly');
+        $("#monto_tcmp").prop('readonly',false);
         
 
         anular_pago_ct(1);
@@ -931,26 +939,26 @@ $("#id_medio").on('change',function (event) {
       $("#monto_ct_ip").text(data[0].recargo_ct.toFixed(2));
         if(opcion==1){
         $("#col_transferencia").css('display','none');
-        $("#col_transferencia").removeAttr('required');
+        $("#col_transferencia").prop('required',false);
         $("#fecha_transferencia").css('display','none');
-        $("#fecha_ptransferencia").removeAttr('required');
+        $("#fecha_ptransferencia").prop('required',false);
         }
         $("#col_tarjeta").css('display','none');
-        $("#col_tarjeta").removeAttr('required');
+        $("#col_tarjeta").prop('required',false);
         $("#fecha_tc").css('display','none');
-        $("#fecha_ptc").removeAttr('required');  
+        $("#fecha_ptc").prop('required',false); 
 
         $("#col_mercadop").css('display','none');
-        $("#col_mercadop").removeAttr('required');
+        $("#col_mercadop").prop('required',false);
         $("#fecha_mercado").css('display','none');
-        $("#fecha_mercadop").removeAttr('required');
+        $("#fecha_mercadop").prop('required',false);
         
         $("#recargo_v").css('display','none');
         $("#interes_v").css('display','none');
         $("#cuotas_v").css('display','none');
-        $("#recargo").removeAttr('required');
-        $("#interes").removeAttr('required');
-        $("#cuotas").removeAttr('required');
+        $("#recargo").prop('required',false);
+        $("#interes").prop('required',false);
+        $("#cuotas").prop('required',false);
 
 
         $("#monto_tcmp_v").css('display','none');
@@ -961,12 +969,12 @@ $("#id_medio").on('change',function (event) {
   //EN CASO DE QUE EL DELIVERY SEA O NO GRATIS
   $("#envio_gratis").on('change',function (event) {
     if(!$(this).is(':checked')){
-      $("#monto_tarifa").removeAttr('readonly');
-      
+      $("#monto_tarifa").prop('readonly',false);
+      agregar_tarifa_envio_agencia(0);
       
     }else{
       
-      $("#monto_tarifa").attr('readonly',true);
+      $("#monto_tarifa").prop('readonly',true);
       $("#monto_tarifa").val("");
       agregar_tarifa_envio(0);
     }    
@@ -996,7 +1004,7 @@ $("#id_medio").on('change',function (event) {
     }
     $.get('/pedidos/'+monto+'/'+opcion+'/agregar_tarifa_envio',function (data) {})
     .done(function(data) {
-      console.log(data);
+      
         if(data.length > 0){
           $("#total").text(formatNumber(data[0].total_fact.toFixed(2)));
           $("#total_ip").val(data[0].total_fact);
@@ -1018,14 +1026,15 @@ $("#id_medio").on('change',function (event) {
   }
   //agregando tarifa de agencia
   function agregar_tarifa_envio_agencia(opcion) {
-    if(opcion==1){
+    if(opcion==1 || opcion==0){
         var id_tarifa=$("#id_tarifa").val();
+
     }else{
       var id_tarifa=0;
     }
     $.get('/pedidos/'+id_tarifa+'/'+opcion+'/agregar_tarifa_envio_agencia',function (data) {})
     .done(function(data) {
-      console.log(data);
+      //console.log(data);
         if(data.length > 0){
           $("#total").text(formatNumber(data[0].total_fact.toFixed(2)));
           $("#total_ip").val(data[0].total_fact);
@@ -1042,6 +1051,11 @@ $("#id_medio").on('change',function (event) {
           $("#monto_ct").text(formatNumber(data[0].recargo_ct.toFixed(2)));
           $("#monto_ct_ip").text(data[0].recargo_ct.toFixed(2));
           $("#monto_tarifa").val(data[0].monto_tarifa);
+          console.log(opcion);
+          if($("#envio_gratis").is(':checked') && id_tarifa > 0){
+              $("#envio_gratis").prop('checked',false);
+              $("#monto_tarifa").prop('readonly',false);
+            }
         }
     });
   }

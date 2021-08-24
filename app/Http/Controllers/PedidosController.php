@@ -16,6 +16,10 @@ use App\Models\Medio;
 use App\Models\Iva;
 use App\Models\Cuotas;
 use App\Models\Tarifas;
+use App\Models\Inventario;
+use App\Models\Horarios;
+use Alert;
+use Datatables;
 date_default_timezone_set("America/Argentina/Buenos_Aires");
 
 class PedidosController extends Controller
@@ -27,8 +31,61 @@ class PedidosController extends Controller
      */
     public function index()
     {
+        $fuentes=Fuentes::all();
+        $estados=Estados::all();
+        if(request()->ajax()) {
+            $pedidos=Pedidos::all();
+            return datatables()->of($pedidos)
+                ->addColumn('action', function ($row) {
+                    $edit = '<a href="pedidos/'.$row->id.'/edit" data-id="'.$row->id.'" class="btn btn-warning btn-xs" id="editPedido"><i class="fa fa-pencil-alt"></i></a>';
+                    $delete = ' <a href="javascript:void(0);" id="delete-estado" onClick="deletePedido('.$row->id.')" class="delete btn btn-danger btn-xs"><i class="fa fa-trash"></i></a>';
+                    return $edit . $delete;
+                })->rawColumns(['action'])
+                ->editColumn('id_cliente',function($row){
+                    $cliente=Clientes::find($row->id_cliente);
+
+                    return $cliente->nombres.' '.$cliente->apellidos.' '.$cliente->celular;
+                })
+                ->editColumn('id_user',function($row){
+                    $recep=User::find($row->id_user);
+
+                    return $recep->recep->nombres.' '.$recep->recep->apellidos;
+                })
+                ->editColumn('id_fuente',function($row){
+
+                    $select_f='<select name="id_fuente" id="id_fuente" class="form-control">';
+                    foreach($fuentes as $f){
+                        $select_f.='<option value="'.$f->id.'"'; 
+                        if($row->id_fuente==$f->id){ 
+                         $select_f.=' selected="selected"';
+                        } 
+                        $select_f.=' >'.$f->fuente.'</option>';
+                    }
+                    $select_f.='</select>';
+
+                    return $select_f;
+                })->editColumn('id_estado',function($row){
+
+                    $select_e='<select name="id_estado" id="id_estado" class="form-control">';
+                    foreach($estados as $e){
+                        $select_e.='<option value="'.$e->id.'"'; 
+                        if($row->id_estado==$e->id){ 
+                         $select_e.=' selected="selected"';
+                        } 
+                        $select_e.=' >'.$e->estado.'</option>';
+                    }
+                    $select_e.='</select>';
+
+                    return $select_e;
+                })
+                ->addIndexColumn()
+                ->make(true);
+        }
         return view('pedidos.index');
     }
+
+
+
 
     /**
      * Show the form for creating a new resource.
@@ -66,9 +123,9 @@ class PedidosController extends Controller
             $monto_tarifa=$c->monto_tarifa;
             $id_tarifa=$c->id_tarifa;
 
-            $id_fuente=$c->id_fuente;
-            $id_estado=$c->id_estado;
-            $observacion=$c->observacion;
+            $id_fuente=0;
+            $id_estado=0;
+            $observacion="";
 
         }else{
             $monto_descuento=0;
@@ -141,29 +198,65 @@ class PedidosController extends Controller
                 $nuevo_pedido->id_cuota=$key->id_cuota;
                 $nuevo_pedido->cuotas_ct=$key->cuotas_ct;
                 $nuevo_pedido->interes_ct=$key->interes_ct;
-                $nuevo_pedido->stock=$key->stock;
-                $nuevo_pedido->disponible=$key->disponible;
                 $nuevo_pedido->total_fact=$key->total_fact;
                 $nuevo_pedido->id_zona=$key->id_zona;
                 $nuevo_pedido->envio_gratis=$key->envio_gratis;
-                $nuevo_pedido->id_tarifa=$key->monto_tarifa;
-                $nuevo_pedido->id_fuente=$key->id_fuente;
-                $nuevo_pedido->id_estado=$key->id_estado;
-                $nuevo_pedido->observacion=$key->observacion;
+                $nuevo_pedido->id_tarifa=$key->id_tarifa;
+                $nuevo_pedido->id_fuente=$request->id_fuente;
+                $nuevo_pedido->id_estado=$request->id_estado;
+                $nuevo_pedido->observacion=$request->observacion;
                 $nuevo_pedido->save();
+                if($key->id_estado > 0){
+                    $estado=Estados::find($key->id_estado);
+                    if($estado->estado=="AFIRMADO"){
+                        //SE DESCONTARÁ DE INVENTARIO O ALMACÉN DE DISPONIBLE
+                        //BUSCANDO AGENCIA ENCARGADA
+                        if($key->id_tarifa > 0){
+                            $tarifa=Tarifa::find($key->id_tarifa);
+                            if ($tarifa->id_agencia==1) {
+                                $inventario=Inventario::where('id_producto',$key->id_producto)->first();
+                                $inventario->stock_disponible=$inventario->stock_disponible-$key->cantidad;
+                                $inventario->save();
+                            } else {
+                                $agencia=Agencias::find($tarifa->id_agencia);
+                                if($agencia->almacen=="Si"){
+                                    $almacen=Almacen::where('id_producto',$key->id_producto)->where('id_agencia',$tarifa->id_agencia)->first();
+                                    $almacen->stock_disponible=$almacen->stock_disponible-$cantidad;
+                                    $almacen->save();
+
+                                }else{
+                                    $inventario=Inventario::where('id_producto',$key->id_producto)->first();
+                                    $inventario->stock_disponible=$inventario->stock_disponible-$key->cantidad;
+                                    $inventario->save();
+                                }
+                            }
+                        }
+                    }
+                }
                 
             }
             //REGISTRANDO HORARIOS
             if (count($request->horarios) > 0) {
-                \DB::table('pedidos_has_horarios')->insert([
-                'id_pedido' => $codigo,
-                ]);
+                for ($i=0; $i < count($request->horarios); $i++) { 
+                    $horario= new Horarios();
+                    $horario->horario = $request->horarios[$i];
+                    $horario->hora_inicio= $request->hora_inicio[$i];
+                    $horario->hora_fin= $request->hora_fin[$i];
+                    $horario->direccion= $request->direccion[$i];
+                    $horario->codigo_pedido= $codigo;
+                    $horario->save();
+                }
             }
             
-            
-
+            //ELIMINANDO EL PEDIDO DEL CARRITO
+            foreach ($pedido as $key) {
+                $key->delete();
+            }
+            Alert::success('Éxito', 'Pedido registrado con éxito')->persistent(true);
+                return redirect()->to('pedidos');
         }else{
-            return response()->json(['message'=>"No tiene ningún pedido en proceso",'icono'=>'success','titulo'=>'Éxito']);
+            Alert::error('Alerta', 'No tiene ningún pedido en proceso')->persistent(true);
+                return redirect()->back();
         }
         
     }

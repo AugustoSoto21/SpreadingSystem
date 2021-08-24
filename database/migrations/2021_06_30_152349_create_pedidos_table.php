@@ -42,7 +42,7 @@ class CreatePedidosTable extends Migration
             $table->enum('envio_gratis',['Si','No'])->default('Si');
             $table->integer('id_tarifa')->default(0);
             $table->float('monto_tarifa')->default(0);
-            $table->string('link');
+            $table->string('link')->nullable();
             
             $table->unsignedBigInteger('id_fuente');
             $table->unsignedBigInteger('id_estado');

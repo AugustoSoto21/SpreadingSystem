@@ -55,12 +55,14 @@
               <thead>
                 <tr>
                   <th>Código</th>
-                  <th>Categoría</th>
-                  <th>Detalles</th>
-                  <!-- <th>Marca</th>
-                  <th>Modelo</th>
-                  <th>Color</th> -->
-                  <th>Status</th>
+                  <th>Cliente</th>
+                  <th>Recepcionista</th>
+                  <th>Total</th>
+                  <th>Envío Gratis</th>
+                  <th>Tarifa</th>
+                  <th>Fuente</th>
+                  <th>Estado</th>
+                  <th>Observación</th>
                   <th>Acciones</th>
                 </tr>
               </thead>
@@ -88,7 +90,7 @@
 @endsection
 @section('scripts')
 <script>
-/*$(document).ready( function () {
+$(document).ready( function () {
   $.ajaxSetup({
     headers: {
       'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -104,15 +106,20 @@
    },
     columns: [
       { data: 'codigo', name: 'codigo' },
-      { data: 'categoria', name: 'categoria' },
-      { data: 'detalles', name: 'detalles' },
-      { data: 'status', name: 'status' },
+      { data: 'id_cliente', name: 'id_cliente' },
+      { data: 'id_user', name: 'id_user' },
+      { data: 'total_fact', name: 'total_fact' },
+      { data: 'envio_gratis', name: 'envio_gratis' },
+      { data: 'monto_tarifa', name: 'monto_tarifa' },
+      { data: 'id_fuente', name: 'id_fuente' },
+      { data: 'id_estado', name: 'id_estado' },
+      { data: 'observacion', name: 'observacion' },
       {data: 'action', name: 'action', orderable: false},
     ],
     order: [[0, 'desc']]
   });
 });
-
+/*
 //--CODIGO PARA EDITAR ESTADO ---------------------//
 $('body').on('click', '#editPedido', function () {
   var id = $(this).data('id');
