@@ -108,20 +108,58 @@ class PedidosController extends Controller
         if($carrito > 0){
             //el usuario ya tiene un pedido en proceso
             //obteniendo los datos unicos
-            $pedido=CarritoPedido::where('id_user',\Auth::getUser()->id)->first();
+            $p=CarritoPedido::where('id_user',\Auth::getUser()->id)->first();
             //obteniendo los demas datos
-            $pedido2=CarritoPedido::where('id_user',\Auth::getUser()->id)->get();
-            /*'id_cliente','id_user','id_producto','cantidad','monto_und','total_pp','monto_descuento','porcentaje_descuento','descuento_total','iva_total','monto_ct','recargo_ct','total_ct','id_cuota','cuotas_ct','interes_ct','stock','disponible','total_fact','id_zona','envio_gratis','id_tarifa','monto_tarifa','id_fuente','id_estado','observacion'*/
-            $nuevo_pedido= new Pedidos();
+            $pedido=CarritoPedido::where('id_user',\Auth::getUser()->id)->get();
             $codigo=date('d').strtoupper(date('M')).date('y').$this->generarCodigo2();
             //dd($codigo);
+            //BUSCANDO EL CODIGO PARA EVITAR REPETIRLO
+            $found=0;
             do{
-                $found=0;
              $buscar=Pedidos::where('codigo',$codigo)->count();
              if($buscar > 0){
                 $found=1;
              }   
             }while ($found==1);
+            //REGISTRANDO PEDIDO NUEVO
+            foreach ($pedido as $key) {
+                $nuevo_pedido= new Pedidos();
+                $nuevo_pedido->codigo=$codigo;
+                $nuevo_pedido->id_cliente=$key->id_cliente;
+                $nuevo_pedido->id_user=$key->id_user;
+                $nuevo_pedido->id_producto=$key->id_producto;
+                $nuevo_pedido->cantidad=$key->cantidad;
+                $nuevo_pedido->monto_und=$key->monto_und;
+                $nuevo_pedido->total_pp=$key->total_pp;
+                $nuevo_pedido->monto_descuento=$key->monto_descuento;
+                $nuevo_pedido->porcentaje_descuento=$key->porcentaje_descuento;
+                $nuevo_pedido->descuento_total=$key->descuento_total;
+                $nuevo_pedido->iva_total=$key->iva_total;
+                $nuevo_pedido->monto_ct=$key->monto_ct;
+                $nuevo_pedido->recargo_ct=$key->recargo_ct;
+                $nuevo_pedido->total_ct=$key->total_ct;
+                $nuevo_pedido->id_cuota=$key->id_cuota;
+                $nuevo_pedido->cuotas_ct=$key->cuotas_ct;
+                $nuevo_pedido->interes_ct=$key->interes_ct;
+                $nuevo_pedido->stock=$key->stock;
+                $nuevo_pedido->disponible=$key->disponible;
+                $nuevo_pedido->total_fact=$key->total_fact;
+                $nuevo_pedido->id_zona=$key->id_zona;
+                $nuevo_pedido->envio_gratis=$key->envio_gratis;
+                $nuevo_pedido->id_tarifa=$key->monto_tarifa;
+                $nuevo_pedido->id_fuente=$key->id_fuente;
+                $nuevo_pedido->id_estado=$key->id_estado;
+                $nuevo_pedido->observacion=$key->observacion;
+                $nuevo_pedido->save();
+                
+            }
+            //REGISTRANDO HORARIOS
+            if (count($request->horarios) > 0) {
+                \DB::table('pedidos_has_horarios')->insert([
+                'id_pedido' => $codigo,
+                ]);
+            }
+            
             
 
         }else{

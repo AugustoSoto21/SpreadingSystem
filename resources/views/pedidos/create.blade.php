@@ -319,7 +319,7 @@
                           <label for="horarios">Horario:<b style="color: red;">*</b></label>
                           <div class="input-group input-group-sm">
                             <input type="datetime-local" value="{{date('Y-m-d\TH:i')}}" 
-                             name="horarios[]" id="horarios" class="form-control">
+                             name="horarios[]" id="horarios" class="form-control" required="required">
                             <span class="input-group-append">
                               <button type="button" class="btn btn-info btn-flat" data-toggle="modal" data-target="#" data-tooltip="tooltip" data-placement="top" title="Agregar Horario" id="addHorario"><i class="fa fa-plus"></i></button>
                             </span>
@@ -327,7 +327,7 @@
                         </div>
                         <div class="col-8">
                           <label for="horarios">Dirección:<b style="color: red;">*</b></label>
-                          <input type="text" name="direccion[]" id="direccion" class="form-control form-control-md" title="Ingrese la dirección en la cual se encuentra en el horario a la izquierda">
+                          <input type="text" name="direccion[]" id="direccion" class="form-control form-control-md" title="Ingrese la dirección en la cual se encuentra en el horario a la izquierda" required="required">
                         </div>
                       </div>    
                     </td>
@@ -693,7 +693,7 @@ function change_cost(costo, id_producto){
     $("#addHorario").on('click',function (event) {
       add++;
       //console.log(add);
-      $("#horarios_pedidos").append('<tr id="add'+add+'"><td><div class="row"><div class="col-4"><label for="horarios">Horario:<b style="color: red;">*</b></label><div class="input-group input-group-sm"><input type="datetime-local" value="<?=date('Y-m-d\TH:i')?>" name="horarios[]" id="horarios'+add+'" class="form-control"><span class="input-group-append"> <button type="button" class="btn btn-danger btn-flat" data-toggle="modal" data-target="#" data-tooltip="tooltip" data-placement="top" title="Remover Horario" id="remove'+add+'" onclick="remover_horario('+add+')"><i class="fa fa-ban"></i></button></span></div></div><div class="col-8"><label for="horarios">Dirección:<b style="color: red;">*</b></label><input type="text" name="direccion[]" id="direccion'+add+'" class="form-control form-control-md" title="Ingrese la dirección en la cual se encuentra en el horario a la izquierda"></div></div></td></tr>');
+      $("#horarios_pedidos").append('<tr id="add'+add+'"><td><div class="row"><div class="col-4"><label for="horarios">Horario:<b style="color: red;">*</b></label><div class="input-group input-group-sm"><input type="datetime-local" value="<?=date('Y-m-d\TH:i')?>" name="horarios[]" id="horarios'+add+'"  required="required" class="form-control"><span class="input-group-append"> <button type="button" class="btn btn-danger btn-flat" data-toggle="modal" data-target="#" data-tooltip="tooltip" data-placement="top" title="Remover Horario" id="remove'+add+'" onclick="remover_horario('+add+')"><i class="fa fa-ban"></i></button></span></div></div><div class="col-8"><label for="horarios">Dirección:<b style="color: red;">*</b></label><input type="text" name="direccion[]" id="direccion'+add+'" required="required" class="form-control form-control-md" title="Ingrese la dirección en la cual se encuentra en el horario a la izquierda"></div></div></td></tr>');
 
     }); 
   function remover_horario(fila) {
