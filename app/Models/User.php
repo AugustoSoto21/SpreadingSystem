@@ -53,6 +53,6 @@ class User extends Authenticatable
 
     public function recep()
     {
-        return $this->hasOne('App\Models\Recepcionista','id_user','id');
+        return $this->hasOne('App\Models\Recepcionistas','id_user','id');
     }
 }

@@ -56,7 +56,7 @@
                 <tr>
                   <th>Código</th>
                   <th>Cliente</th>
-                  <th>Recepcionista</th>
+                  <th>Registrado por:</th>
                   <th>Total</th>
                   <th>Envío Gratis</th>
                   <th>Tarifa</th>
@@ -111,7 +111,7 @@ $(document).ready( function () {
       { data: 'total_fact', name: 'total_fact' },
       { data: 'envio_gratis', name: 'envio_gratis' },
       { data: 'monto_tarifa', name: 'monto_tarifa' },
-      { data: 'id_fuente', name: 'id_fuente' },
+      { data: 'id_fuente', name: 'id_fuente', orderable: false },
       { data: 'id_estado', name: 'id_estado' },
       { data: 'observacion', name: 'observacion' },
       {data: 'action', name: 'action', orderable: false},

@@ -17,6 +17,9 @@ class CreateRecepcionistasTable extends Migration
             $table->id();
             $table->string('nombres');
             $table->string('apellidos');
+            $table->unsignedBigInteger('id_user');
+
+            $table->foreign('id_user')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });
     }

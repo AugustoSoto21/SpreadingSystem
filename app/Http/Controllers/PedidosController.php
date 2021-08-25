@@ -18,6 +18,8 @@ use App\Models\Cuotas;
 use App\Models\Tarifas;
 use App\Models\Inventario;
 use App\Models\Horarios;
+use App\Models\Recepcionistas;
+use App\Models\User;
 use Alert;
 use Datatables;
 date_default_timezone_set("America/Argentina/Buenos_Aires");
@@ -31,41 +33,52 @@ class PedidosController extends Controller
      */
     public function index()
     {
-        $fuentes=Fuentes::all();
-        $estados=Estados::all();
+
+        
         if(request()->ajax()) {
-            $pedidos=Pedidos::all();
+            //$pedidos=Pedidos::all();
+            $pedidos=\DB::table('pedidos')->select('pedidos.*')->get();
             return datatables()->of($pedidos)
                 ->addColumn('action', function ($row) {
                     $edit = '<a href="pedidos/'.$row->id.'/edit" data-id="'.$row->id.'" class="btn btn-warning btn-xs" id="editPedido"><i class="fa fa-pencil-alt"></i></a>';
                     $delete = ' <a href="javascript:void(0);" id="delete-estado" onClick="deletePedido('.$row->id.')" class="delete btn btn-danger btn-xs"><i class="fa fa-trash"></i></a>';
                     return $edit . $delete;
-                })->rawColumns(['action'])
+                })->rawColumns(['action','id_cliente','id_user','id_fuente','id_estado','observacion'])
                 ->editColumn('id_cliente',function($row){
                     $cliente=Clientes::find($row->id_cliente);
 
-                    return $cliente->nombres.' '.$cliente->apellidos.' '.$cliente->celular;
+                    return $cliente->nombres.' '.$cliente->apellidos.' CEL:'.$cliente->celular;
                 })
                 ->editColumn('id_user',function($row){
-                    $recep=User::find($row->id_user);
+                    $buscar=Recepcionistas::where('id_user',$row->id_user)->count();
+                    
+                    if($buscar > 0){
+                        $r=Recepcionistas::where('id_user',$row->id_user)->first();
+                        $datos=$r->nombres." ".$r->apellidos;
+                    }else{
+                        $user=User::find($row->id_user);
+                        $datos=$user->name." (".$user->email.")";
+                    }
 
-                    return $recep->recep->nombres.' '.$recep->recep->apellidos;
+                    return $datos;
                 })
                 ->editColumn('id_fuente',function($row){
-
-                    $select_f='<select name="id_fuente" id="id_fuente" class="form-control">';
-                    foreach($fuentes as $f){
-                        $select_f.='<option value="'.$f->id.'"'; 
-                        if($row->id_fuente==$f->id){ 
-                         $select_f.=' selected="selected"';
-                        } 
-                        $select_f.=' >'.$f->fuente.'</option>';
-                    }
-                    $select_f.='</select>';
-
+                        $fuentes=Fuentes::all();
+        
+                    $select_f="<div class='form-group'>
+                        <select class='form-control form-control-sm' name='id_fuente' id='id_fuente'>";
+                        foreach ($fuentes as $k) {
+                            $select_f.="<option value='".$k->id."'";
+                            if($k->id==$row->id_fuente){ 
+                                $select_f.=" selected='selected' ";
+                             }
+                            $select_f.=" >".$k->fuente."</option>";
+                        }
+                    $select_f.="</select></div>";
                     return $select_f;
-                })->editColumn('id_estado',function($row){
-
+                })
+                ->editColumn('id_estado',function($row){
+                    $estados=Estados::all();
                     $select_e='<select name="id_estado" id="id_estado" class="form-control">';
                     foreach($estados as $e){
                         $select_e.='<option value="'.$e->id.'"'; 
@@ -77,6 +90,10 @@ class PedidosController extends Controller
                     $select_e.='</select>';
 
                     return $select_e;
+                })
+                ->editColumn('observacion',function($row){
+                    
+                    return $row->observacion;
                 })
                 ->addIndexColumn()
                 ->make(true);
@@ -145,8 +162,12 @@ class PedidosController extends Controller
             $id_estado=0;
             $observacion="";
         }
-
-        return view('pedidos.create',compact('productos','categorias','clientes','zonas','estados','agencias','carrito','monto_descuento','porcentaje_descuento','descuento_total','total_fact','iva_total','recargo_ct','cuotas_ct','total_ct','fuentes','medios','iva','interes_ct','envio_gratis','id_zona','monto_tarifa','id_tarifa','tarifas','estados','id_fuente','id_estado','observacion'));
+        if(!$iva){
+            Alert::warning('Alerta', 'No existe un valor activo de IVA')->persistent(true);
+                return redirect()->to('pedidos');
+        }else{
+            return view('pedidos.create',compact('productos','categorias','clientes','zonas','estados','agencias','carrito','monto_descuento','porcentaje_descuento','descuento_total','total_fact','iva_total','recargo_ct','cuotas_ct','total_ct','fuentes','medios','iva','interes_ct','envio_gratis','id_zona','monto_tarifa','id_tarifa','tarifas','estados','id_fuente','id_estado','observacion'));
+        }
         
     }
 
