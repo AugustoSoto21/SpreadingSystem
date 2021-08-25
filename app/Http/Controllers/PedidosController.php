@@ -34,70 +34,7 @@ class PedidosController extends Controller
     public function index()
     {
 
-        if(request()->ajax()) {
-            //$pedidos=Pedidos::all();
-            $pedidos=\DB::table('pedidos')->select('pedidos.*')->groupBy('codigo')->get();
-            return datatables()->of($pedidos)
-                ->addColumn('action', function ($row) {
-                    $edit = '<a href="pedidos/'.$row->id.'/edit" data-id="'.$row->id.'" class="btn btn-warning btn-xs" id="editPedido"><i class="fa fa-pencil-alt"></i></a>';
-                    $delete = ' <a href="javascript:void(0);" id="delete-estado" onClick="deletePedido('.$row->id.')" class="delete btn btn-danger btn-xs"><i class="fa fa-trash"></i></a>';
-                    return $edit . $delete;
-                })->rawColumns(['action','id_cliente','id_user','id_fuente','id_estado','observacion'])
-                ->editColumn('id_cliente',function($row){
-                    $cliente=Clientes::find($row->id_cliente);
-
-                    return $cliente->nombres.' '.$cliente->apellidos.' CEL:'.$cliente->celular;
-                })
-                ->editColumn('id_user',function($row){
-                    $buscar=Recepcionistas::where('id_user',$row->id_user)->count();
-                    
-                    if($buscar > 0){
-                        $r=Recepcionistas::where('id_user',$row->id_user)->first();
-                        $datos=$r->nombres." ".$r->apellidos;
-                    }else{
-                        $user=User::find($row->id_user);
-                        $datos=$user->name." (".$user->email.")";
-                    }
-
-                    return $datos;
-                })
-                ->editColumn('id_fuente',function($row){
-                        $fuentes=Fuentes::all();
         
-                    $select_f="<div class='form-group'>
-                        <select class='form-control form-control-sm' name='id_fuente' id='id_fuente'>";
-                        foreach ($fuentes as $k) {
-                            $select_f.="<option value='".$k->id."'";
-                            if($k->id==$row->id_fuente){ 
-                                $select_f.=" selected='selected' ";
-                             }
-                            $select_f.=" >".$k->fuente."</option>";
-                        }
-                    $select_f.="</select></div>";
-                    return $select_f;
-                })
-                ->editColumn('id_estado',function($row){
-                    $estados=Estados::all();
-                    $select_e="<div class='form-group'><select name='id_estado' id='id_estado' class='form-control form-control-sm'>";
-                    foreach($estados as $e){
-                        $select_e.="<option value='".$e->id."'"; 
-                        if($row->id_estado==$e->id){ 
-                         $select_e.=" selected='selected'";
-                        } 
-                        $select_e.=" >".$e->estado."</option>";
-                    }
-                    $select_e.="</select></div>";
-
-                    return $select_e;
-                })
-                ->editColumn('observacion',function($row){
-                    
-                    return $row->observacion;
-                })
-                ->addIndexColumn()
-                ->make(true);
-        }
-        return view('pedidos.index');
     }
 
 
@@ -1061,5 +998,80 @@ class PedidosController extends Controller
         $key .= $pattern=mt_rand(0,$max);
     }
      return $key;
+    }
+
+    public function filtros()
+    {
+        $agencias = Agencias::all();
+        $estados=Estados::all();
+        return view('pedidos.filtros',compact('agencias','estados'));
+    }
+
+    public function buscar_pedidos(Request $request)
+    {
+        //if(request()->ajax()) {
+            
+            $pedidos=\DB::table('pedidos')->select('pedidos.*')->groupBy('codigo')->get();
+             $tabla=datatables()->of($pedidos)
+                ->addColumn('action', function ($row) {
+                    $edit = '<a href="pedidos/'.$row->id.'/edit" data-id="'.$row->id.'" class="btn btn-warning btn-xs" id="editPedido"><i class="fa fa-pencil-alt"></i></a>';
+                    $delete = ' <a href="javascript:void(0);" id="delete-estado" onClick="deletePedido('.$row->id.')" class="delete btn btn-danger btn-xs"><i class="fa fa-trash"></i></a>';
+                    return $edit . $delete;
+                })->rawColumns(['action','id_cliente','id_user','id_fuente','id_estado','observacion'])
+                ->editColumn('id_cliente',function($row){
+                    $cliente=Clientes::find($row->id_cliente);
+
+                    return $cliente->nombres.' '.$cliente->apellidos.' CEL:'.$cliente->celular;
+                })
+                ->editColumn('id_user',function($row){
+                    $buscar=Recepcionistas::where('id_user',$row->id_user)->count();
+                    
+                    if($buscar > 0){
+                        $r=Recepcionistas::where('id_user',$row->id_user)->first();
+                        $datos=$r->nombres." ".$r->apellidos;
+                    }else{
+                        $user=User::find($row->id_user);
+                        $datos=$user->name." (".$user->email.")";
+                    }
+
+                    return $datos;
+                })
+                ->editColumn('id_fuente',function($row){
+                        $fuentes=Fuentes::all();
+        
+                    $select_f="<div class='form-group'>
+                        <select class='form-control form-control-sm' name='id_fuente' id='id_fuente'>";
+                        foreach ($fuentes as $k) {
+                            $select_f.="<option value='".$k->id."'";
+                            if($k->id==$row->id_fuente){ 
+                                $select_f.=" selected='selected' ";
+                             }
+                            $select_f.=" >".$k->fuente."</option>";
+                        }
+                    $select_f.="</select></div>";
+                    return $select_f;
+                })
+                ->editColumn('id_estado',function($row){
+                    $estados=Estados::all();
+                    $select_e="<div class='form-group'><select name='id_estado' id='id_estado' class='form-control form-control-sm'>";
+                    foreach($estados as $e){
+                        $select_e.="<option value='".$e->id."'"; 
+                        if($row->id_estado==$e->id){ 
+                         $select_e.=" selected='selected'";
+                        } 
+                        $select_e.=" >".$e->estado."</option>";
+                    }
+                    $select_e.="</select></div>";
+
+                    return $select_e;
+                })
+                ->editColumn('observacion',function($row){
+                    
+                    return $row->observacion;
+                })
+                ->addIndexColumn()
+                ->make(true);
+        //}
+        return view('pedidos.index',compact('tabla'));
     }
 }

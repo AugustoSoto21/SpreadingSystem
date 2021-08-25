@@ -67,7 +67,7 @@
                 </tr>
               </thead>
               <tbody>
-                
+                {{$tabla}}
               </tbody>
             </table>
           </div>
@@ -96,7 +96,8 @@ $(document).ready( function () {
       'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
     }
   });
-  $('#pedidos_table').DataTable({
+
+ /* $('#pedidos_table').DataTable({
     processing: true,
     serverSide: true,
     responsive: true,
@@ -118,93 +119,9 @@ $(document).ready( function () {
     ],
     order: [[0, 'desc']]
   });
-});
+});*/
 /*
-//--CODIGO PARA EDITAR ESTADO ---------------------//
-$('body').on('click', '#editPedido', function () {
-  var id = $(this).data('id');
 
-  $.ajax({
-    method:"GET",
-    url: "pedidos/"+id+"/edit",
-    dataType: 'json',
-    success: function(data){
-      $('#edit_pedido').modal({backdrop: 'static', keyboard: true, show: true});
-      $('.alert-danger').hide();
-      $('#id_pedido_edit').val(data.id);
-      $('#codigo_edit').text(data.codigo);
-      $('#detalles_edit').val(data.detalles);
-      $('#id_categoria_edit').val(data.id_categoria);
-      $('#status_edit').val(data.status);
-    }
-  });
-});
-//--CODIGO PARA UPDATE ESTADO ---------------------//
-$('#SubmitEditPedido').click(function(e) {
-  e.preventDefault();
-  var id = $('#id_pedido_edit').val();
-  $.ajax({
-    method:'PUT',
-    url: "pedidos/"+id+"",
-    data: {
-      id_pedido: $('#id_pedido_edit').val(),
-      detalles: $('#detalles_edit').val(),
-      status: $('#status_edit').val(),
-      id_categoria: $('#id_categoria_edit').val()
-    },
-    success: (data) => {
-      if(data.errors) {
-        $('.alert-danger').html('');
-        $.each(data.errors, function(key, value) {
-          $('.alert-danger').show();
-          $('.alert-danger').append('<strong><li>'+value+'</li></strong>');
-        });
-      } else {
-        var oTable = $('#pedidos_table').dataTable();
-        oTable.fnDraw(false);
-        Swal.fire ( data.titulo ,  data.message ,  data.icono );
-        if (data.icono=="success") {
-          $("#edit_pedidos").modal('hide');
-        }
-      }
-    },
-    error: function(data){
-      console.log(data);
-    }
-  });
-});
-//--CODIGO PARA ELIMINAR ESTADO ---------------------//
-function deletePedido(id){
-  var id = id;
-  Swal.fire({
-    title: '¿Estás seguro que desea eliminar a esta pedido?',
-    text: "¡Esta opción no podrá deshacerse en el futuro!",
-    icon: 'warning',
-    showCancelButton: true,
-    confirmButtonColor: '#3085d6',
-    cancelButtonColor: '#d33',
-    confirmButtonText: '¡Si, Eliminar!',
-    cancelButtonText: 'No, Cancelar!'
-  }).then((result) => {
-    if (result.isConfirmed) {
-      // ajax
-      $.ajax({
-        type:"DELETE",
-        url: "pedidos/"+id+"",
-        data: { id: id },
-        dataType: 'json',
-        success: function(response){
-          Swal.fire ( response.titulo ,  response.message ,  response.icono );
-          var oTable = $('#pedidos_table').dataTable();
-          oTable.fnDraw(false);
-        },
-        error: function (data) {
-          Swal.fire({title: "Error del servidor", text:  "Pedido no eliminada", icon:  "error"});
-        }
-      });
-    }
-  })
-}*/
 </script>
 <script src="{{ asset('js/sweetalert2.min.js') }}"></script>
 @endsection

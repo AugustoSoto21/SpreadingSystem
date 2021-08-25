@@ -52,9 +52,9 @@
               </a>
               </li>
               <li class="nav-item">
-              <a href="{{ route('pedidos.index') }}" class="nav-link {{ Request::is('pedidos/index*') ? 'active':'' }}">
+              <a href="{{ route('pedidos.filtros') }}" class="nav-link {{ Request::is('pedidos/filtros*') ? 'active':'' }}">
                 <i class="nav-icon far fa-circle nav-icon"></i>
-                <p>Listar</p>
+                <p>Buscar</p>
               </a>
               </li>
             </ul>
