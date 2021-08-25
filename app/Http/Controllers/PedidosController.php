@@ -34,10 +34,9 @@ class PedidosController extends Controller
     public function index()
     {
 
-        
         if(request()->ajax()) {
             //$pedidos=Pedidos::all();
-            $pedidos=\DB::table('pedidos')->select('pedidos.*')->get();
+            $pedidos=\DB::table('pedidos')->select('pedidos.*')->groupBy('codigo')->get();
             return datatables()->of($pedidos)
                 ->addColumn('action', function ($row) {
                     $edit = '<a href="pedidos/'.$row->id.'/edit" data-id="'.$row->id.'" class="btn btn-warning btn-xs" id="editPedido"><i class="fa fa-pencil-alt"></i></a>';
@@ -79,15 +78,15 @@ class PedidosController extends Controller
                 })
                 ->editColumn('id_estado',function($row){
                     $estados=Estados::all();
-                    $select_e='<select name="id_estado" id="id_estado" class="form-control">';
+                    $select_e="<div class='form-group'><select name='id_estado' id='id_estado' class='form-control form-control-sm'>";
                     foreach($estados as $e){
-                        $select_e.='<option value="'.$e->id.'"'; 
+                        $select_e.="<option value='".$e->id."'"; 
                         if($row->id_estado==$e->id){ 
-                         $select_e.=' selected="selected"';
+                         $select_e.=" selected='selected'";
                         } 
-                        $select_e.=' >'.$e->estado.'</option>';
+                        $select_e.=" >".$e->estado."</option>";
                     }
-                    $select_e.='</select>';
+                    $select_e.="</select></div>";
 
                     return $select_e;
                 })
