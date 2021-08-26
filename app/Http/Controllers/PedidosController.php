@@ -34,8 +34,27 @@ class PedidosController extends Controller
     public function index(Request $request)
     {
         if(request()->ajax()) {
-            
-            $pedidos=\DB::table('pedidos')->select('pedidos.*')->groupBy('codigo')->get();
+            if (!empty($request->date_from)) {
+                if ($request->id_agencia!="todas") {
+                    $q_agencia=" && tarifas.id_agencia='".$request->id_agencia."' ";
+                } else {
+                    $q_agencia="";
+                }
+
+                if ($request->todos_estados==1) {
+                    $q_estado="";
+                } else {
+                    $q_estado=" WHERE pedidos.id_estado IN(".$request->id_estado_filtro.") ";
+                }
+
+                $q_date = " && pedidos.created_at BETWEEN '".$request->date_from."' AND '".$request->date_to."' ";
+                
+                $sql="SELECT pedidos.id, pedidos.codigo, pedidos.id_cliente, pedidos.id_user, pedidos.total_fact, pedidos.envio_gratis, pedidos.monto_tarifa, pedidos.id_fuente, pedidos.id_estado, pedidos.observacion FROM pedidos,tarifas,estados WHERE pedidos.id_tarifa = tarifas.id && pedidos.id_estado=estados.id ".$q_date." ";
+                $pedidos=\DB::select($sql);
+            } else {           
+                $sql="SELECT pedidos.id, pedidos.codigo, pedidos.id_cliente, pedidos.id_user, pedidos.total_fact, pedidos.envio_gratis, pedidos.monto_tarifa, pedidos.id_fuente, pedidos.id_estado, pedidos.observacion FROM pedidos,tarifas,estados WHERE pedidos.id_tarifa = tarifas.id && pedidos.id_estado=estados.id ";
+                $pedidos=\DB::select($sql); 
+            }
              return datatables()->of($pedidos)
                 ->addColumn('action', function ($row) {
                     $edit = '<a href="pedidos/'.$row->id.'/edit" data-id="'.$row->id.'" class="btn btn-warning btn-xs" id="editPedido"><i class="fa fa-pencil-alt"></i></a>';
@@ -48,8 +67,7 @@ class PedidosController extends Controller
                     return $cliente->nombres.' '.$cliente->apellidos.' CEL:'.$cliente->celular;
                 })
                 ->editColumn('id_user',function($row){
-                    $buscar=Recepcionistas::where('id_user',$row->id_user)->count();
-                    
+                    $buscar=Recepcionistas::where('id_user',$row->id_user)->count();                    
                     if($buscar > 0){
                         $r=Recepcionistas::where('id_user',$row->id_user)->first();
                         $datos=$r->nombres." ".$r->apellidos;
@@ -61,8 +79,7 @@ class PedidosController extends Controller
                     return $datos;
                 })
                 ->editColumn('id_fuente',function($row){
-                        $fuentes=Fuentes::all();
-        
+                    $fuentes=Fuentes::all();        
                     $select_f="<div class='form-group'>
                         <select class='form-control form-control-sm' name='id_fuente' id='id_fuente'>";
                         foreach ($fuentes as $k) {

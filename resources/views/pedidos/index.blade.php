@@ -91,60 +91,67 @@
 <script>
 $(document).ready(function(){ 
  load_data();
- function load_data(fecha = '', id_agencia = '', id_estado = '' , todas = '' , todos = '') {
-  $(document).ready( function () {
-    $.ajaxSetup({
-      headers: {
-        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-      }
-    });
-    $('#pedidos_table').DataTable({
-      processing: true,
-      serverSide: true,
-      ajax: {
-        url:"{{ url('pedidos') }}",
-        data:{
-          fecha:fecha,
-          id_agencia:id_agencia,
-          id_estado:id_estado,
-          todas:todas,
-          todos:todos
+  function load_data(id_agencia = '', todos_estados = '', id_estado_filtro = '' , date_from = '' , date_to = '') {
+    $(document).ready( function () {
+      $.ajaxSetup({
+        headers: {
+          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
-     },
-      columns: [
-        { data: 'codigo', name: 'codigo' },
-        { data: 'id_cliente', name: 'id_cliente' },
-        { data: 'id_user', name: 'id_user' },
-        { data: 'total_fact', name: 'total_fact' },
-        { data: 'envio_gratis', name: 'envio_gratis' },
-        { data: 'monto_tarifa', name: 'monto_tarifa' },
-        { data: 'id_fuente', name: 'id_fuente' },
-        { data: 'id_estado', name: 'id_estado' },
-        { data: 'observacion', name: 'observacion' },
-        {data: 'action', name: 'action', orderable: false},
-      ],
-      order: [[0, 'desc']]
+      });
+      $('#pedidos_table').DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: {
+          url:"{{ url('pedidos') }}",
+          data:{
+            id_agencia:id_agencia,
+            todos_estados:todos_estados,
+            id_estado_filtro:id_estado_filtro,
+            date_from:date_from,
+            date_to:date_to
+          }
+       },
+        columns: [
+          { data: 'codigo', name: 'codigo' },
+          { data: 'id_cliente', name: 'id_cliente' },
+          { data: 'id_user', name: 'id_user' },
+          { data: 'total_fact', name: 'total_fact' },
+          { data: 'envio_gratis', name: 'envio_gratis' },
+          { data: 'monto_tarifa', name: 'monto_tarifa' },
+          { data: 'id_fuente', name: 'id_fuente' },
+          { data: 'id_estado', name: 'id_estado' },
+          { data: 'observacion', name: 'observacion' },
+          {data: 'action', name: 'action', orderable: false},
+        ],
+        order: [[0, 'desc']]
+      });
     });
-  });
-}
- $('#filter').click(function(){
-  var fecha = $('#fecha').val();
-  var id_agencia = $('#id_agencia').val();
-  var id_estado = $('#id_estado').val();
-  var todas = $('#todas').val();
-  var todas = $('#todas').val();
-  if(fecha != '' &&  id_agencia != '' &&  id_estado != '' && todas != '' && todos != '') {
-    $('#pedidos_table').DataTable().destroy();
-    load_data(fecha,id_agencia,id_estado,todas,todos);
-    /*$('#text_date_from').text(date_from);
-    $('#text_date_to').text(date_to);
-    $("#range_date").removeAttr('style');*/
-    $('#filtro_pedido').modal('hide');
-  } else {
-    Swal.fire({ title: 'Advertencia' ,  text: 'Todos los campos del filtro son obligatorios.' ,  icon:'warning' });
   }
- });
- 
+  $('#filter').click(function(){
+    var id_agencia = $('#id_agencia').val();
+    var todos_estados = $('#todos_estados').val();
+    var id_estado_filtro = $('#id_estado_filtro').val();
+    var date_from = $('#date_from').val();
+    var date_to = $('#date_to').val();
+    if(id_agencia != '' && date_from != '' && date_to != '') {
+      $('#pedidos_table').DataTable().destroy();
+      load_data(id_agencia,todos_estados,id_estado_filtro,date_from,date_to);
+      /*$('#text_date_from').text(date_from);
+      $('#text_date_to').text(date_to);
+      $("#range_date").removeAttr('style');*/
+      $('#filtro_pedido').modal('hide');
+    } else {
+      Swal.fire({ title: 'Advertencia' ,  text: 'Todos los campos del filtro son obligatorios.' ,  icon:'warning' });
+    }
+  });
+});
+function changeEstados(){
+  if ($('#todos_estados').prop('checked')) {
+    $('#id_estado_filtro').prop('disabled',true).prop('required', false);
+  }else{
+    $('#id_estado_filtro').prop('disabled',false).prop('required', true);
+  }
+}
 </script>
 <script src="{{ asset('js/sweetalert2.min.js') }}"></script>
 @endsection
