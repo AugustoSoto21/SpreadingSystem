@@ -1036,6 +1036,7 @@ class PedidosController extends Controller
                     $key->interes_ct=$cada_cuota;
                     $key->total_ct=$total_ct2;
                 }
+                $key->id_tarifa=$id_tarifa;
                 if ($opcion==1) {
                     $key->envio_gratis="No";
                     $key->monto_tarifa=$monto;

@@ -1032,6 +1032,7 @@ $("#id_medio").on('change',function (event) {
     }else{
       var id_tarifa=0;
     }
+    //console.log(id_tarifa+'mmmmmmmm');
     $.get('/pedidos/'+id_tarifa+'/'+opcion+'/agregar_tarifa_envio_agencia',function (data) {})
     .done(function(data) {
       //console.log(data);
