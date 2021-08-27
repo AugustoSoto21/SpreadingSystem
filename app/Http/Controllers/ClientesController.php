@@ -184,7 +184,7 @@ class ClientesController extends Controller
 
     public function buscar_clientes()
     {
-        $clientes=Clientes::all();
+        $clientes=Clientes::orderby('id','DESC')->get();
 
         return response()->json($clientes);
     }

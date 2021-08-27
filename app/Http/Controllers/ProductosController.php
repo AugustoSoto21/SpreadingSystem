@@ -133,6 +133,7 @@ class ProductosController extends Controller
                 $inventario= new Inventario();
                 $inventario->id_producto=$producto->id;
                 $inventario->stock=$request->stock_s;
+                $inventario->stock_disponible=$request->stock_s;
                 $inventario->stock_min=$request->stock_min_s;
                 $inventario->save();
                 //----------------
@@ -152,6 +153,7 @@ class ProductosController extends Controller
                     $almacen->id_agencia=$request->id_agencia[$i];
                     $almacen->id_producto=$producto->id;
                     $almacen->stock=$request->stock[$i];
+                    $almacen->stock_disponible=$request->stock[$i];
                     $almacen->stock_min=$stock_min[$i];
                     $almacen->save();
                 }
