@@ -133,6 +133,7 @@ $(document).ready(function(){
     var id_estado_filtro = $('#id_estado_filtro').val();
     var date_from = $('#date_from').val();
     var date_to = $('#date_to').val();
+    console.log(todos_estados);
     if(id_agencia != '' && date_from != '' && date_to != '') {
       $('#pedidos_table').DataTable().destroy();
       load_data(id_agencia,todos_estados,id_estado_filtro,date_from,date_to);
@@ -148,8 +149,10 @@ $(document).ready(function(){
 function changeEstados(){
   if ($('#todos_estados').prop('checked')) {
     $('#id_estado_filtro').prop('disabled',true).prop('required', false);
+    $('#todos_estados').val('activo');
   }else{
     $('#id_estado_filtro').prop('disabled',false).prop('required', true);
+    $('#todos_estados').val('inactivo');
   }
 }
 </script>

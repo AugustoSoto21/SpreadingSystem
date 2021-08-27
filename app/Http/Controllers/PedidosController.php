@@ -40,19 +40,23 @@ class PedidosController extends Controller
                 } else {
                     $q_agencia="";
                 }
-
-                if ($request->todos_estados==1) {
-                    $q_estado="";
-                } else {
-                    $q_estado=" WHERE pedidos.id_estado IN(".$request->id_estado_filtro.") ";
+                $datos = $request['id_estado_filtro'];
+                foreach ($datos as $key) {
+                    $datos_busqueda= $key;
                 }
-
-                $q_date = " && pedidos.created_at BETWEEN '".$request->date_from."' AND '".$request->date_to."' ";
+                if ($request->todos_estados=="inactivo") {
+                    $q_estado=" && pedidos.id_estado IN(".$datos_busqueda.") ";
+                } else {
+                    $q_estado="";
+                }
+                $fecha_desde = $request->date_from." 00:00:00";
+                $fecha_hasta = $request->date_to." 23:59:59";
+                $q_date = " && pedidos.created_at BETWEEN '".$fecha_desde."' AND '".$fecha_hasta."' ";
                 
-                $sql="SELECT pedidos.id, pedidos.codigo, pedidos.id_cliente, pedidos.id_user, pedidos.total_fact, pedidos.envio_gratis, pedidos.monto_tarifa, pedidos.id_fuente, pedidos.id_estado, pedidos.observacion FROM pedidos,tarifas,estados WHERE pedidos.id_tarifa = tarifas.id && pedidos.id_estado=estados.id ".$q_date." ";
+                $sql="SELECT pedidos.id, pedidos.codigo, pedidos.id_cliente, pedidos.id_user, pedidos.total_fact, pedidos.envio_gratis, pedidos.monto_tarifa, pedidos.id_fuente, pedidos.id_estado, pedidos.observacion FROM pedidos,tarifas,estados WHERE pedidos.id_tarifa = tarifas.id && pedidos.id_estado=estados.id ".$q_agencia." ".$q_date." ".$q_estado." group by pedidos.codigo ";
                 $pedidos=\DB::select($sql);
             } else {           
-                $sql="SELECT pedidos.id, pedidos.codigo, pedidos.id_cliente, pedidos.id_user, pedidos.total_fact, pedidos.envio_gratis, pedidos.monto_tarifa, pedidos.id_fuente, pedidos.id_estado, pedidos.observacion FROM pedidos,tarifas,estados WHERE pedidos.id_tarifa = tarifas.id && pedidos.id_estado=estados.id ";
+                $sql="SELECT pedidos.id, pedidos.codigo, pedidos.id_cliente, pedidos.id_user, pedidos.total_fact, pedidos.envio_gratis, pedidos.monto_tarifa, pedidos.id_fuente, pedidos.id_estado, pedidos.observacion FROM pedidos,tarifas,estados WHERE pedidos.id_tarifa = tarifas.id && pedidos.id_estado=estados.id group by pedidos.codigo";
                 $pedidos=\DB::select($sql); 
             }
              return datatables()->of($pedidos)

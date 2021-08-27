@@ -25,7 +25,7 @@
           <div class="col-md-6">                
             <label for="estados">Estados <b style="color: red;">*</b></label>                
             <div class="icheck-success d-inline float-sm">
-              <input type="checkbox" name="todos_estados" id="todos_estados" onclick="changeEstados()" value="1">
+              <input type="checkbox" name="todos_estados" id="todos_estados" onclick="changeEstados()" value="inactivo">
               <label for="todos_estados">Todos:</label>
             </div>
             <select name="id_estado_filtro[]" required="required" id="id_estado_filtro" class="form-control select2bs4" multiple="multiple" title="Seleccione el(los) estados de los pedidos" >
