@@ -72,7 +72,7 @@
                 <div class="col-md-3">
                   <div class="form-group">
                     <label for="status">Status <b style="color: red;">*</b></label>
-                    <select name="status" id="status" class="form-control select2">
+                    <select name="status" id="status" class="form-control">
                       <option value="Activo">Activo</option>
                       <option value="Inactivo">Inactivo</option>
                     </select>

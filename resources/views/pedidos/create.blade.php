@@ -454,16 +454,40 @@ function producto_stock(id) {
     url: "../buscar_stock/"+id+"/1/producto",
     dataType: 'json',
     success: function(response){
-      $.each(response, function(key, registro) {
+        var total_disponible;
+        var total_stock;
+        var stocks=0;
+        var disponible=0;
+        //console.log(response.length);
+      if(response.length > 1){
+        for(var i=0; i < response.length; i++){
+          stocks+=response[i].stock_a;
+          disponible+=response[i].disponible_a;
+        }
+        total_stock=response[0].stock_i+stocks;
+        total_disponible=response[0].disponible_i+disponible;
+        if(response[0].total_stock){
+              
+              $('#id_producto').append("<option value='"+response[0].id+"'>"+response[0].detalles+" ----"+response[0].modelo+" "+response[0].marca+" "+response[0].color+" Stock: "+total_stock+" - Disponible: "+total_disponible+" </option>");
+        }
+      }else{
+        //console.log(registro[0].total_stock);
+           if(response[0].total_stock){
+              total_stock=response[0].total_stock;
+              total_disponible=response[0].total_disponible;
+              $('#id_producto').append("<option value='"+response[0].id+"'>"+response[0].detalles+" ----"+response[0].modelo+" "+response[0].marca+" "+response[0].color+" Stock: "+total_stock+" - Disponible: "+total_disponible+" </option>");
+           }
+      }
+      /*$.each(response, function(key, registro) {
         var total_stock;
         var total_disponible;
-
+        //console.log(registro[0].total_stock);
            if(registro.total_stock){
               total_stock=registro.total_stock;
               total_disponible=registro.total_disponible;
-              $('#id_producto').append("<option value='"+registro.id+"'>"+registro.detalles+" "+registro.modelo+" "+registro.marca+" "+registro.color+" Stock: "+total_stock+" - Disponible: "+total_disponible+" </option>");
+              $('#id_producto').append("<option value='"+registro.id+"'>"+registro.detalles+" ----"+registro.modelo+" "+registro.marca+" "+registro.color+" Stock: "+total_stock+" - Disponible: "+total_disponible+" </option>");
            }
-      });
+      });*/
     },
     error: function (data) {
       Swal.fire({title: "Error del servidor", text: "Consulta de stocks.", icon:  "error"});

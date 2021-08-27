@@ -132,7 +132,7 @@ class PedidosController extends Controller
      */
     public function create()
     {
-        $productos=Productos::where('status','Activo');
+        $productos=Productos::where('status','Activo')->get();
         $categorias=Categorias::all();
         $clientes=Clientes::all();
         $zonas=Zonas::all();
