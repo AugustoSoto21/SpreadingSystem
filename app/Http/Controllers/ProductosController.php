@@ -21,74 +21,8 @@ class ProductosController extends Controller
      */
     public function index()
     {
-        $id_producto=3;
-        $productos=Productos::find(3);
-        $opcion=1;
-        $en_carrito=CarritoPedido::where('id_producto',$id_producto)->where('id_user',\Auth::getUser()->id)->count();
-        if($en_carrito == 0 && $opcion==1){
-            if (count($productos->inventario) > 0 && count($productos->almacen) > 0) {
-
-               $producto=\DB::table('productos')
-                ->join('inventarios','inventarios.id_producto','=','productos.id')
-                ->join('almacens','almacens.id_producto','=','productos.id')
-                ->where('productos.id',$id_producto)
-                ->select('productos.*','almacens.stock AS stock_a','inventarios.stock AS stock_i',\DB::raw('(inventarios.stock + almacens.stock) AS total_stock'),\DB::raw('(inventarios.stock_disponible + almacens.stock_disponible) AS total_disponible'))->get();
-            }else{
-                 if(count($productos->inventario) > 0 && count($productos->almacen) == 0){
-                $producto=\DB::table('productos')
-                ->join('inventarios','inventarios.id_producto','=','productos.id')
-                ->where('productos.id',$id_producto)
-                ->select('productos.*','inventarios.stock AS total_stock','inventarios.stock_disponible AS total_disponible')->get();
-                
-                }else{
-                     if (count($productos->inventario) == 0 && count($productos->almacen) > 0) {
-                        $producto=\DB::table('productos')
-                        ->join('almacens','almacens.id_producto','=','productos.id')
-                        ->where('productos.id',$id_producto)
-                        ->select('productos.*','almacens.stock AS total_stock','almacens.stock_disponible AS total_disponible')->get();
-                    }else{
-                        $producto=Productos::where('id',$id_producto)->get();
-                    }
-                }
-            }
-        }else{
-            if($en_carrito > 0 and $opcion==1){
-                 $producto=Productos::where('id',$id_producto)->get();
-            }
-        }
-        //en caso de estar en el carrito
-        if($en_carrito > 0 && $opcion==2){
-                if (count($productos->inventario) > 0 && count($productos->almacen) > 0) {
-               $producto=\DB::table('productos')
-                ->join('inventarios','inventarios.id_producto','=','productos.id')
-                ->join('almacens','almacens.id_producto','=','productos.id')
-                ->where('productos.id',$id_producto)
-                ->select('productos.*',\DB::raw('(inventarios.stock + almacens.stock) AS total_stock'),\DB::raw('(inventarios.stock_disponible + almacens.stock_disponible) AS total_disponible'))->get();
-                }else{
-                     if(count($productos->inventario) > 0 && count($productos->almacen) == 0){
-                    $producto=\DB::table('productos')
-                    ->join('inventarios','inventarios.id_producto','=','productos.id')
-                    ->where('productos.id',$id_producto)
-                    ->select('productos.*','inventarios.stock AS total_stock','inventarios.stock_disponible AS total_disponible')->get();
-                    
-                        }else{
-                            if (count($productos->inventario) == 0 && count($productos->almacen) > 0) {
-                            $producto=\DB::table('productos')
-                            ->join('almacens','almacens.id_producto','=','productos.id')
-                            ->where('productos.id',$id_producto)
-                            ->select('productos.*','almacens.stock AS total_stock','almacens.stock_disponible AS total_disponible')->get();
-                            }else{
-                            $producto=Productos::where('id',$id_producto)->get();
-                            }
-                        }
-                    }
-                }else{
-                    if($en_carrito ==0 && $opcion==2){
-                        $producto=Productos::where('id',$id_producto)->get();
-                    }
-                }
-            dd($producto);
-        /*$categorias=Categorias::all();
+        
+        $categorias=Categorias::all();
         if(request()->ajax()) {
             $productos=\DB::table('productos')
             ->join('categorias','categorias.id','=','productos.id_categoria')
@@ -111,7 +45,7 @@ class ProductosController extends Controller
                 ->make(true);
         }
 
-        return view('productos.index',compact('categorias'));*/
+        return view('productos.index',compact('categorias'));
     }
 
     /**
