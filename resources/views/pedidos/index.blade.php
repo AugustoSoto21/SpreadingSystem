@@ -101,6 +101,8 @@ $(document).ready(function(){
       $('#pedidos_table').DataTable({
         processing: true,
         serverSide: true,
+        responsive: true,
+        autoWidth: false,
         ajax: {
           url:"{{ url('pedidos') }}",
           data:{
