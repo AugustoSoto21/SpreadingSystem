@@ -412,6 +412,7 @@ class PedidosController extends Controller
         if ($carrito > 0) {
             //se busca el producto en el carrito
             $previo=CarritoPedido::where('id_user',\Auth::getUser()->id)->where('id_producto',$request->id_product_remove)->first();
+            //dd($previo);
             $previo2=CarritoPedido::where('id_user',\Auth::getUser()->id)->get();
             $porcentaje_descuento=$previo->porcentaje_descuento;
             $monto_descuento=$previo->monto_descuento;
