@@ -40,11 +40,11 @@ class PedidosController extends Controller
                 } else {
                     $q_agencia="";
                 }
-                $datos = $request['id_estado_filtro'];
-                foreach ($datos as $key) {
-                    $datos_busqueda= $key;
-                }
                 if ($request->todos_estados=="inactivo") {
+                    $datos = $request['id_estado_filtro'];
+                    foreach ($datos as $key) {
+                        $datos_busqueda= $key;
+                    }
                     $q_estado=" && pedidos.id_estado IN(".$datos_busqueda.") ";
                 } else {
                     $q_estado="";
