@@ -176,7 +176,7 @@
                 @foreach($productos->imagenes as $k)
                   <div class="col-md-4">
                     <div class="position-relative">
-                      <img src="{!!$k->url!!}" alt="Photo 1" class="img-fluid">
+                      <img src="{{ asset($k->url)}}" alt="Photo 1" class="img-fluid">
                       <div class="ribbon-wrapper ribbon-lg">
                         <div class="ribbon bg-success text-lg">
                           IMAGEN
