@@ -37,11 +37,11 @@ class Pedidos extends Model
     }
     public function estados(){
 
-    	return $this->belongsTo(Estado::class,'id_estado');
+    	return $this->belongsTo(Estados::class,'id_estado');
     }
     public function productos(){
 
-        return $this->belongsTo(Estado::class,'id_producto');
+        return $this->belongsTo(Productos::class,'id_producto');
     }
 }
 

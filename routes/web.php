@@ -68,7 +68,17 @@ Route::group(['middleware' => ['web', 'auth']], function() {
 	Route::get('/pedidos/{id_tarifa}/{opcion}/agregar_tarifa_envio_agencia',[PedidosController::class,'agregar_tarifa_envio_agencia']);
 	Route::get('/pedidos/filtros',[PedidosController::class,'filtros'])->name('pedidos.filtros');
 	Route::post('/pedidos/buscar',[PedidosController::class,'buscar_pedidos'])->name('pedidos.buscar');
-
+	//-----------actualizacion de pedido----------------
+	Route::get('/pedidos/{id_producto}/{id_cliente}/{codigo}/llenar_carrito',[PedidosController::class,'llenar_carrito2']);
+	Route::get('/pedidos/{nueva_cantidad}/{id_producto}/{codigo}/actualizar_cantidad_producto',[PedidosController::class,'actualizar_cantidad_producto2']);
+	Route::get('/pedidos/{nuevo_costo}/{id_producto}/{codigo}/actualizar_costo_producto',[PedidosController::class,'actualizar_costo_producto2']);
+	Route::get('/pedidos/{nuevo_monto}/{codigo}/actualizar_monto_descuento',[PedidosController::class,'actualizar_monto_descuento2']);
+	Route::get('/pedidos/{nuevo_monto}/{codigo}/actualizar_porcentaje_descuento',[PedidosController::class,'actualizar_porcentaje_descuento2']);
+	Route::get('/pedidos/{id_cuota}/{monto}/{codigo}/calcular_recargo',[PedidosController::class,'calcular_recargo2']);
+	Route::post('/pedidos/remove2',[PedidosController::class,'remove2'])->name('pedidos.remove2');
+	Route::get('/pedidos/{monto}/{opcion}/{codigo}/agregar_tarifa_envio',[PedidosController::class,'agregar_tarifa_envio2']);
+	Route::get('/pedidos/{id_tarifa}/{opcion}/{codigo}/agregar_tarifa_envio_agencia',[PedidosController::class,'agregar_tarifa_envio_agencia2']);
+	//--------------------------------------------------
 	Route::resource('/pedidos',PedidosController::class);
 	Route::get('/buscar_clientes',[ClientesController::class, 'buscar_clientes']);
 	Route::get('/buscar_productos',[ProductosController::class, 'buscar_productos']);
