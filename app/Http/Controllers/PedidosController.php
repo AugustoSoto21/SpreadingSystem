@@ -322,7 +322,8 @@ class PedidosController extends Controller
      */
     public function edit($codigo)
     {
-       $productos=Productos::where('status','Activo')->get();
+
+        $productos=Productos::where('status','Activo')->get();
         $categorias=Categorias::all();
         $clientes=Clientes::all();
         $zonas=Zonas::all();
@@ -356,11 +357,13 @@ class PedidosController extends Controller
             $observacion=$p->observacion;
 
         }
+        $horarios=Horarios::where('codigo_pedido',$codigo)->get();
+        $cuantos_h=Horarios::where('codigo_pedido',$codigo)->count();
         if(!$iva){
             Alert::warning('Alerta', 'No existe un valor activo de IVA')->persistent(true);
                 return redirect()->to('pedidos');
         }else{
-            return view('pedidos.edit',compact('productos','categorias','clientes','zonas','estados','agencias','pedido','monto_descuento','porcentaje_descuento','descuento_total','total_fact','iva_total','recargo_ct','cuotas_ct','total_ct','fuentes','medios','iva','interes_ct','envio_gratis','id_zona','monto_tarifa','id_tarifa','tarifas','estados','id_fuente','id_estado','observacion','codigo'));
+            return view('pedidos.edit',compact('productos','categorias','clientes','zonas','estados','agencias','pedido','monto_descuento','porcentaje_descuento','descuento_total','total_fact','iva_total','recargo_ct','cuotas_ct','total_ct','fuentes','medios','iva','interes_ct','envio_gratis','id_zona','monto_tarifa','id_tarifa','tarifas','estados','id_fuente','id_estado','observacion','codigo','horarios','cuantos_h'));
         }
          
     }
@@ -372,9 +375,9 @@ class PedidosController extends Controller
      * @param  \App\Models\Pedidos  $pedidos
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Pedidos $pedidos)
+    public function update(Request $request,$id_pedido)
     {
-        //
+        dd($request->all());
     }
 
     /**
@@ -1337,7 +1340,7 @@ class PedidosController extends Controller
     {
         $carrito=Pedidos::where('codigo',$codigo)->count();
         if ($carrito > 0) {
-
+            
             $previo=Pedidos::where('codigo',$codigo)->where('id_producto',$id_producto)->first();
             $previo->cantidad=$nueva_cantidad;
             $previo->total_pp=$nueva_cantidad*$previo->monto_und;

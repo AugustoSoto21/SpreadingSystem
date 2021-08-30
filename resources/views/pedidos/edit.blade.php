@@ -21,12 +21,13 @@
   <div class="container-fluid">
     @include('categorias.partials.create')
     @include('clientes.partials.create')
-    @include('pedidos.partials.remove')
+    @include('pedidos.partials.remove2')
     <div class="row">
       <div class="col-md-12">
         <div class="card card-primary card-outline">
-          <form action="{{ route('pedidos.store') }}" class="form-horizontal" method="POST" autocomplete="off" name="pedidoEditForm" id="pedidoEditForm" novalidate>
+          <form action="{{ route('pedidos.update',1) }}" class="form-horizontal" method="POST" autocomplete="off" name="pedidoEditForm" id="pedidoEditForm" novalidate>
              <!-- enctype="Multipart/form-data" data-parsley-validate -->
+             @method('PUT')
             @csrf
             <div class="card-header">
               <h3 class="card-title" style="margin-top: 5px;"><i class="nav-icon fa fa-shopping-basket"></i> Actualizar de pedido: Código: {{$codigo}}<input type="hidden" name="codigo" id="codigo" value="{{$codigo}}"></h3>
@@ -85,16 +86,19 @@
                     </thead>
                     <tbody id="invoice">
                       @foreach($pedido as $key)
-                      
+                      @php $detalles=$key->productos->detalles." ".$key->productos->marca." ".$key->productos->modelo." ".$key->productos->color; 
+                      $cantidad=producto_stock($key->id_producto);
+                      @endphp
                       <tr>
                         <td>
-                            <a href="#" title="Consultar Disponibilidad" class="btn btn-primary btn-xs" onclick="cant_disponible('{{ $key->id_producto }}')"><i class="fa fa-list-ol"></i></a>
+                            <a href="#" title="Consultar Disponibilidad" class="btn btn-primary btn-xs" onclick="cant_disponible('{{ $detalles }}','{{$cantidad}}')"><i class="fa fa-list-ol"></i></a>
                         </td>
                         <td>
-                          <input type="number" onchange="change_amount(this,{!! $key->id_producto !!})" name="cantidad[]" id="cantidad<?=$key->id_producto?>" value="{{$key->cantidad}}" max="{{$key->disponible}}" min="0" class="form-control">
+                          <input type="number" onchange="change_amount(this,{!! $key->id_producto !!})" name="cantidad[]" id="cantidad<?=$key->id_producto?>" value="{{$key->cantidad}}" max="producto_stock(<?=$key->id_producto?>)" min="0" class="form-control">
                         </td>
                         <td>
-                          {{$key->productos->detalles}} {{$key->productos->marca}} {{$key->productos->modelo}} {{$key->productos->color}}
+                            {{$key->productos->detalles}} {{$key->productos->marca}} {{$key->productos->modelo}} {{$key->productos->color}}
+                        
                         </td>
                         <td>
                           <input type="number" name="monto_und[]" id="monto_und<?=$key->id_producto?>" step="0.01" value="{{$key->monto_und}}" onchange="change_cost(this,{!! $key->id_producto !!})" min="0" class="form-control" pattern="[0-9]+([,\.][0-9]+)?" formnovalidate="formnovalidate">
@@ -306,14 +310,51 @@
                 <div class="col-12">
                   <div class="mb-3">
                   <label for="observacion">Observación:</label>
-                  <textarea name="observacion" id="observacion"  class="textarea" style="width: 100%; height: 200px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;"></textarea>
+                  <textarea name="observacion" id="observacion"  class="textarea" style="width: 100%; height: 200px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;">{{$observacion}}</textarea>
                   </div>
                 </div>
               </div>
               <br>
               <div class="table-responsive">
                 <table class="table table-bordered" id="horarios_pedidos">
+                  @php $i=1; @endphp
+                  @if($cuantos_h > 0)
+                  @foreach($horarios as $k)
+
                   <tr>
+                    <td>
+                      <div class="row">
+                        <div class="col-4">
+                          <label for="horarios">Fecha:<b style="color: red;">*</b></label>
+                          <div class="input-group input-group-sm">
+                            @if($cuantos_h==$i)
+                            <span class="input-group-append">
+                              <button type="button" class="btn btn-info btn-flat" data-toggle="modal" data-target="#" data-tooltip="tooltip" data-placement="top" title="Agregar Horario" id="addHorario"><i class="fa fa-plus"></i></button>
+                            </span>
+                            @endif
+                            @php $i++; @endphp
+                            <input type="date" value="{{$k->horario}}" min="{{date('Y-m-d')}}" 
+                             name="horarios[]" id="horarios" class="form-control" >
+                          </div>
+                        </div>
+                        <div class="col-2">
+                          <label for="horarios">Desde:<b style="color: red;">*</b></label>
+                          <input type="time" class="form-control" name="hora_inicio[]" id="hora_inicio" value="{{$k->hora_inicio}}" title="Ingrese la hora desde que se encontrará en el lugar" >
+                        </div>
+                        <div class="col-2">
+                          <label for="horarios">Hasta:<b style="color: red;">*</b></label>
+                          <input type="time" class="form-control" name="hora_fin[]" id="hora_fin" title="Ingrese la hora hasta la cual se encontrará en el lugar" value="{{$k->hora_fin}}" >
+                        </div>
+                        <div class="col-4">
+                          <label for="horarios">Dirección:<b style="color: red;">*</b></label>
+                          <input type="text" name="direccion[]" id="direccion" class="form-control form-control-md" title="Ingrese la dirección en la cual se encuentra en el horario a la izquierda" value="{{$k->direccion}}" >
+                        </div>
+                      </div>    
+                    </td>
+                  </tr>
+                  @endforeach
+                  @else
+                    <tr>
                     <td>
                       <div class="row">
                         <div class="col-4">
@@ -332,7 +373,7 @@
                         </div>
                         <div class="col-2">
                           <label for="horarios">Hasta:<b style="color: red;">*</b></label>
-                          <input type="time" class="form-control" name="hora_fin[]" id="hora_fin" title="Ingrese la hora hasta la cual se encontrará en el lugar" >
+                          <input type="time" class="form-control" name="hora_fin[]" id="hora_fin" title="Ingrese la hora hasta la cual se encontrará en el lugar"  >
                         </div>
                         <div class="col-4">
                           <label for="horarios">Dirección:<b style="color: red;">*</b></label>
@@ -341,6 +382,7 @@
                       </div>    
                     </td>
                   </tr>
+                  @endif
                 </table>
               </div>
             </div>
@@ -451,7 +493,7 @@ $('#SubmitCreateCliente').click(function(e) {
 function producto_stock(id) {
   $.ajax({
     type:"GET",
-    url: "../buscar_stock/"+id+"/1/producto",
+    url: "../../buscar_stock/"+id+"/1/producto",
     dataType: 'json',
     success: function(response){
         var total_disponible;
@@ -494,34 +536,14 @@ function producto_stock(id) {
     }
   });
 }
-function cant_disponible(id){
+function cant_disponible(detalles,cantidad){
 
-$.ajax({
-    type:"GET",
-    url: "../buscar_stock/"+id+"/2/producto",
-    dataType: 'json',
-    success: function(response){
-      $.each(response, function(key, registro) {
-        //console.log(registro)
+    Swal.fire({
+        title: detalles,
+        text:  "Cantidad disponible: "+cantidad,
+        icon:  "success",
+    });
 
-           if(registro.total_stock){
-            if(registro.marca){
-              var marca=registro.marca;
-            }else{
-              var marca="";
-            }
-              Swal.fire({
-                  title: ""+registro.detalles+" "+registro.marca+" "+registro.modelo+" "+registro.color+"",
-                  text:  "Cantidad disponible: "+registro.total_disponible+"",
-                  icon:  "success",
-              });
-           }
-      });
-    },
-    error: function (data) {
-      Swal.fire({title: "Error del servidor", text: "Consulta de Disponible.", icon:  "error"});
-    }
-  });   
   }
 //---SELECCIONANDO PRODUCTO PARA CARRITO
 $("#id_producto").on('select2:select',function (event) {
@@ -561,7 +583,7 @@ $("#id_producto").on('select2:select',function (event) {
                 '<td>'+data[i].detalles+' '+data[i].marca+' '+data[i].modelo+' '+data[i].color+'</td>'+
                 '<td><input type="number" name="monto_und[]" id="monto_und" value="'+data[i].monto_und+'"  onchange="change_cost(this,'+data[i].id_producto+')" min="0" class="form-control"  pattern="[0-9]+([,\.][0-9]+)?" formnovalidate="formnovalidate"></td>'+
                 '<td><input type="hidden" name="total_pp[]" id="total_pp'+data[i].id_producto+'" value="'+data[i].total_pp+'" min="0" class="form-control"><span id="total_pp_span'+data[i].id_producto+'">'+total_pp+'</span></td>'+
-                '<td><a href="#" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#remove_products" onclick="remove('+data[i].id_producto+')"><i class="fa fa-trash"></i></a></td>'+
+                '<td><a href="#" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#remove_products" onclick="remove('+data[i].id_producto+','+data[i].codigo+')"><i class="fa fa-trash"></i></a></td>'+
               +'</tr>'
             );
             
@@ -633,6 +655,8 @@ function change_amount(cantidad, id_producto){
   }
 function remove(id_product){
     $("#remove_id").val(id_product);
+    $("#codigo_pedido").val($("#codigo").val());
+    $("#mostrar_codigo").text($("#codigo").val());
   }
 //CAMBIANDO EL COSTO DEL PRODUCTO
 function change_cost(costo, id_producto){
@@ -673,7 +697,7 @@ function change_cost(costo, id_producto){
   function change_monto_descuento(monto){
     var nuevo_monto=monto.value;
     var codigo=$("#codigo").val();
-    $.get('/pedidos/'+nuevo_monto+'/'+codigo+'/actualizar_monto_descuento',function (data) {})
+    $.get('/pedidos/'+nuevo_monto+'/'+codigo+'/actualizar_monto_descuento2',function (data) {})
     .done(function(data) {
 
       $("#descuento_total_ip").val(data[0].descuento_total);
