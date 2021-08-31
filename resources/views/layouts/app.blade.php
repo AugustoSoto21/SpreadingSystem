@@ -5,6 +5,7 @@
     @include('layouts.css')
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
+    @include('sweetalert::alert')
     <div class="wrapper">
         <!-- Preloader -->
         <!-- <div class="preloader flex-column justify-content-center align-items-center">

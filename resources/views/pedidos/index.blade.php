@@ -125,6 +125,9 @@ $(document).ready(function(){
           { data: 'observacion', name: 'observacion' },
           {data: 'action', name: 'action', orderable: false},
         ],
+        createdRow: function(row,data,index){
+          $('td',row).css('background',data.color);
+        },
         order: [[0, 'desc']]
       });
     });

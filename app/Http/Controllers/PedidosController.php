@@ -53,10 +53,10 @@ class PedidosController extends Controller
                 $fecha_hasta = $request->date_to." 23:59:59";
                 $q_date = " && pedidos.created_at BETWEEN '".$fecha_desde."' AND '".$fecha_hasta."' ";
                 
-                $sql="SELECT pedidos.id, pedidos.codigo, pedidos.id_cliente, pedidos.id_user, pedidos.total_fact, pedidos.envio_gratis, pedidos.monto_tarifa, pedidos.id_fuente, pedidos.id_estado, pedidos.observacion FROM pedidos,tarifas,estados WHERE pedidos.id_tarifa = tarifas.id && pedidos.id_estado=estados.id ".$q_agencia." ".$q_date." ".$q_estado." group by pedidos.codigo ";
+                $sql="SELECT pedidos.id, pedidos.codigo, pedidos.id_cliente, pedidos.id_user, pedidos.total_fact, pedidos.envio_gratis, pedidos.monto_tarifa, pedidos.id_fuente, pedidos.id_estado, pedidos.observacion,estados.color FROM pedidos,tarifas,estados WHERE pedidos.id_tarifa = tarifas.id && pedidos.id_estado=estados.id ".$q_agencia." ".$q_date." ".$q_estado." group by pedidos.codigo ";
                 $pedidos=\DB::select($sql);
             } else {           
-                $sql="SELECT pedidos.id, pedidos.codigo, pedidos.id_cliente, pedidos.id_user, pedidos.total_fact, pedidos.envio_gratis, pedidos.monto_tarifa, pedidos.id_fuente, pedidos.id_estado, pedidos.observacion FROM pedidos,tarifas,estados WHERE pedidos.id_tarifa = tarifas.id && pedidos.id_estado=estados.id group by pedidos.codigo";
+                $sql="SELECT pedidos.id, pedidos.codigo, pedidos.id_cliente, pedidos.id_user, pedidos.total_fact, pedidos.envio_gratis, pedidos.monto_tarifa, pedidos.id_fuente, pedidos.id_estado, pedidos.observacion, estados.color FROM pedidos,tarifas,estados WHERE pedidos.id_tarifa = tarifas.id && pedidos.id_estado=estados.id group by pedidos.codigo";
                 $pedidos=\DB::select($sql); 
             }
              return datatables()->of($pedidos)
@@ -83,7 +83,7 @@ class PedidosController extends Controller
                     return $datos;
                 })
                 ->editColumn('id_fuente',function($row){
-                    $fuentes=Fuentes::all();        
+                    /*$fuentes=Fuentes::all();        
                     $select_f="<div class='form-group'>
                         <select class='form-control form-control-sm' name='id_fuente' id='id_fuente'>";
                         foreach ($fuentes as $k) {
@@ -94,10 +94,12 @@ class PedidosController extends Controller
                             $select_f.=" >".$k->fuente."</option>";
                         }
                     $select_f.="</select></div>";
-                    return $select_f;
+                    return $select_f;*/
+                    $fuentes=Fuentes::find($row->id_fuente);
+                    return $fuentes->fuente;
                 })
                 ->editColumn('id_estado',function($row){
-                    $estados=Estados::all();
+                    /*$estados=Estados::all();
                     $select_e="<div class='form-group'><select name='id_estado' id='id_estado' class='form-control form-control-sm'>";
                     foreach($estados as $e){
                         $select_e.="<option value='".$e->id."'"; 
@@ -108,7 +110,9 @@ class PedidosController extends Controller
                     }
                     $select_e.="</select></div>";
 
-                    return $select_e;
+                    return $select_e;*/
+                    $estados=Estados::find($row->id_estado);
+                    return $estados->estado;
                 })
                 ->editColumn('observacion',function($row){
                     
@@ -220,6 +224,11 @@ class PedidosController extends Controller
                 $found=1;
              }   
             }while ($found==1);
+            //VERIFICANDO SI SE SELECCIONÓ UNA AGENCIA
+            if($request->id_tarifa < 1){
+                Alert::success('Éxito', 'No ha seleccionado ninguna agencia')->persistent(true)->html();
+                return redirect()->back();
+            }else{
             //REGISTRANDO PEDIDO NUEVO
             foreach ($pedido as $key) {
                 $nuevo_pedido= new Pedidos();
@@ -248,8 +257,9 @@ class PedidosController extends Controller
                 $nuevo_pedido->id_estado=$request->id_estado;
                 $nuevo_pedido->observacion=$request->observacion;
                 $nuevo_pedido->save();
-                if($key->id_estado > 0){
-                    $estado=Estados::find($key->id_estado);
+                if($request->id_estado > 0){
+                    dd($request->id_estado);
+                    $estado=Estados::find($request->id_estado);
                     if($estado->estado=="AFIRMADO"){
                         //SE DESCONTARÁ DE INVENTARIO O ALMACÉN DE DISPONIBLE
                         //BUSCANDO AGENCIA ENCARGADA
@@ -296,6 +306,7 @@ class PedidosController extends Controller
             }
             Alert::success('Éxito', 'Pedido registrado con éxito')->persistent(true);
                 return redirect()->to('pedidos');
+            }
         }else{
             Alert::error('Alerta', 'No tiene ningún pedido en proceso')->persistent(true);
                 return redirect()->back();
