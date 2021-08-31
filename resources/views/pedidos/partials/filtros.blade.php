@@ -39,13 +39,13 @@
           <div class="col-md-6">
             <div class="form-group">
               <label for="date_from">Fecha desde <b style="color: red;">*</b></label>
-              <input type="date" name="date_from" id="date_from" class="form-control form-control-sm" max="<?php echo date('Y-m-d'); ?>">
+              <input type="date" name="date_from" id="date_from" class="form-control form-control-sm">
             </div>
           </div>
           <div class="col-md-6">
             <div class="form-group">
               <label for="date_to">Fecha hasta <b style="color: red;">*</b></label>
-              <input type="date" name="date_to" id="date_to" class="form-control form-control-sm" max="<?php echo date('Y-m-d'); ?>">
+              <input type="date" name="date_to" id="date_to" class="form-control form-control-sm" >
             </div>
           </div>
         </div>

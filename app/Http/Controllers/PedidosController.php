@@ -33,6 +33,7 @@ class PedidosController extends Controller
      */
     public function index(Request $request)
     {
+
         if(request()->ajax()) {
             if (!empty($request->date_from)) {
                 if ($request->id_agencia!="todas") {
@@ -51,9 +52,9 @@ class PedidosController extends Controller
                 }
                 $fecha_desde = $request->date_from." 00:00:00";
                 $fecha_hasta = $request->date_to." 23:59:59";
-                $q_date = " && pedidos.created_at BETWEEN '".$fecha_desde."' AND '".$fecha_hasta."' ";
+                $q_date = " && horarios.horario BETWEEN '".$fecha_desde."' AND '".$fecha_hasta."' ";
                 
-                $sql="SELECT pedidos.id, pedidos.codigo, pedidos.id_cliente, pedidos.id_user, pedidos.total_fact, pedidos.envio_gratis, pedidos.monto_tarifa, pedidos.id_fuente, pedidos.id_estado, pedidos.observacion,estados.color FROM pedidos,tarifas,estados WHERE pedidos.id_tarifa = tarifas.id && pedidos.id_estado=estados.id ".$q_agencia." ".$q_date." ".$q_estado." group by pedidos.codigo ";
+                $sql="SELECT pedidos.id, pedidos.codigo, pedidos.id_cliente, pedidos.id_user, pedidos.total_fact, pedidos.envio_gratis, pedidos.monto_tarifa, pedidos.id_fuente, pedidos.id_estado, pedidos.observacion,estados.color,horarios.horario FROM pedidos,tarifas,estados,horarios WHERE horarios.codigo_pedido=pedidos.codigo and pedidos.id_tarifa = tarifas.id && pedidos.id_estado=estados.id ".$q_agencia." ".$q_date." ".$q_estado." group by pedidos.codigo ";
                 $pedidos=\DB::select($sql);
             } else {           
                 $sql="SELECT pedidos.id, pedidos.codigo, pedidos.id_cliente, pedidos.id_user, pedidos.total_fact, pedidos.envio_gratis, pedidos.monto_tarifa, pedidos.id_fuente, pedidos.id_estado, pedidos.observacion, estados.color FROM pedidos,tarifas,estados WHERE pedidos.id_tarifa = tarifas.id && pedidos.id_estado=estados.id group by pedidos.codigo";
@@ -62,8 +63,9 @@ class PedidosController extends Controller
              return datatables()->of($pedidos)
                 ->addColumn('action', function ($row) {
                     $edit = '<a href="pedidos/'.$row->codigo.'/edit" data-id="'.$row->id.'" class="btn btn-warning btn-xs" id="editPedido"><i class="fa fa-pencil-alt"></i></a>';
-                    $delete = ' <a href="javascript:void(0);" id="delete-estado" onClick="deletePedido('.$row->id.')" class="delete btn btn-danger btn-xs"><i class="fa fa-trash"></i></a>';
-                    return $edit . $delete;
+                    $delete = ' <a href="javascript:void(0);" id="delete-pedido" onClick="deletePedido('.$row->id.')" class="delete btn btn-danger btn-xs"><i class="fa fa-trash"></i></a>';
+                    $remito = ' <a href="javascript:void(0);" id="remito-pedido" onClick="remitoPedido('.$row->id.')" class="btn btn-info btn-xs"><i class="fa fa-eye"></i></a>';
+                    return $edit . $delete . $remito;
                 })->rawColumns(['action','id_cliente','id_user','id_fuente','id_estado','observacion'])
                 ->editColumn('id_cliente',function($row){
                     $cliente=Clientes::find($row->id_cliente);
@@ -226,7 +228,7 @@ class PedidosController extends Controller
             }while ($found==1);
             //VERIFICANDO SI SE SELECCIONÓ UNA AGENCIA
             if($request->id_tarifa < 1){
-                Alert::error('Alerta', 'Medio publicitario ya se encuentra registrado')->persistent(true);
+                Alert::warning('Alerta', 'Debe seeleccionar un agencia')->persistent(true);
                 return redirect()->back();
             }else{
             //REGISTRANDO PEDIDO NUEVO
@@ -258,13 +260,13 @@ class PedidosController extends Controller
                 $nuevo_pedido->observacion=$request->observacion;
                 $nuevo_pedido->save();
                 if($request->id_estado > 0){
-                    dd($request->id_estado);
+                    //dd($request->id_estado);
                     $estado=Estados::find($request->id_estado);
                     if($estado->estado=="AFIRMADO"){
                         //SE DESCONTARÁ DE INVENTARIO O ALMACÉN DE DISPONIBLE
                         //BUSCANDO AGENCIA ENCARGADA
                         if($key->id_tarifa > 0){
-                            $tarifa=Tarifa::find($key->id_tarifa);
+                            $tarifa=Tarifas::find($key->id_tarifa);
                             if ($tarifa->id_agencia==1) {
                                 $inventario=Inventario::where('id_producto',$key->id_producto)->first();
                                 $inventario->stock_disponible=$inventario->stock_disponible-$key->cantidad;
@@ -320,9 +322,13 @@ class PedidosController extends Controller
      * @param  \App\Models\Pedidos  $pedidos
      * @return \Illuminate\Http\Response
      */
-    public function show(Pedidos $pedidos)
+    public function show($id_pedido)
     {
-        //
+        $p=Pedidos::find($id_pedido);
+        $pedido=Pedidos::where('codigo',$p->codigo)->get();
+        $sql="SELECT pedidos.*,productos.detalles,productos.modelo,productos.marca,productos.color AS color_p, estados.color, clientes.nombres, clientes.apellidos, clientes.direccion, clientes.celular FROM pedidos,tarifas,estados, clientes,productos WHERE productos.id=pedidos.id_producto && clientes.id=pedidos.id_cliente && pedidos.id_tarifa = tarifas.id && pedidos.codigo='".$p->codigo."' && pedidos.id_estado=estados.id";
+                $pedidos=\DB::select($sql);
+        return response()->json($pedidos);
     }
 
     /**

@@ -84,6 +84,7 @@
       </div>
     </div>
     @include('pedidos.partials.filtros')
+    @include('pedidos.partials.remito')
   </div><!-- /.container-fluid -->
 </section>
 @endsection
@@ -159,6 +160,33 @@ function changeEstados(){
     $('#id_estado_filtro').prop('disabled',false).prop('required', true);
     $('#todos_estados').val('inactivo');
   }
+}
+function remitoPedido(id_pedido) {
+  
+  $.ajax({
+    method:"GET",
+    url: "/pedidos/"+id_pedido+"show",
+    dataType: 'json',
+    success: function(data){
+      $('#remito_pedido').modal({backdrop: 'static', keyboard: true, show: true});
+      console.log(data.length);
+      $('.alert-danger').hide();
+      $('#fecha').text(data[0].created_at);
+      $('#cliente').text(data[0].nombres+' '+data[0].apellidos);
+      $('#direccion').text(data[0].direccion);
+      $('#celular').text(data[0].celular);
+      $('#status_edit').text(data.status);
+
+      for (var i = 0; i < data.length; i++) {
+        $("#invoice_remito").append("<tr><td>"+data[i].cantidad+"</td><td>"+data[i].detalles+" "+data[i].modelo+" "+data[i].marca+" "+data[i].color_p+"</td><td>"+data[i].monto_und+"</td><td>"+data[i].total_pp+"</td></tr>");
+      }
+      $('#descuento').text(data[0].descuento_total);
+      $('#iva').text(data[0].iva_total);
+      $('#recargo').text(data[0].recargo_ct);
+      $('#total').text(data[0].total_fact);
+    }
+  });  
+
 }
 </script>
 <script src="{{ asset('js/sweetalert2.min.js') }}"></script>
