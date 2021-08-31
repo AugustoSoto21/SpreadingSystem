@@ -226,7 +226,7 @@ class PedidosController extends Controller
             }while ($found==1);
             //VERIFICANDO SI SE SELECCIONÓ UNA AGENCIA
             if($request->id_tarifa < 1){
-                Alert::success('Éxito', 'No ha seleccionado ninguna agencia')->persistent(true)->html();
+                Alert::error('Alerta', 'Medio publicitario ya se encuentra registrado')->persistent(true);
                 return redirect()->back();
             }else{
             //REGISTRANDO PEDIDO NUEVO
