@@ -394,7 +394,75 @@ class PedidosController extends Controller
      */
     public function update(Request $request,$id_pedido)
     {
-        dd($request->all());
+        //el usuario ya tiene un pedido en proceso
+            //obteniendo los datos unicos
+            $p=Pedidos::where('codigo',$request->codigo)->first();
+            //obteniendo los demas datos
+            $pedido=Pedidos::where('codigo',$request->codigo)->get();
+            
+            if($request->id_tarifa < 1){
+                Alert::warning('Alerta', 'Debe seeleccionar un agencia')->persistent(true);
+                return redirect()->back();
+            }else{
+            //REGISTRANDO PEDIDO NUEVO
+            foreach ($pedido as $key) {
+                $act_pedido= Pedidos::find($key->id);
+                $act_pedido->id_fuente=$request->id_fuente;
+                $act_pedido->id_estado=$request->id_estado;
+                $act_pedido->observacion=$request->observacion;
+                $act_pedido->save();
+                if($request->id_estado > 0){
+                    //dd($request->id_estado);
+                    $estado=Estados::find($request->id_estado);
+                    if($estado->estado=="AFIRMADO"){
+                        //SE DESCONTARÁ DE INVENTARIO O ALMACÉN DE DISPONIBLE
+                        //BUSCANDO AGENCIA ENCARGADA
+                        if($key->id_tarifa > 0){
+                            $tarifa=Tarifas::find($key->id_tarifa);
+                            if ($tarifa->id_agencia==1) {
+                                $inventario=Inventario::where('id_producto',$key->id_producto)->first();
+                                $inventario->stock_disponible=$inventario->stock_disponible-$key->cantidad;
+                                $inventario->save();
+                            } else {
+                                $agencia=Agencias::find($tarifa->id_agencia);
+                                if($agencia->almacen=="Si"){
+                                    $almacen=Almacen::where('id_producto',$key->id_producto)->where('id_agencia',$tarifa->id_agencia)->first();
+                                    $almacen->stock_disponible=$almacen->stock_disponible-$cantidad;
+                                    $almacen->save();
+
+                                }else{
+                                    $inventario=Inventario::where('id_producto',$key->id_producto)->first();
+                                    $inventario->stock_disponible=$inventario->stock_disponible-$key->cantidad;
+                                    $inventario->save();
+                                }
+                            }
+                        }
+                    }
+                }
+                
+            }
+            //REGISTRANDO HORARIOS
+
+            if (count($request->horarios) > 0) {
+                foreach ($pedido as $key) {
+                    foreach ($key->horarios as $key2) {
+                        $key2->delete();
+                    }
+                }
+                for ($i=0; $i < count($request->horarios); $i++) { 
+                    $horario= new Horarios();
+                    $horario->horario = $request->horarios[$i];
+                    $horario->hora_inicio= $request->hora_inicio[$i];
+                    $horario->hora_fin= $request->hora_fin[$i];
+                    $horario->direccion= $request->direccion[$i];
+                    $horario->codigo_pedido= $request->codigo;
+                    $horario->save();
+                }
+            }
+            
+            Alert::success('Éxito', 'Pedido actualizado con éxito')->persistent(true);
+                return redirect()->to('pedidos');
+            }
     }
 
     /**
