@@ -242,6 +242,18 @@
                 </div>
               </div>
               <div class="row">
+                <div class="col-md-4"  id="reclamos_pedido" style="display: none;">
+                  <label for="estado">Pedidos:</label>
+                  <select name="id_pedido_reclamo" id="id_pedido_reclamo" class="form-control select2bs4">
+                  </select>
+                </div>
+                <div class="col-md-4"  id="productos_pedido" style="display: none;">
+                  <label for="estado">Productos:</label>
+                  <select name="id_producto_reclamo[]" id="id_producto_reclamo" class="form-control select2bs4"  multiple="multiple">
+                  </select>
+                </div>
+              </div>
+              <div class="row">
                 <div class="col-2" id="col_transferencia"  style="display: none;">
                   <label for="Transferencia">Cód. Transf.:<b style="color: red;">*</b></label>
                   <input type="number" min="0" value="0" placeholder="123456789" title="ingrese el código de la Transferencia" name="codigo_transferencia" id="codigo_transferencia" class="form-control">
@@ -1085,6 +1097,52 @@ $("#id_medio").on('change',function (event) {
         }
     });
   }
+
+  //BUSCANDO PEDIDOS REALIZADOS POR EL CLIENTE
+  $("#id_estado").on('change',function (event) {
+    var id_estado=event.target.value;
+    if(id_estado==15 || (id_estado >= 18 && id_estado <= 22)){
+      $("#reclamos_pedido").css('display','block');
+      $("#productos_pedido").css('display','block');
+
+      var id_cliente=$("#id_cliente").val();
+      $.get('/pedidos/'+id_cliente+'/buscar_pedidos_clientes',function (data) {})
+      .done(function(data) {
+        //console.log(data);
+          if(data.length > 0){
+            $("#id_pedido_reclamo").empty();
+            $("#id_pedido_reclamo").append("<option value='0'>Seleccione una Pedido</option>");
+            for(var i=0; i < data.length; i++){
+              $("#id_pedido_reclamo").append("<option value='"+data[i].id+"'>Código: "+data[i].codigo+" - Fecha Registro: "+data[i].created_at+" - Facturado: "+data[i].total_fact+"</option>")
+            }
+          }else{
+            $("#id_pedido_reclamo").append("<option value='0'>No see encontraron pedidos anteriores</option>");
+          }
+      });    
+    }else{
+      $("#reclamos_pedido").css('display','none');
+      $("#productos_pedido").css('display','none');
+      $("#id_pedido_reclamo").empty();
+    }
+  });
+  //BUSCANDO PRODUCTOS DE PEDIDOS REALIZADOS POR EL CLIENTE
+  $("#id_pedido_reclamo").on('change',function (event) {
+    var id_pedido=event.target.value;
+      
+      $.get('/pedidos/'+id_pedido+'/buscar_productos_pedidos_clientes',function (data) {})
+      .done(function(data) {
+        //console.log(data);
+          if(data.length > 0){
+            $("#id_producto_reclamo").empty();
+            $("#id_producto_reclamo").append("<option value='0'>Seleccione los productos a reclamar</option>");
+            for(var i=0; i < data.length; i++){
+              $("#id_producto_reclamo").append("<option value='"+data[i].id_producto+"'>"+data[i].detalles+" "+data[i].marca+" "+data[i].modelo+" "+data[i].color+" - cantidad: "+data[i].cantidad+"</option>")
+            }
+          }else{
+            $("#id_producto_reclamo").append("<option value='0'>No se encontraron productos en el pedido</option>");
+          }
+      });    
+  });  
 </script>
 <script src="{{ asset('js/sweetalert2.min.js') }}"></script>
 @endsection

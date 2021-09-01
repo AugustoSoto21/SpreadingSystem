@@ -79,6 +79,8 @@ Route::group(['middleware' => ['web', 'auth']], function() {
 	Route::get('/pedidos/{monto}/{opcion}/{codigo}/agregar_tarifa_envio2',[PedidosController::class,'agregar_tarifa_envio2']);
 	Route::get('/pedidos/{id_tarifa}/{opcion}/{codigo}/agregar_tarifa_envio_agencia2',[PedidosController::class,'agregar_tarifa_envio_agencia2']);
 	Route::get('/pedidos/{codigo}/buscar_horarios',[PedidosController::class,'buscar_horarios']);
+	Route::get('/pedidos/{id_cliente}/buscar_pedidos_clientes',[PedidosController::class,'buscar_pedidos_clientes']);
+	Route::get('/pedidos/{id_pedido}/buscar_productos_pedidos_clientes',[PedidosController::class,'buscar_productos_pedidos_clientes']);
 	//--------------------------------------------------
 	Route::resource('/pedidos',PedidosController::class);
 	Route::get('/buscar_clientes',[ClientesController::class, 'buscar_clientes']);

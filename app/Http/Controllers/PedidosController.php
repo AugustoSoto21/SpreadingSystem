@@ -33,7 +33,7 @@ class PedidosController extends Controller
      */
     public function index(Request $request)
     {
-
+        
         if(request()->ajax()) {
             if (!empty($request->date_from)) {
                 if ($request->id_agencia!="todas") {
@@ -85,34 +85,10 @@ class PedidosController extends Controller
                     return $datos;
                 })
                 ->editColumn('id_fuente',function($row){
-                    /*$fuentes=Fuentes::all();        
-                    $select_f="<div class='form-group'>
-                        <select class='form-control form-control-sm' name='id_fuente' id='id_fuente'>";
-                        foreach ($fuentes as $k) {
-                            $select_f.="<option value='".$k->id."'";
-                            if($k->id==$row->id_fuente){ 
-                                $select_f.=" selected='selected' ";
-                             }
-                            $select_f.=" >".$k->fuente."</option>";
-                        }
-                    $select_f.="</select></div>";
-                    return $select_f;*/
                     $fuentes=Fuentes::find($row->id_fuente);
                     return $fuentes->fuente;
                 })
                 ->editColumn('id_estado',function($row){
-                    /*$estados=Estados::all();
-                    $select_e="<div class='form-group'><select name='id_estado' id='id_estado' class='form-control form-control-sm'>";
-                    foreach($estados as $e){
-                        $select_e.="<option value='".$e->id."'"; 
-                        if($row->id_estado==$e->id){ 
-                         $select_e.=" selected='selected'";
-                        } 
-                        $select_e.=" >".$e->estado."</option>";
-                    }
-                    $select_e.="</select></div>";
-
-                    return $select_e;*/
                     $estados=Estados::find($row->id_estado);
                     return $estados->estado;
                 })
@@ -2004,6 +1980,18 @@ class PedidosController extends Controller
     public function buscar_horarios($codigo)
     {
         return $horarios=Horarios::where('codigo_pedido',$codigo)->get();
-        
+
+    }
+
+    public function buscar_pedidos_clientes($id_cliente)
+    {
+        return $pedidos=Pedidos::where('id_cliente',$id_cliente)->groupBy('codigo')->get();
+    }
+    public function buscar_productos_pedidos_clientes($id_pedido)
+    {
+        $b=Pedidos::find($id_pedido);
+
+        return $productos=\DB::table('pedidos')->join('productos','productos.id','=','pedidos.id_producto')->where('pedidos.codigo',$b->codigo)->select('pedidos.id_producto','pedidos.cantidad','productos.*')->get();
+
     }
 }

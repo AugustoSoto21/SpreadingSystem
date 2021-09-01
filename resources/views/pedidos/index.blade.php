@@ -197,7 +197,7 @@ function buscar_horarios(codigo) {
             $("#mostrar_horarios").append("<tr><td>"+data[i].horario+"</td><td>"+data[i].hora_inicio+"</td><td>"+data[i].hora_fin+"</td><td>"+data[i].direccion+"</td></tr>");   
         }
       }
-    })
+    });
 }
 </script>
 <script src="{{ asset('js/sweetalert2.min.js') }}"></script>
