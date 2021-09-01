@@ -169,7 +169,7 @@ function remitoPedido(id_pedido) {
     dataType: 'json',
     success: function(data){
       $('#remito_pedido').modal({backdrop: 'static', keyboard: true, show: true});
-      console.log(data.length);
+      //console.log(data.length);
       $('.alert-danger').hide();
       $('#fecha').text(data[0].created_at);
       $('#cliente').text(data[0].nombres+' '+data[0].apellidos);
@@ -184,9 +184,20 @@ function remitoPedido(id_pedido) {
       $('#iva').text(data[0].iva_total);
       $('#recargo').text(data[0].recargo_ct);
       $('#total').text(data[0].total_fact);
+      buscar_horarios(data[0].codigo);
     }
   });  
 
+}
+function buscar_horarios(codigo) {
+
+    $.get('/pedidos/'+codigo+'/buscar_horarios',function (data) {
+      if (data.length > 0) {
+        for (var i = 0; i < data.length; i++) {
+            $("#mostrar_horarios").append("<tr><td>"+data[i].horario+"</td><td>"+data[i].hora_inicio+"</td><td>"+data[i].hora_fin+"</td><td>"+data[i].direccion+"</td></tr>");   
+        }
+      }
+    })
 }
 </script>
 <script src="{{ asset('js/sweetalert2.min.js') }}"></script>

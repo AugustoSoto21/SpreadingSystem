@@ -321,7 +321,7 @@
                   @if($cuantos_h > 0)
                   @foreach($horarios as $k)
 
-                  <tr>
+                  <tr  id="add<?=$cuantos_h+$i?>">
                     <td>
                       <div class="row">
                         <div class="col-4">
@@ -331,6 +331,8 @@
                             <span class="input-group-append">
                               <button type="button" class="btn btn-info btn-flat" data-toggle="modal" data-target="#" data-tooltip="tooltip" data-placement="top" title="Agregar Horario" id="addHorario"><i class="fa fa-plus"></i></button>
                             </span>
+                            @else
+                            <span class="input-group-append"> <button type="button" class="btn btn-danger btn-flat" data-toggle="modal" data-target="#" data-tooltip="tooltip" data-placement="top" title="Remover Horario" id="remove<?=$cuantos_h+$i?>" onclick="remover_horario(<?=$cuantos_h+$i?>)"><i class="fa fa-ban"></i></button></span>
                             @endif
                             @php $i++; @endphp
                             <input type="date" value="{{$k->horario}}" min="{{date('Y-m-d')}}" 

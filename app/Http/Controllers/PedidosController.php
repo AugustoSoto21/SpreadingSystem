@@ -57,7 +57,7 @@ class PedidosController extends Controller
                 $sql="SELECT pedidos.id, pedidos.codigo, pedidos.id_cliente, pedidos.id_user, pedidos.total_fact, pedidos.envio_gratis, pedidos.monto_tarifa, pedidos.id_fuente, pedidos.id_estado, pedidos.observacion,estados.color,horarios.horario FROM pedidos,tarifas,estados,horarios WHERE horarios.codigo_pedido=pedidos.codigo and pedidos.id_tarifa = tarifas.id && pedidos.id_estado=estados.id ".$q_agencia." ".$q_date." ".$q_estado." group by pedidos.codigo ";
                 $pedidos=\DB::select($sql);
             } else {           
-                $sql="SELECT pedidos.id, pedidos.codigo, pedidos.id_cliente, pedidos.id_user, pedidos.total_fact, pedidos.envio_gratis, pedidos.monto_tarifa, pedidos.id_fuente, pedidos.id_estado, pedidos.observacion, estados.color FROM pedidos,tarifas,estados WHERE pedidos.id_tarifa = tarifas.id && pedidos.id_estado=estados.id group by pedidos.codigo";
+                $sql="SELECT pedidos.id, pedidos.codigo, pedidos.id_cliente, pedidos.id_user, pedidos.total_fact, pedidos.envio_gratis, pedidos.monto_tarifa, pedidos.id_fuente, pedidos.id_estado, pedidos.observacion, estados.color,horarios.horario FROM pedidos,tarifas,estados,horarios WHERE horarios.codigo_pedido=pedidos.codigo && horarios.horario='".date('Y-m-d')."' && pedidos.id_tarifa = tarifas.id && pedidos.id_estado=estados.id group by pedidos.codigo";
                 $pedidos=\DB::select($sql); 
             }
              return datatables()->of($pedidos)
@@ -445,8 +445,13 @@ class PedidosController extends Controller
 
             if (count($request->horarios) > 0) {
                 foreach ($pedido as $key) {
-                    foreach ($key->horarios as $key2) {
-                        $key2->delete();
+                    
+                    $buscar=Horarios::where('codigo_pedido',$key->codigo)->count();
+                    if($buscar > 0){
+                        $h=Horarios::where('codigo_pedido',$key->codigo)->get();
+                        foreach ($h as $k) {
+                            $k->delete();
+                        }
                     }
                 }
                 for ($i=0; $i < count($request->horarios); $i++) { 
@@ -1994,5 +1999,11 @@ class PedidosController extends Controller
 
             return response()->json($carrito);        
         }
+    }
+
+    public function buscar_horarios($codigo)
+    {
+        return $horarios=Horarios::where('codigo_pedido',$codigo)->get();
+        
     }
 }

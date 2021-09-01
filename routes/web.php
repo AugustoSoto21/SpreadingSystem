@@ -78,6 +78,7 @@ Route::group(['middleware' => ['web', 'auth']], function() {
 	Route::post('/pedidos/remove2',[PedidosController::class,'remove2'])->name('pedidos.remove2');
 	Route::get('/pedidos/{monto}/{opcion}/{codigo}/agregar_tarifa_envio2',[PedidosController::class,'agregar_tarifa_envio2']);
 	Route::get('/pedidos/{id_tarifa}/{opcion}/{codigo}/agregar_tarifa_envio_agencia2',[PedidosController::class,'agregar_tarifa_envio_agencia2']);
+	Route::get('/pedidos/{codigo}/buscar_horarios',[PedidosController::class,'buscar_horarios']);
 	//--------------------------------------------------
 	Route::resource('/pedidos',PedidosController::class);
 	Route::get('/buscar_clientes',[ClientesController::class, 'buscar_clientes']);

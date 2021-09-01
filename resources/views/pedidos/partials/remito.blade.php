@@ -57,6 +57,22 @@
             </div>
           </div>
         </div>
+        <div class="row"><div class="col-md-12">Horarios</div></div>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="table-responsive">
+                <table class="table table-sm" id="mostrar_horarios">
+                  <tr>
+                    <th>Horario:</th>
+                    <th>Hora Desde:</th>
+                    <th>Hora Hasta:</th>
+                    <th>Dirección:</th>
+                  </tr>
+                  
+                </table>
+            </div>
+          </div>
+        </div>
       </div>
       <div class="modal-footer justify-content-between">
         <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i> Cerrar</button>
