@@ -18,4 +18,9 @@ class Estados extends Model
 
     	return $this->hasMany(Pedidos::class);
     }
+
+    public function reclamos()
+    {
+    	return $this->hasMany('App\Models\ProductosReclamos','id_estado','id');
+    }
 }

@@ -31,7 +31,7 @@ class EstadosTableSeeder extends Seeder
         	['estado' => 'REPROGRAMADO AFIRMADO', 'color' => '#3fdf96','status_stock' => 'MANTIENE'],
         	['estado' => 'REPROGRAMADO ENVIADO', 'color' => '#3fdf96','status_stock' => 'MANTIENE'],
         	//----
-        	['estado' => 'RECLAMO', 'color' => '#ff9900', 'status_stock' => 'MANTIENE'],
+        	//['estado' => 'RECLAMO', 'color' => '#ff9900', 'status_stock' => 'MANTIENE'],
         	['estado' => 'RECLAMO A RECOLECTAR', 'color' => '#ff9900', 'status_stock' => 'MANTIENE'],
         	['estado' => 'RECLAMO RECOLECTADO', 'color' => '#00ffff','status_stock' => 'MANTIENE'],
             

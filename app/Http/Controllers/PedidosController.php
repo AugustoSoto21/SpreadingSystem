@@ -207,8 +207,39 @@ class PedidosController extends Controller
                 Alert::warning('Alerta', 'Debe seeleccionar un agencia')->persistent(true);
                 return redirect()->back();
             }else{
+                if(count($request->horarios) == 0 || count($request->hora_inicio) == 0 || count($request->hora_fin) ==0 || count($request->direccion) == 0){
+                    Alert::warning('Alerta', 'Debe seleccionar al menos un horario para la entrega')->persistent(true);
+                    return redirect()->back();  
+                }
+                if(($request->id_estado >= 17 && $request->id_estado <=21) && count($request->id_producto_reclamo) == 0){
+                    Alert::warning('Alerta', 'De acuerdo al estado seleccionado debe seleccionar el producto del pedido que desea agregar como reclamo')->persistent(true);
+                    return redirect()->back();
+                }
             //REGISTRANDO PEDIDO NUEVO
+                $cont=0;//contador para saber si encuentra el producto en el pedido
+                $opcion=3;//variable para determinar que condicion aplicar a los contadores
+                $cont2=0;//contador para saber si no encuentra el producto en el pedido
+
             foreach ($pedido as $key) {
+                    //verificando que el producto seleccionado no esté en el pedido
+                    //casos cuando el reclamo requiera otro producto que no esté en el pedido a reclamar
+                    if(($request->id_estado == 17 || $request->id_estado == 19 || $request->id_estado == 21) && count($request->id_producto_reclamo) > 0){
+                        for ($i=0; $i < count($request->id_producto_reclamo); $i++) { 
+                            if($key->id_producto==$request->id_producto_reclamo){
+                                $cont++;
+                            }
+                        }
+                        $opcion=0;
+                    }
+                    //casos cuando el reclamo requiera que el mismo producto esté en el pedido a reclamar
+                    if(($request->id_estado == 18 || $request->id_estado == 20) && count($request->id_producto_reclamo) > 0){
+                        for ($i=0; $i < count($request->id_producto_reclamo); $i++) { 
+                            if($key->id_producto==$request->id_producto_reclamo){
+                                $cont2++;
+                            }
+                        }
+                        $opcion=1;
+                    }
                 $nuevo_pedido= new Pedidos();
                 $nuevo_pedido->codigo=$codigo;
                 $nuevo_pedido->id_cliente=$key->id_cliente;
@@ -234,37 +265,46 @@ class PedidosController extends Controller
                 $nuevo_pedido->id_fuente=$request->id_fuente;
                 $nuevo_pedido->id_estado=$request->id_estado;
                 $nuevo_pedido->observacion=$request->observacion;
-                $nuevo_pedido->save();
+                //condiciones para verificar de acuerdo a los estados de reclamos
+                if($opcion==0 && $cont > 0){
+                    //cuando el producto seleccionado no debe de estar dentro del pedido
+                }
                 if($request->id_estado > 0){
-                    //dd($request->id_estado);
-                    $estado=Estados::find($request->id_estado);
-                    if($estado->estado=="AFIRMADO"){
-                        //SE DESCONTARÁ DE INVENTARIO O ALMACÉN DE DISPONIBLE
-                        //BUSCANDO AGENCIA ENCARGADA
-                        if($key->id_tarifa > 0){
-                            $tarifa=Tarifas::find($key->id_tarifa);
-                            if ($tarifa->id_agencia==1) {
-                                $inventario=Inventario::where('id_producto',$key->id_producto)->first();
-                                $inventario->stock_disponible=$inventario->stock_disponible-$key->cantidad;
-                                $inventario->save();
-                            } else {
-                                $agencia=Agencias::find($tarifa->id_agencia);
-                                if($agencia->almacen=="Si"){
-                                    $almacen=Almacen::where('id_producto',$key->id_producto)->where('id_agencia',$tarifa->id_agencia)->first();
-                                    $almacen->stock_disponible=$almacen->stock_disponible-$cantidad;
-                                    $almacen->save();
-
-                                }else{
+                    switch ($request->id_estado) {
+                        case ($request->id_estado == 17 || $request->id_estado == 19 || $request->id_estado == 21 ):
+                            
+                            break;
+                        case 2:
+                            //SE DESCONTARÁ DE INVENTARIO O ALMACÉN DE DISPONIBLE
+                            //BUSCANDO AGENCIA ENCARGADA
+                            if($key->id_tarifa > 0){
+                                $tarifa=Tarifas::find($key->id_tarifa);
+                                if ($tarifa->id_agencia==1) {
                                     $inventario=Inventario::where('id_producto',$key->id_producto)->first();
                                     $inventario->stock_disponible=$inventario->stock_disponible-$key->cantidad;
                                     $inventario->save();
+                                } else {
+                                    $agencia=Agencias::find($tarifa->id_agencia);
+                                    if($agencia->almacen=="Si"){
+                                        $almacen=Almacen::where('id_producto',$key->id_producto)->where('id_agencia',$tarifa->id_agencia)->first();
+                                        $almacen->stock_disponible=$almacen->stock_disponible-$cantidad;
+                                        $almacen->save();
+
+                                    }else{
+                                        $inventario=Inventario::where('id_producto',$key->id_producto)->first();
+                                        $inventario->stock_disponible=$inventario->stock_disponible-$key->cantidad;
+                                        $inventario->save();
+                                    }
                                 }
                             }
-                        }
+                        break;
                     }
+                    //dd($request->id_estado);
+                    
                 }
                 
             }
+            $nuevo_pedido->save();
             //REGISTRANDO HORARIOS
             if (count($request->horarios) > 0) {
                 for ($i=0; $i < count($request->horarios); $i++) { 

@@ -252,6 +252,10 @@
                   <select name="id_producto_reclamo[]" id="id_producto_reclamo" class="form-control select2bs4"  multiple="multiple">
                   </select>
                 </div>
+                <div class="col-md-4"  id="observacion_reclamo" style="display: none;">
+                  <label for="estado">Observación:</label>
+                  <input type="text" name="observacion_reclamo" class="form-control" title="Ingrese detalles o motivos del reclamo" id="observacion_r">
+                </div>
               </div>
               <div class="row">
                 <div class="col-2" id="col_transferencia"  style="display: none;">
@@ -1089,7 +1093,7 @@ $("#id_medio").on('change',function (event) {
           $("#monto_ct").text(formatNumber(data[0].recargo_ct.toFixed(2)));
           $("#monto_ct_ip").text(data[0].recargo_ct.toFixed(2));
           $("#monto_tarifa").val(data[0].monto_tarifa);
-          console.log(opcion);
+          //console.log(opcion);
           if($("#envio_gratis").is(':checked') && id_tarifa > 0){
               $("#envio_gratis").prop('checked',false);
               $("#monto_tarifa").prop('readonly',false);
@@ -1101,9 +1105,10 @@ $("#id_medio").on('change',function (event) {
   //BUSCANDO PEDIDOS REALIZADOS POR EL CLIENTE
   $("#id_estado").on('change',function (event) {
     var id_estado=event.target.value;
-    if(id_estado==15 || (id_estado >= 18 && id_estado <= 22)){
+    if(id_estado >= 17 && id_estado <= 21){
       $("#reclamos_pedido").css('display','block');
       $("#productos_pedido").css('display','block');
+      $("#observacion_reclamo").css('display','block');
 
       var id_cliente=$("#id_cliente").val();
       $.get('/pedidos/'+id_cliente+'/buscar_pedidos_clientes',function (data) {})
@@ -1122,6 +1127,7 @@ $("#id_medio").on('change',function (event) {
     }else{
       $("#reclamos_pedido").css('display','none');
       $("#productos_pedido").css('display','none');
+      $("#observacion_reclamo").css('display','none');
       $("#id_pedido_reclamo").empty();
     }
   });
@@ -1134,7 +1140,6 @@ $("#id_medio").on('change',function (event) {
         //console.log(data);
           if(data.length > 0){
             $("#id_producto_reclamo").empty();
-            $("#id_producto_reclamo").append("<option value='0'>Seleccione los productos a reclamar</option>");
             for(var i=0; i < data.length; i++){
               $("#id_producto_reclamo").append("<option value='"+data[i].id_producto+"'>"+data[i].detalles+" "+data[i].marca+" "+data[i].modelo+" "+data[i].color+" - cantidad: "+data[i].cantidad+"</option>")
             }

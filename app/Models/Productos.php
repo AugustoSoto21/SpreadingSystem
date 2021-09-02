@@ -50,4 +50,9 @@ class Productos extends Model
     {
         return $this->hasMany('App\Models\CarritoPedido','id_producto','id');
     }
+
+    public function reclamos()
+    {
+        return $this->hasMany('App\Models\ProductosReclamos','id_producto','id');
+    }
 }
