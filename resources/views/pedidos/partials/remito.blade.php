@@ -10,13 +10,12 @@
       <div class="modal-body">
         <div class="row">
           <div class="col-md-6">
-              <b>Fecha: </b><span id="fecha"></span><br>
-              <b>Cliente: </b><span id="cliente"></span><br>
-              <b>Dirección: </b><span id="direccion"></span><br>
-              <b>Celular: </b><span id="celular"></span> <br>  
+            <b>Fecha: </b><span id="fecha"></span><br>
+            <b>Cliente: </b><span id="cliente"></span><br>
           </div>
           <div class="col-md-6">                
-            
+            <b>Dirección: </b><span id="direccion"></span><br>
+            <b>Celular: </b><span id="celular"></span> <br>            
           </div>            
         </div>
         <div class="row">
@@ -56,19 +55,18 @@
                 </table>
             </div>
           </div>
-        </div>
-        <div class="row"><div class="col-md-12">Horarios</div></div>
+        </div><hr>
+        <div class="row"><div class="col-md-12"><h4 align="center"><b>Horarios</b></h4></div></div>
         <div class="row">
           <div class="col-md-12">
             <div class="table-responsive">
-                <table class="table table-sm" id="mostrar_horarios">
+                <table class="table table-sm" id="mostrar_horarios" style="text-align: center;">
                   <tr>
                     <th>Horario:</th>
                     <th>Hora Desde:</th>
                     <th>Hora Hasta:</th>
                     <th>Dirección:</th>
-                  </tr>
-                  
+                  </tr>                  
                 </table>
             </div>
           </div>
